@@ -2,3 +2,7 @@ baseURL = 'https://cleanunicorn.github.io/'
 languageCode = 'en-us'
 title = 'Daniel Luca Personal Website'
 theme = "PaperMod"
+
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
