@@ -5,19 +5,34 @@ draft = false
 slug = "about"
 +++
 
-I am Daniel Luca, based in Bucharest, Romania, a self taught developer with a passion for open source technologies, security, blockchain and Artificial Intelligence.
+I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self taught developer, Ethereum security auditor and investor with a passion for open source technologies, security, blockchain and Artificial Intelligence.
 
 
 ### Talks
 
 Sometimes, I give talks about things that I find interesting.
 
-- [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://www.youtube.com/watch?v=sfyYTfS_7uU)
+- [Cypherpunk Congress #1 - The Privacy paradox in AI](https://youtu.be/bz6b6YeM4NM)
 - [DefCon 27 - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum](https://youtu.be/Qd9ubry-c_M)
   - [Slides](/presentations/defcon27/DEFCON-27-Bernhard-Mueller-The-Ether-Wars.pdf)
+- [ETHBucharest - Doppelganger Networks](https://www.youtube.com/watch?v=dCjOG3gx5_E)
+- [NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess](https://www.youtube.com/watch?v=4ibFG_Do1j0)
+- [ETHPrague - Elevating Developer Experience(DX) in Web3](https://youtu.be/WUm34CV2s1I)
+- [EthCC - Elevating Developer Experience(DX) in Web3](https://youtu.be/ZPoqwAbMWTE)
+- [ETHCluj - Beyond "Trust me, bro" Engineering LLM](https://youtu.be/sfyYTfS_7uU?si=Zc8BPfoVyHcwtCm9)
 - [BlockchainHackers IV - Mastering Ethereum CTFs](/presentations//blockchainhackers-iv/Mastering-Ethereum-CTFs.pdf)
 - [The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence](https://thebitcoinpodcast.com/the-bitcoin-podcast-283/)
+- [Onchain games for devs](https://www.youtube.com/watch?v=ri_AaqSiAbU)
 - [EthCC - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum part 2](https://youtu.be/Qm0i3fd9UKc)
+- [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://www.youtube.com/watch?v=sfyYTfS_7uU)
+
+### Podcasts
+
+Or I am invited to podcasts:
+
+- [Decentralized Al: The Next Shift - Daniel Luca](https://www.youtube.com/watch?v=ZmzPLI9CJRo)
+- [The Code Is Law Movie, The DAO and Indexed Finance Heists, Crypto Culture](https://www.youtube.com/watch?v=CTUhbYXopys)
+- [How VCs invests in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU)
 
 ### Projects
 
