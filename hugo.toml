@@ -23,3 +23,32 @@ theme = "PaperMod"
     name = "Posts"
     url = "/posts/"
     weight = 30
+
+[params.profileMode]
+  enabled = true
+  title = "Daniel Luca"
+  subtitle = "Security Researcher | Investor | Builder"
+  imageUrl = "https://github.com/cleanunicorn.png"
+  imageTitle = "Daniel Luca"
+  imageWidth = 120
+  imageHeight = 120
+
+  [[params.profileMode.buttons]]
+    name = "About"
+    url = "/about"
+
+  [[params.profileMode.buttons]]
+    name = "Work"
+    url = "/work"
+
+  [[params.profileMode.buttons]]
+    name = "Posts"
+    url = "/posts"
+
+  [[params.socialIcons]]
+    name = "twitter"
+    url = "https://x.com/cleanunicorn"
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/cleanunicorn"
