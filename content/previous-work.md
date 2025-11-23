@@ -50,22 +50,14 @@ Founded [Akira Tech](https://github.com/akiratechhq) as a specialized security s
 * **Since** November 2018
 
 Audited:
-- Uniswap - popular DEX (decentralized exchange) platform written in Vyper
-- Aave - governance and token issuance
-- Aragon - multiple apps reviewed
-- OmiseGo - plasma implementation
-- Matic - PoS blockchain (geth fork) and migration mechanism
-- Filecoin - decentralized storage network
-- Shell Protocol - stable coin DeFi
-- Horizon Games - ERC 721 and marketplace
-- Bounties Network - rewards platform
-- CoDeFi - ERC 1400 implementation (Security Token Standard)
-- iFunded - ERC 1400 implementation
-- PDax - token issuance
-- ChainBridge - PolkaDot bridge infrastructure
-- AllInfra - token mechanics
-- Fairmint - continuous organization infrastructure
-- Frizbee - payment channels
+- [Uniswap](https://uniswap.org/) - popular DEX (decentralized exchange) platform written in Vyper
+- [Aave](https://aave.com/) - governance and token issuance
+- [Aragon](https://aragon.org/) - multiple apps reviewed
+- [OmiseGo](https://omg.network/) - plasma implementation
+- [Matic/Polygon](https://polygon.technology/) - PoS blockchain (geth fork) and migration mechanism
+- [Filecoin](https://filecoin.io/) - decentralized storage network
+- [Shell Protocol](https://shellprotocol.io/) - stable coin DeFi
+- [Horizon Games](https://horizon.io/) - ERC 721 and marketplace
 
 ---
 
