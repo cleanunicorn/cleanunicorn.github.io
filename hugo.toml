@@ -3,6 +3,11 @@ languageCode = 'en-us'
 title = 'Daniel Luca'
 theme = "PaperMod"
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
 [caches]
   [caches.images]
     dir = ':cacheDir/images'

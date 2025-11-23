@@ -8,6 +8,8 @@ You will understand how to trick a block explorer into displaying different byte
 
 This is important because a user can be tricked by a hacker to think they interact with a good contract, when actually the user interacts with malicious contract. It is indeed the same contract address, but the byte code is not the one reported by the block explorer.
 
+![This is not the contract you are looking for](poison-code.jpeg)
+
 ---
 
 ## The problem

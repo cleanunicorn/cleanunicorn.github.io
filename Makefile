@@ -34,8 +34,8 @@ new: ## Create a new post: make new POST="My Post Title"
 		exit 1; \
 	fi; \
 	slug=$$(echo "$(POST)" | tr ' ' '-' | tr '[:upper:]' '[:lower:]'); \
-	$(HUGO) new posts/$${slug}.md; \
-	echo "Created $(POSTS_DIR)/$${slug}.md"
+	$(HUGO) new posts/$${slug}/index.md; \
+	echo "Created $(POSTS_DIR)/$${slug}/index.md"
 
 update-theme: ## Update theme submodule to latest
 	git submodule update --init --recursive
