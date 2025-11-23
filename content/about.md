@@ -7,6 +7,10 @@ slug = "about"
 
 I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self taught developer, Ethereum security auditor and investor with a passion for open source technologies, security, blockchain and Artificial Intelligence.
 
+### Links
+
+- [Twitter / X](https://x.com/cleanunicorn)
+- [GitHub](https://github.com/cleanunicorn)
 
 ### Talks
 

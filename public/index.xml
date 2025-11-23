@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Daniel Luca</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on Daniel Luca</description>
+    <generator>Hugo -- 0.149.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 03 Sep 2025 15:35:08 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Second Post</title>
+      <link>http://localhost:1313/posts/my-second-post/</link>
+      <pubDate>Wed, 03 Sep 2025 15:35:08 +0200</pubDate>
+      <guid>http://localhost:1313/posts/my-second-post/</guid>
+      <description>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;yo&lt;/p&gt;
+&lt;p&gt;u suck&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>My First Post</title>
+      <link>http://localhost:1313/posts/my-first-post/</link>
+      <pubDate>Sun, 14 Jan 2024 07:07:07 +0100</pubDate>
+      <guid>http://localhost:1313/posts/my-first-post/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;This is &lt;strong&gt;bold&lt;/strong&gt; text, and this is &lt;em&gt;emphasized&lt;/em&gt; text.&lt;/p&gt;
+&lt;p&gt;Visit the &lt;a href=&#34;https://gohugo.io&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hugo&lt;/a&gt;
+ website!&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>About me</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 21 Jan 2019 17:02:52 +0200</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>&lt;p&gt;I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self taught developer, Ethereum security auditor and investor with a passion for open source technologies, security, blockchain and Artificial Intelligence.&lt;/p&gt;
+&lt;h3 id=&#34;links&#34;&gt;Links&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://x.com/cleanunicorn&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Twitter / X&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cleanunicorn&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GitHub&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;talks&#34;&gt;Talks&lt;/h3&gt;
+&lt;p&gt;Sometimes, I give talks about things that I find interesting.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/bz6b6YeM4NM&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Cypherpunk Congress #1 - The Privacy paradox in AI&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/Qd9ubry-c_M&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;DefCon 27 - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum&lt;/a&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://localhost:1313/presentations/defcon27/DEFCON-27-Bernhard-Mueller-The-Ether-Wars.pdf&#34;&gt;Slides&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=dCjOG3gx5_E&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ETHBucharest - Doppelganger Networks&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=4ibFG_Do1j0&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/WUm34CV2s1I&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ETHPrague - Elevating Developer Experience(DX) in Web3&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/ZPoqwAbMWTE&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;EthCC - Elevating Developer Experience(DX) in Web3&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/sfyYTfS_7uU?si=Zc8BPfoVyHcwtCm9&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ETHCluj - Beyond &amp;ldquo;Trust me, bro&amp;rdquo; Engineering LLM&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://localhost:1313/presentations//blockchainhackers-iv/Mastering-Ethereum-CTFs.pdf&#34;&gt;BlockchainHackers IV - Mastering Ethereum CTFs&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://thebitcoinpodcast.com/the-bitcoin-podcast-283/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=ri_AaqSiAbU&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Onchain games for devs&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/Qm0i3fd9UKc&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;EthCC - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum part 2&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=sfyYTfS_7uU&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Security Espresso Meetup 0x13 - Ethereum the Hacker&amp;rsquo;s Paradise&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;podcasts&#34;&gt;Podcasts&lt;/h3&gt;
+&lt;p&gt;Or I am invited to podcasts:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Worked</title>
+      <link>http://localhost:1313/work/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/work/</guid>
+      <description>&lt;h3 id=&#34;technical-partner-eden-block&#34;&gt;Technical Partner, Eden Block&lt;/h3&gt;
+&lt;p&gt;Technical Partner at &lt;a href=&#34;https://edenblock.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Eden Block&lt;/a&gt;
+, an early-stage venture capital firm focused on blockchain and Web3 infrastructure. Provided technical diligence and research for investment decisions, advised portfolio companies on product strategy, software architecture, and security best practices. Collaborated with founders and teams across the portfolio to address technical challenges and drive technology adoption. Helped shape Eden Block’s research-driven investment approach and supported the growth of startups building the foundational layers of the decentralized internet.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
