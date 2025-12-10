@@ -3,6 +3,7 @@ title = "About me"
 date = 2019-01-21T17:02:52+02:00
 draft = false
 slug = "about"
+showFullContent = true
 +++
 
 I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self taught developer, Ethereum security auditor and investor with a passion for open source technologies, security, blockchain and Artificial Intelligence.
