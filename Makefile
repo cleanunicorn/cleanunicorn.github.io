@@ -1,7 +1,7 @@
 # Makefile for Hugo project
 
 HUGO ?= hugo
-THEME ?= themes/PaperMod
+THEME ?= themes/terminal
 PUBLIC_DIR ?= public
 POSTS_DIR ?= content/posts
 DATE := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
