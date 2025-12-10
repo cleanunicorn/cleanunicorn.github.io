@@ -1,12 +1,12 @@
 +++
-title = "Worked"
+title = "Work"
 draft = false
 slug = "work"
 +++
 
 ### Technical Partner, Eden Block
 
-Technical Partner at [Eden Block](https://edenblock.com), an early-stage venture capital firm focused on blockchain, Web3 infrastructure and Decentralized AI. Provided technical diligence and research for investment decisions, advised portfolio companies on product strategy, software architecture, and security best practices. Collaborated with founders and teams across the portfolio to address technical challenges and drive technology adoption. Helped shape Eden Block’s research-driven investment approach and supported the growth of startups building the foundational layers of the decentralized internet.
+Technical Partner at [Eden Block](https://edenblock.com) an early-stage venture capital firm focused on blockchain, Web3 infrastructure and Decentralized AI. Provided technical diligence and research for investment decisions, advised portfolio companies on product strategy, software architecture, and security best practices. Collaborated with founders and teams across the portfolio to address technical challenges and drive technology adoption. Helped shape Eden Block’s research-driven investment approach and supported the growth of startups building the foundational layers of the decentralized internet.
 
 Worked closely with portfolio companies such as:
 
@@ -48,6 +48,7 @@ Founded [Akira Tech](https://github.com/akiratechhq) as a specialized security s
 
 * **Company** ConsenSys Diligence
 * **Since** November 2018
+* **Until** August 2020
 
 Audited:
 - [Uniswap](https://uniswap.org/) - popular DEX (decentralized exchange) platform written in Vyper

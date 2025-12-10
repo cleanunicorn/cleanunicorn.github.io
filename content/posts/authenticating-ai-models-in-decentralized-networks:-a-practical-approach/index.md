@@ -100,7 +100,7 @@ There is an argument that an AI model might act as an injection-non-surjection f
 
 The proposed way of authenticating the model is based on the statistical uniqueness approach described above. To make this happen, we consider the following approach, where the user sends the same input parameters to 2 different nodes and compares the generated output.
 
-![Untitled](Authenticating%20AI%20Models%20in%20Decentralized%20Networks/Untitled%203.png)
+![Untitled](Untitled%203.png)
 
 Once the user receives and compares the outputs they find out if the queried nodes run the same model. Since, in this case we have only 2 queried nodes, it’s impossible to know what the trusted majority is, in case the answers differ. For this we would need to query a few more nodes. The minimum number of nodes that would help us identify a trusted majority is 3. But we can go even further and query a higher number of nodes for more statistical significance.
 

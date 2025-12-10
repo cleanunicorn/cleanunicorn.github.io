@@ -5,6 +5,11 @@ pagination.pagerSize = 5
 
 [markup.goldmark.renderer]
   unsafe = true
+    [markup.goldmark.extensions.passthrough]
+      enable = true
+      [markup.goldmark.extensions.passthrough.delimiters]
+        inline = [['$', '$']]
+        block = [['$$', '$$']]
 
 [markup.highlight]
   noClasses = false

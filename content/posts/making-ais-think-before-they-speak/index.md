@@ -1,5 +1,5 @@
 +++
-date = '2025-12-01T15:16:12+01:00'
+date = '2024-11-30T15:16:12+01:00'
 draft = true
 title = 'Making Ais Think Before They Speak'
 +++
