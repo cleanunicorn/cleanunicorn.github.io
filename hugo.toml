@@ -15,7 +15,7 @@ pagination.pagerSize = 5
   noClasses = false
 
 [params]
-  contentTypeName = "posts"
+  contentTypeName = "about"
   showMenuItems = 2
   fullWidthTheme = false
   centerTheme = true
