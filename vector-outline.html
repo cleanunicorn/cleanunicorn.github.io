@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Tracer Tool</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --panel: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background: var(--panel);
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn.primary:hover { background: #1d4ed8; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .divider { width: 1px; height: 24px; background: var(--border); }
+
+        /* Status Bar */
+        .status {
+            margin-left: auto;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Canvas Area */
+        #workspace {
+            flex: 1;
+            position: relative;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            padding: 40px;
+        }
+
+        /* The SVG Canvas */
+        #svg-container {
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: crosshair;
+            user-select: none;
+            position: relative;
+        }
+
+        /* SVG Elements Styling */
+        path.main-path {
+            fill: rgba(37, 99, 235, 0.2);
+            stroke: var(--primary);
+            stroke-width: 2;
+            vector-effect: non-scaling-stroke;
+        }
+
+        circle.node {
+            fill: white;
+            stroke: #333;
+            stroke-width: 2;
+            cursor: grab;
+            transition: r 0.1s;
+        }
+
+        circle.node:hover { r: 6; stroke: var(--primary); }
+        
+        circle.node.selected {
+            fill: var(--primary);
+            stroke: white;
+            r: 6;
+        }
+
+        circle.node.smooth {
+            border-radius: 0; /* SVG doesn't use border radius, handled visually by logic if needed */
+            stroke: #10b981; /* Green stroke for smooth nodes */
+        }
+
+        /* Hidden inputs */
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button class="btn" onclick="document.getElementById('imgUpload').click()">📂 Load Image</button>
+        <input type="file" id="imgUpload" accept="image/*">
+        
+        <div class="divider"></div>
+        
+        <button class="btn" id="btnDelete" onclick="deleteSelected()" disabled>Delete Point (Del)</button>
+        <button class="btn" id="btnToggleType" onclick="toggleNodeType()" disabled>Make Smooth/Sharp (S)</button>
+        <button class="btn" onclick="closeLoop()" id="btnClose" disabled>Close Loop</button>
+        <button class="btn" onclick="clearCanvas()">Clear All</button>
+        
+        <div class="divider"></div>
+        
+        <button class="btn primary" onclick="exportSVG()">⬇ Export SVG</button>
+        
+        <div class="status" id="statusText">Load an image to start</div>
+    </div>
+
+    <div id="workspace">
+        <svg id="svg-container" width="800" height="600" viewBox="0 0 800 600">
+            <image id="bg-image" href="" x="0" y="0" width="0" height="0" style="display:none"/>
+            
+            <path id="drawing-path" class="main-path" d="" />
+            
+            <g id="handles"></g>
+        </svg>
+    </div>
+
+<script>
+    // State
+    let points = []; // Array of {x, y, type: 'sharp' | 'smooth'}
+    let isClosed = false;
+    let selectedIndex = -1;
+    let draggingIndex = -1;
+    
+    // DOM Elements
+    const svg = document.getElementById('svg-container');
+    const pathEl = document.getElementById('drawing-path');
+    const handlesGroup = document.getElementById('handles');
+    const bgImage = document.getElementById('bg-image');
+    const statusText = document.getElementById('statusText');
+    const btnDelete = document.getElementById('btnDelete');
+    const btnToggle = document.getElementById('btnToggleType');
+    const btnClose = document.getElementById('btnClose');
+
+    // --- Image Loading ---
+    document.getElementById('imgUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                // Resize SVG to match image
+                svg.setAttribute('width', img.width);
+                svg.setAttribute('height', img.height);
+                svg.setAttribute('viewBox', `0 0 ${img.width} ${img.height}`);
+                
+                // Set Background
+                bgImage.setAttribute('href', event.target.result);
+                bgImage.setAttribute('width', img.width);
+                bgImage.setAttribute('height', img.height);
+                bgImage.style.display = 'block';
+                
+                statusText.textContent = "Click to add points. Drag to move.";
+                clearCanvas();
+            }
+            img.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+    });
+
+    // --- Interaction ---
+    svg.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'circle') {
+            // Clicked a point
+            const index = parseInt(e.target.dataset.index);
+            
+            // If clicking the first point and we have points, close loop
+            if (index === 0 && points.length > 2 && !isClosed) {
+                isClosed = true;
+                selectPoint(-1);
+                render();
+                return;
+            }
+
+            selectPoint(index);
+            draggingIndex = index;
+            e.stopPropagation();
+        } else {
+            // Clicked empty space
+            if (isClosed) {
+                // If closed, click deselects
+                selectPoint(-1);
+            } else {
+                // Add new point
+                const pt = getMousePos(e);
+                points.push({ x: pt.x, y: pt.y, type: 'sharp' });
+                selectPoint(points.length - 1);
+                draggingIndex = points.length - 1; // Start dragging immediately for precision
+                render();
+            }
+        }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (draggingIndex !== -1) {
+            const pt = getMousePos(e);
+            points[draggingIndex].x = pt.x;
+            points[draggingIndex].y = pt.y;
+            render();
+        }
+    });
+
+    window.addEventListener('mouseup', () => {
+        draggingIndex = -1;
+    });
+
+    // Double click to delete
+    svg.addEventListener('dblclick', (e) => {
+        if (e.target.tagName === 'circle') {
+            const index = parseInt(e.target.dataset.index);
+            points.splice(index, 1);
+            if (points.length < 3) isClosed = false;
+            selectPoint(-1);
+            render();
+        }
+    });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
+        if (e.key.toLowerCase() === 's') toggleNodeType();
+    });
+
+    // --- Core Logic ---
+
+    function getMousePos(evt) {
+        const CTM = svg.getScreenCTM();
+        if (evt.touches && evt.touches.length) {
+            return {
+                x: (evt.touches[0].clientX - CTM.e) / CTM.a,
+                y: (evt.touches[0].clientY - CTM.f) / CTM.d
+            };
+        }
+        return {
+            x: (evt.clientX - CTM.e) / CTM.a,
+            y: (evt.clientY - CTM.f) / CTM.d
+        };
+    }
+
+    function selectPoint(index) {
+        selectedIndex = index;
+        
+        // Update UI buttons
+        const hasSelection = index !== -1;
+        btnDelete.disabled = !hasSelection;
+        btnToggle.disabled = !hasSelection;
+        btnClose.disabled = isClosed || points.length < 3;
+        
+        if (hasSelection) {
+            btnToggle.innerText = points[index].type === 'sharp' ? "Make Smooth (S)" : "Make Sharp (S)";
+        }
+
+        // Visual update
+        const circles = handlesGroup.querySelectorAll('circle');
+        circles.forEach(c => {
+            const i = parseInt(c.dataset.index);
+            if(i === index) c.classList.add('selected');
+            else c.classList.remove('selected');
+        });
+    }
+
+    function deleteSelected() {
+        if (selectedIndex === -1) return;
+        points.splice(selectedIndex, 1);
+        if (points.length < 3) isClosed = false;
+        selectPoint(-1);
+        render();
+    }
+
+    function toggleNodeType() {
+        if (selectedIndex === -1) return;
+        const pt = points[selectedIndex];
+        pt.type = pt.type === 'sharp' ? 'smooth' : 'sharp';
+        selectPoint(selectedIndex); // Refresh button text
+        render();
+    }
+
+    function closeLoop() {
+        if (points.length >= 3) {
+            isClosed = true;
+            render();
+            selectPoint(-1);
+        }
+    }
+
+    function clearCanvas() {
+        points = [];
+        isClosed = false;
+        selectPoint(-1);
+        render();
+    }
+
+    // --- Rendering & Math ---
+
+    function render() {
+        // 1. Draw Path
+        if (points.length === 0) {
+            pathEl.setAttribute('d', '');
+        } else {
+            const d = generatePathData(points, isClosed);
+            pathEl.setAttribute('d', d);
+        }
+
+        // 2. Draw Handles
+        // Clear existing
+        while (handlesGroup.firstChild) {
+            handlesGroup.removeChild(handlesGroup.firstChild);
+        }
+        
+        points.forEach((pt, i) => {
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute('cx', pt.x);
+            circle.setAttribute('cy', pt.y);
+            circle.setAttribute('r', 4); // radius
+            circle.setAttribute('class', `node ${pt.type}`);
+            circle.dataset.index = i;
+            if (i === selectedIndex) circle.classList.add('selected');
+            handlesGroup.appendChild(circle);
+        });
+    }
+
+    // Catmull-Rom to Cubic Bezier conversion logic to allow "smooth" points
+    // This allows drawing curves through points without manual handle management
+    function generatePathData(points, closed) {
+        if (points.length < 2) return "";
+        
+        let d = `M ${points[0].x} ${points[0].y}`;
+        
+        const loopLen = closed ? points.length : points.length - 1;
+
+        for (let i = 0; i < loopLen; i++) {
+            const p0 = points[i];
+            const p1 = points[(i + 1) % points.length];
+            
+            // If both are sharp, straight line
+            if (p0.type === 'sharp' && p1.type === 'sharp') {
+                d += ` L ${p1.x} ${p1.y}`;
+                continue;
+            }
+
+            // If we need a curve, we calculate control points based on neighbors
+            // Previous point
+            const pMin1 = points[(i - 1 + points.length) % points.length];
+            // Next next point
+            const p2 = points[(i + 2) % points.length];
+            
+            // If strictly linear segment (start is sharp), we don't curve OUT of it
+            // If end is sharp, we don't curve INTO it.
+            
+            // Catmull-Rom smoothing
+            const tension = 0.2; // 0.2 is usually good for tracing
+
+            // Control Point 1 (influenced by previous point)
+            let cp1x, cp1y;
+            if (p0.type === 'sharp') {
+                cp1x = p0.x; cp1y = p0.y;
+            } else {
+                // If current is smooth, look behind
+                // Boundary check for open paths
+                const prev = (i === 0 && !closed) ? p0 : pMin1;
+                cp1x = p0.x + (p1.x - prev.x) * tension;
+                cp1y = p0.y + (p1.y - prev.y) * tension;
+            }
+
+            // Control Point 2 (influenced by next next point)
+            let cp2x, cp2y;
+            if (p1.type === 'sharp') {
+                cp2x = p1.x; cp2y = p1.y;
+            } else {
+                // If destination is smooth, look ahead
+                // Boundary check for open paths
+                const next = (i + 1 >= points.length - 1 && !closed) ? p1 : p2;
+                cp2x = p1.x - (next.x - p0.x) * tension;
+                cp2y = p1.y - (next.y - p0.y) * tension;
+            }
+
+            d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p1.x} ${p1.y}`;
+        }
+
+        if (closed) d += " Z";
+        return d;
+    }
+
+    function exportSVG() {
+        if(points.length === 0) return alert("Nothing to export!");
+
+        const d = generatePathData(points, isClosed);
+        const width = svg.getAttribute('width');
+        const height = svg.getAttribute('height');
+
+        const svgContent = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <path d="${d}" fill="none" stroke="black" stroke-width="2"/>
+</svg>`;
+
+        const blob = new Blob([svgContent.trim()], {type: 'image/svg+xml'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'vector-trace.svg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+</script>
+</body>
+</html>
