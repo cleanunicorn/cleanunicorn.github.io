@@ -63,6 +63,15 @@ Portable private AI memory built as a vector database and MCP server, easily plu
 ### [Quill](https://github.com/cleanunicorn/quill)
 Command-line tool for transcribing audio files, YouTube videos, and podcasts using Faster Whisper.
 
+### [Karl](https://github.com/cleanunicorn/karl)
+Monitors smart contracts deployed on the Ethereum network and tests against vulnerabilities with Mythril. Reduces false positives by forking the blockchain and testing the exploit.
+
+### [RL-Swarm](https://github.com/gensyn-ai/rl-swarm-contracts)
+This repository contains the smart contracts for the [RL Swarm](https://www.gensyn.ai/RLSwarm) [Gensyn](https://www.gensyn.ai/)'s project which lets anyone, anywhere, join and participate in a distributed reinforcement learning system that learns faster together than alone.
+
+### [Ethereum Smart Contract Template](https://github.com/cleanunicorn/ethereum-smartcontract-template)
+This development quick start template is heavily inspired by [Georgios's template](https://github.com/gakonst/dapptools-template). Over time it was migrated to use [foundry](https://github.com/gakonst/foundry) since dapptools was deprecated.
+
 ### [Hitomi](https://github.com/cleanunicorn/hitomi)
 Yet another Ethereum web3 console for any node.
 
@@ -77,9 +86,6 @@ Flaterra parses the provided Solidity source file and adds any other `imported` 
 
 ### [Midas](https://gitlab.com/cleanunicorn/eth-tipper) 
 A [Discord](https://discordapp.com) bot that acts as an Ethereum wallet and facilitates sending Ether between users.
-
-### [Karl](https://github.com/cleanunicorn/karl)
-Monitors smart contracts deployed on the Ethereum network and tests against vulnerabilities with Mythril. Reduces false positives by forking the blockchain and testing the exploit.
 
 ### [abi2signature](https://github.com/cleanunicorn/abi2signature)
 Generates the Ethereum ABI 4 byte signature.
