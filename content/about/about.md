@@ -6,14 +6,27 @@ slug = "about"
 showFullContent = true
 +++
 
-I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self taught developer, Ethereum security auditor and investor with a passion for open source technologies, security, blockchain and Artificial Intelligence.
+I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self-taught **software engineer**, **Ethereum security auditor** and **investor** working in the blockchain space **since 2017**.
 
-### Links
+With a deep passion for open-source technologies, security, and Artificial Intelligence, I bring a practitioner’s mindset to every project. I prioritize trust-minimized architectures and rigorous code reviews to ensure systems hold up under real adversarial conditions, rather than relying on short-lived narratives.
+
+This deep technical foundation eventually pulled me into **venture capital**, where I now operate at the intersection of blockchain, AI, and security. I focus on research-driven technical due diligence and deal sourcing, utilizing my background as a Blockchain Architect to support founders well beyond the initial check. Whether I am auditing code or evaluating a seed round, **my philosophy remains rooted in open-source technologies and long-term fundamentals**. I am committed to building and backing resilient, secure solutions that drive the industry forward through sound engineering practices.
+
+## Links
 
 - [Twitter / X](https://x.com/cleanunicorn)
 - [GitHub](https://github.com/cleanunicorn)
+- [Linkedin](https://www.linkedin.com/in/luca-daniel-5227267/)
 
-### Talks
+---
+
+## Work
+
+[List of employers and startups]({{< relref "previous-work.md" >}})
+
+---
+
+## Talks
 
 Sometimes, I give talks about things that I find interesting.
 
@@ -31,7 +44,10 @@ Sometimes, I give talks about things that I find interesting.
 - [EthCC - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum part 2](https://youtu.be/Qm0i3fd9UKc)
 - [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://www.youtube.com/watch?v=sfyYTfS_7uU)
 
-### Podcasts
+
+---
+
+## Podcasts
 
 Or I am invited to podcasts:
 
@@ -39,46 +55,55 @@ Or I am invited to podcasts:
 - [The Code Is Law Movie, The DAO and Indexed Finance Heists, Crypto Culture](https://www.youtube.com/watch?v=CTUhbYXopys)
 - [How VCs invests in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU)
 
-### Projects
+---
+
+## Projects
+
+### [Rag-brain](https://github.com/cleanunicorn/rag-brain)
+Portable private AI memory built as a vector database and MCP server, easily pluggable into chatbots.
+
+### [Quill](https://github.com/cleanunicorn/quill)
+Command-line tool for transcribing audio files, YouTube videos, and podcasts using Faster Whisper.
 
 ### [Hitomi](https://github.com/cleanunicorn/hitomi)
 Yet another Ethereum web3 console for any node.
 
-#### [Santoku](https://github.com/cleanunicorn/santoku)
+### [Santoku](https://github.com/cleanunicorn/santoku)
 It decodes ABI encoded hex strings into the original types. Try it [here](https://cleanunicorn.github.io/santoku/).
 
-#### [Mythos](https://github.com/cleanunicorn/mythos)
+### [Mythos](https://github.com/cleanunicorn/mythos)
 Mythos is a CLI client for the [MythX](https://mythx.io) API.
 
-#### [Flaterra](https://github.com/cleanunicorn/flaterra)
+### [Flaterra](https://github.com/cleanunicorn/flaterra)
 Flaterra parses the provided Solidity source file and adds any other `imported` files. This is useful if you want to upload your source code to a block explorer for verification, use it with [Remix](https://remix.ethereum.org) or to run analysis on it, for example with [MythX](https://mythx.io/) or [Mythril](https://github.com/ConsenSys/mythril-classic/).
 
-#### [Midas](https://gitlab.com/cleanunicorn/eth-tipper) 
+### [Midas](https://gitlab.com/cleanunicorn/eth-tipper) 
 A [Discord](https://discordapp.com) bot that acts as an Ethereum wallet and facilitates sending Ether between users.
 
-#### [Karl](https://github.com/cleanunicorn/karl)
+### [Karl](https://github.com/cleanunicorn/karl)
 Monitors smart contracts deployed on the Ethereum network and tests against vulnerabilities with Mythril. Reduces false positives by forking the blockchain and testing the exploit.
 
-#### [abi2signature](https://github.com/cleanunicorn/abi2signature)
+### [abi2signature](https://github.com/cleanunicorn/abi2signature)
 Generates the Ethereum ABI 4 byte signature.
 
-#### [ranploy](https://github.com/cleanunicorn/ranploy)
+### [ranploy](https://github.com/cleanunicorn/ranploy)
 Generates the EVM code to deploy the specified runtime bytecode.
 
-#### [artifaqt](https://github.com/consensys/artifaqt)
+### [artifaqt](https://github.com/consensys/artifaqt)
 Social token collectible IRL game part of the [DevCon4](https://devcon4.ethereum.org/) Ethereum conference.
 
-### Work
+---
 
-[List of employers and startups]({{< relref "previous-work.md" >}})
+## Books
 
-### Books
-
-I like science fiction, philosophy and psychology.
+I like science fiction, fantasy, comic books, philosophy and psychology.
 Some of the books I enjoyed:
 
 * **Algorithms to Live By**, by Brian Christian and Tom Griffiths
 * **The Three Body Problem** by Liu Cixin
+* **Project Hail Mary** by Andy Weir
+* **Mistborn Series** by Brandon Sanderson
+* **Watchmen** by Alan Moore
 * **Meditations** by Marcus Aurelius
 * **The Sense of Style** by Steven Pinker
 * **The Courage To Be Disliked** by Ichiro Kishimi, Fumitake Koga
