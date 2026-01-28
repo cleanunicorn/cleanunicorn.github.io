@@ -2,6 +2,7 @@
 date = '2019-02-11T12:47:55-03:00'
 draft = false
 title = 'Poison Block Explorer Byte Code'
+readingTime = true
 +++
 
 You will understand how to trick a block explorer into displaying different byte code of your choosing, other than the one deployed on the chain.

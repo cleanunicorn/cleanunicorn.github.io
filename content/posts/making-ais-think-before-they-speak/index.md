@@ -2,6 +2,7 @@
 date = '2024-11-30T15:16:12+01:00'
 draft = true
 title = 'Making Ais Think Before They Speak'
+readingTime = true
 +++
 
 ## Introduction

@@ -3,6 +3,7 @@ date = '2024-07-22T14:31:28+01:00'
 draft = false
 title = 'Authenticating AI Models in Decentralized Networks: A Practical Approach'
 math = true
+readingTime = true
 +++
 
 ## Introduction

@@ -2,6 +2,7 @@
 date = '2024-06-13T14:44:47-03:00'
 draft = false
 title = 'The Inception of Doppelganger Networks'
+readingTime = true
 +++
 
 ## Intro

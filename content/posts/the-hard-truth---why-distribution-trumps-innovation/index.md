@@ -2,6 +2,7 @@
 date = '2024-09-24T14:55:44+01:00'
 draft = false
 title = 'The Hard Truth - Why Distribution Trumps Innovation'
+readingTime = true
 +++
 
 <aside>

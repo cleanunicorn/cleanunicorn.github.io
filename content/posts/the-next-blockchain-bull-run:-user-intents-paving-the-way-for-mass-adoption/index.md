@@ -2,6 +2,7 @@
 date = '2023-12-07T14:37:14-03:00'
 draft = false
 title = 'The Next Blockchain Bull Run: User Intents Paving the Way for Mass Adoption'
+readingTime = true
 +++
 
 ## Introduction

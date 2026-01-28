@@ -1,6 +1,5 @@
 +++
 title = "About me"
-date = 2019-01-21T17:02:52+02:00
 draft = false
 slug = "about"
 showFullContent = true

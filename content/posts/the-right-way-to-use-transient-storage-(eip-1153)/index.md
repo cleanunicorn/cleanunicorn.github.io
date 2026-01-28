@@ -2,6 +2,7 @@
 date = '2024-02-29T14:23:45+01:00'
 draft = false
 title = 'The Right Way to Use Transient Storage (Eip 1153)'
+readingTime = true
 +++
 
 A new chapter is being written with the introduction of Transient Storage, courtesy of [EIP-1153](https://eips.ethereum.org/EIPS/eip-1153). This upgrade promises to revolutionize the temporary storage and management of data within transactions, stirring quite a debate in the community. It aims to optimize gas costs and enhance the efficiency of smart contracts. Yet, for all its potential, it's easy to misuse, leading to costly mistakes.
