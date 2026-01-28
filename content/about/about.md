@@ -44,7 +44,6 @@ Sometimes, I give talks about things that I find interesting.
 - [EthCC - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum part 2](https://youtu.be/Qm0i3fd9UKc)
 - [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://www.youtube.com/watch?v=sfyYTfS_7uU)
 
-
 ---
 
 ## Podcasts
