@@ -16,7 +16,7 @@ pagination.pagerSize = 5
 
 [params]
   contentTypeName = "about"
-  showMenuItems = 2
+  showMenuItems = 3
   fullWidthTheme = false
   centerTheme = true
   autoCover = true
