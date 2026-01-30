@@ -66,11 +66,11 @@ Command-line tool for transcribing audio files, YouTube videos, and podcasts usi
 ### [Karl](https://github.com/cleanunicorn/karl)
 Monitors smart contracts deployed on the Ethereum network and tests against vulnerabilities with Mythril. Reduces false positives by forking the blockchain and testing the exploit.
 
-### [Multistream](https://github.com/cleanunicorn/multistream)
-A Node.js RTMP server that receives streams from OBS and restreams them to multiple platforms simultaneously like Twitch, YouTube, Kick. Has features to automatically record and transcribe, identifies clippable moments and helps generate short clips.
-
 ### [RL-Swarm Smart Contracts](https://github.com/gensyn-ai/rl-swarm-contracts)
 This repository contains the smart contracts for the [Reinforcement Learning Swarm](https://www.gensyn.ai/RLSwarm) for [Gensyn](https://www.gensyn.ai/)'s first public launch with a project which lets anyone, anywhere, join and participate in a distributed reinforcement learning system that learns faster together than alone.
+
+### [Multistream](https://github.com/cleanunicorn/multistream)
+A Node.js RTMP server that receives streams from OBS and restreams them to multiple platforms simultaneously like Twitch, YouTube, Kick. Has features to automatically record and transcribe, identifies clippable moments and helps generate short clips.
 
 ### [Ethereum Smart Contract Template](https://github.com/cleanunicorn/ethereum-smartcontract-template)
 This development quick start template is heavily inspired by [Georgios's template](https://github.com/gakonst/dapptools-template). Over time it was migrated to use [foundry](https://github.com/gakonst/foundry) since dapptools was deprecated.
