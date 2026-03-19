@@ -36,7 +36,7 @@ Sometimes, I give talks about things that I find interesting.
 - [NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess](https://www.youtube.com/watch?v=4ibFG_Do1j0)
 - [ETHPrague - Elevating Developer Experience(DX) in Web3](https://youtu.be/WUm34CV2s1I)
 - [EthCC - Elevating Developer Experience(DX) in Web3](https://youtu.be/ZPoqwAbMWTE)
-- [ETHCluj - Beyond "Trust me, bro" Engineering LLM](https://youtu.be/sfyYTfS_7uU?si=Zc8BPfoVyHcwtCm9)
+- [ETHCluj - Beyond "Trust me, bro" Engineering LLM](https://youtu.be/PZtU1BapbJg)
 - [BlockchainHackers IV - Mastering Ethereum CTFs](/presentations//blockchainhackers-iv/Mastering-Ethereum-CTFs.pdf)
 - [The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence](https://thebitcoinpodcast.com/the-bitcoin-podcast-283/)
 - [Onchain games for devs](https://www.youtube.com/watch?v=ri_AaqSiAbU)
