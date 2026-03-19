@@ -1,3 +1,22 @@
 {{- if .Params.math }}
 {{- partial "math.html" . }}
 {{- end }}
+
+{{- if .Params.plyr }}
+<link rel="stylesheet" href="https://cdn.plyr.io/3.8.4/plyr.css">
+<script src="https://cdn.plyr.io/3.8.4/plyr.polyfilled.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof Plyr !== 'undefined' && document.querySelector('.plyr-video')) {
+    Plyr.setup('.plyr-video', {
+      controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'fullscreen'],
+      resetOnEnd: true,
+    });
+  }
+});
+</script>
+<style>
+  .plyr { border-radius: 4px; margin-top: 1.5rem; }
+  .video-meta { margin-top: 1rem; font-size: 0.9em; opacity: 0.7; }
+</style>
+{{- end }}

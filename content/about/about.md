@@ -29,18 +29,18 @@ This deep technical foundation eventually pulled me into **venture capital**, wh
 
 Sometimes, I give talks about things that I find interesting.
 
-- [Cypherpunk Congress #1 - The Privacy paradox in AI](https://youtu.be/bz6b6YeM4NM)
-- [DefCon 27 - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum](https://youtu.be/Qd9ubry-c_M)
+- [2025 ETHCluj - Beyond "Trust me, bro" Engineering LLM](https://youtu.be/PZtU1BapbJg) <a href="/videos/ethcluj-llm-engineering/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2025 Cypherpunk Congress #1 - The Privacy paradox in AI](https://youtu.be/bz6b6YeM4NM) <a href="/videos/cypherpunk-congress/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2024 NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess](https://www.youtube.com/watch?v=4ibFG_Do1j0) <a href="/videos/nftbucharest-bitcoin-ordinals/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2024 ETHBucharest - Doppelganger Networks](https://www.youtube.com/watch?v=dCjOG3gx5_E) <a href="/videos/ethbucharest-doppelganger-networks/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2023 ETHPrague - Elevating Developer Experience(DX) in Web3](https://youtu.be/WUm34CV2s1I) <a href="/videos/ethprague-dx-web3/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2023 EthCC - Elevating Developer Experience(DX) in Web3](https://youtu.be/ZPoqwAbMWTE) <a href="/videos/ethcc-dx-web3/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2022 Onchain games for devs](https://www.youtube.com/watch?v=ri_AaqSiAbU) <a href="/videos/onchain-games-for-devs/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2020 EthCC - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum part 2](https://youtu.be/Qm0i3fd9UKc) <a href="/videos/ethcc-ether-wars-2/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2019 DefCon 27 - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum](https://youtu.be/Qd9ubry-c_M) <a href="/videos/defcon27-ether-wars/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
   - [Slides](/presentations/defcon27/DEFCON-27-Bernhard-Mueller-The-Ether-Wars.pdf)
-- [ETHBucharest - Doppelganger Networks](https://www.youtube.com/watch?v=dCjOG3gx5_E)
-- [NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess](https://www.youtube.com/watch?v=4ibFG_Do1j0)
-- [ETHPrague - Elevating Developer Experience(DX) in Web3](https://youtu.be/WUm34CV2s1I)
-- [EthCC - Elevating Developer Experience(DX) in Web3](https://youtu.be/ZPoqwAbMWTE)
-- [ETHCluj - Beyond "Trust me, bro" Engineering LLM](https://youtu.be/PZtU1BapbJg)
 - [BlockchainHackers IV - Mastering Ethereum CTFs](/presentations//blockchainhackers-iv/Mastering-Ethereum-CTFs.pdf)
 - [The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence](https://thebitcoinpodcast.com/the-bitcoin-podcast-283/)
-- [Onchain games for devs](https://www.youtube.com/watch?v=ri_AaqSiAbU)
-- [EthCC - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum part 2](https://youtu.be/Qm0i3fd9UKc)
 - [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://www.youtube.com/watch?v=sfyYTfS_7uU)
 
 ---
@@ -49,9 +49,9 @@ Sometimes, I give talks about things that I find interesting.
 
 Or I am invited to podcasts:
 
-- [Decentralized Al: The Next Shift - Daniel Luca](https://www.youtube.com/watch?v=ZmzPLI9CJRo)
-- [The Code Is Law Movie, The DAO and Indexed Finance Heists, Crypto Culture](https://www.youtube.com/watch?v=CTUhbYXopys)
-- [How VCs invests in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU)
+- [2025 Decentralized Al: The Next Shift - Daniel Luca](https://www.youtube.com/watch?v=ZmzPLI9CJRo) <a href="/videos/decentralized-ai-next-shift/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2025 The Code Is Law Movie, The DAO and Indexed Finance Heists, Crypto Culture](https://www.youtube.com/watch?v=CTUhbYXopys) <a href="/videos/code-is-law-dao-indexed/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
+- [2024 How VCs invests in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU) <a href="/videos/how-vcs-invest-crypto/" title="Watch with local player"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-bottom:2px"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-10-3.27V8.27L15.73 12 11 14.73z"/></svg></a>
 
 ---
 
