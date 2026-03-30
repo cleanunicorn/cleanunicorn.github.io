@@ -57,6 +57,12 @@ Or I am invited to podcasts:
 
 ## Projects
 
+### [AtlasPA](https://github.com/cleanunicorn/atlasPA)
+AI powered personal assistant for private use.
+
+### [vllama](https://github.com/cleanunicorn/vllama)
+llama.cpp server manager, proxy and model downloader.
+
 ### [Rag-brain](https://github.com/cleanunicorn/rag-brain)
 Portable private AI memory built as a vector database and MCP server, easily pluggable into chatbots.
 
