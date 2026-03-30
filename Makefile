@@ -8,7 +8,7 @@ DATE := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help serve serve-drafts build build-drafts clean new update-theme submodules
+.PHONY: help serve serve-drafts build build-drafts clean new update-theme submodules cv cv-pdf
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -43,3 +43,11 @@ update-theme: ## Update theme submodule to latest
 
 submodules: ## Initialize and update all submodules
 	git submodule update --init --recursive
+
+cv: ## Generate CV as HTML from site content
+	python3 scripts/generate_cv.py
+
+cv-pdf: cv ## Generate CV as PDF (requires Chrome/Chromium)
+	@which chromium >/dev/null 2>&1 && CHROME=chromium || CHROME=google-chrome; \
+	$$CHROME --headless --disable-gpu --print-to-pdf=$(PUBLIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(PUBLIC_DIR)/cv.html 2>/dev/null; \
+	echo "PDF written to $(PUBLIC_DIR)/cv.pdf"

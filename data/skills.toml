@@ -1,0 +1,58 @@
+# Skills displayed in the CV, grouped by category.
+# Edit these lists to update the generated CV.
+
+[Security]
+items = [
+  "Smart Contract Auditing",
+  "Vulnerability Research",
+  "Penetration Testing",
+  "Threat Modeling",
+  "Incident Response",
+]
+
+[Blockchain]
+items = [
+  "Ethereum",
+  "Solidity",
+  "Vyper",
+  "EVM Internals",
+  "DeFi Protocols",
+  "Foundry",
+  "Hardhat",
+]
+
+[Languages]
+items = [
+  "Python",
+  "JavaScript",
+  "TypeScript",
+  "Node.js",
+  "Go",
+  "Rust",
+]
+
+[AI]
+items = [
+  "LLM Engineering",
+  "RAG Systems",
+  "Vector Databases",
+  "Prompt Engineering",
+]
+
+[Infrastructure]
+items = [
+  "Linux",
+  "Docker",
+  "CI/CD",
+  "Git",
+  "RTMP Streaming",
+]
+
+[Venture_Capital]
+label = "Venture Capital"
+items = [
+  "Technical Due Diligence",
+  "Deal Sourcing",
+  "Portfolio Support",
+  "Research-Driven Investing",
+]
