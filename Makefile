@@ -3,6 +3,7 @@
 HUGO ?= hugo
 THEME ?= themes/terminal
 PUBLIC_DIR ?= public
+STATIC_DIR ?= static
 POSTS_DIR ?= content/posts
 DATE := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
 
@@ -44,10 +45,10 @@ update-theme: ## Update theme submodule to latest
 submodules: ## Initialize and update all submodules
 	git submodule update --init --recursive
 
-cv: ## Generate CV as HTML from site content
-	python3 scripts/generate_cv.py
+cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
+	python3 scripts/generate_cv.py -o $(STATIC_DIR)/cv.html
 
-cv-pdf: cv ## Generate CV as PDF (requires Chrome/Chromium)
+cv-pdf: cv ## Generate CV as PDF into static/ (served by Hugo at /cv.pdf)
 	@which chromium >/dev/null 2>&1 && CHROME=chromium || CHROME=google-chrome; \
-	$$CHROME --headless --disable-gpu --print-to-pdf=$(PUBLIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(PUBLIC_DIR)/cv.html 2>/dev/null; \
-	echo "PDF written to $(PUBLIC_DIR)/cv.pdf"
+	$$CHROME --headless --disable-gpu --print-to-pdf=$(STATIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(STATIC_DIR)/cv.html 2>/dev/null; \
+	echo "PDF written to $(STATIC_DIR)/cv.pdf"

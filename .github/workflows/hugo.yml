@@ -66,6 +66,12 @@ jobs:
       - name: Install Node.js dependencies
         run: |
           [[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true
+      - name: Install Chromium (for CV PDF generation)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+      - name: Generate CV (HTML + PDF)
+        run: make cv-pdf
       - name: Configure Git
         run: |
           git config core.quotepath false

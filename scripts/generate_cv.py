@@ -296,10 +296,11 @@ def generate_html(output: Path) -> None:
     if about["bio"]:
         sections.append(f'<section class="bio">\n{md_to_html(about["bio"])}\n</section>')
 
-    # Contact / Links
+    # Contact / Links — strip the "Download CV" entry (self-referential in the CV)
     if about["links"]:
+        links_md = re.sub(r"^- \[Download CV.*\n?", "", about["links"], flags=re.MULTILINE)
         sections.append(
-            f'<section class="links">\n<h2>Contact</h2>\n{md_to_html(about["links"])}\n</section>'
+            f'<section class="links">\n<h2>Contact</h2>\n{md_to_html(links_md)}\n</section>'
         )
 
     # Skills

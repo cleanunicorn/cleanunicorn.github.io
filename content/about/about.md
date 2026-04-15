@@ -16,6 +16,7 @@ This deep technical foundation eventually pulled me into **venture capital**, wh
 - [Twitter / X](https://x.com/cleanunicorn)
 - [GitHub](https://github.com/cleanunicorn)
 - [Linkedin](https://www.linkedin.com/in/luca-daniel-5227267/)
+- [Download CV (PDF)](/cv.pdf)
 
 ---
 
