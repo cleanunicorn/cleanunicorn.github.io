@@ -56,6 +56,12 @@ Or I am invited to podcasts:
 
 ---
 
+## Featured In
+
+- [Code Is Law (2025)](https://www.imdb.com/title/tt35931420/) — documentary on the DAO hack, Indexed Finance heist and the "code is law" philosophy in crypto.
+
+---
+
 ## Projects
 
 ### [AtlasPA](https://github.com/cleanunicorn/atlasPA)
