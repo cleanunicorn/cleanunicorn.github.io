@@ -30,7 +30,7 @@ This deep technical foundation eventually pulled me into **venture capital**, wh
 
 Sometimes, I give talks about things that I find interesting.
 
-- [2025 ETHCluj - Beyond "Trust me, bro" Engineering LLM](https://youtu.be/PZtU1BapbJg)
+- [2025 ETHCluj - Beyond "Trust me, bro" Engineering LLM reliability](https://youtu.be/PZtU1BapbJg)
 - [2025 Cypherpunk Congress #1 - The Privacy paradox in AI](https://youtu.be/bz6b6YeM4NM)
 - [2024 NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess](https://www.youtube.com/watch?v=4ibFG_Do1j0)
 - [2024 ETHBucharest - Doppelganger Networks](https://www.youtube.com/watch?v=dCjOG3gx5_E)
