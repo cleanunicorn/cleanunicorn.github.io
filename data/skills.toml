@@ -28,7 +28,6 @@ items = [
   "TypeScript",
   "Node.js",
   "Go",
-  "Rust",
 ]
 
 [AI]
