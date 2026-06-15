@@ -20,6 +20,9 @@ pagination.pagerSize = 5
   fullWidthTheme = false
   centerTheme = true
   autoCover = true
+  # Optional lede for the custom 404 page (layouts/404.html). Falls back to a
+  # built-in message when unset.
+  # missingContentMessage = "The page you're looking for isn't on this chain."
 
 [languages]
   [languages.en]
