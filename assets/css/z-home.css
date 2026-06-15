@@ -32,6 +32,13 @@
   color: var(--comment, var(--c-text-faint));
 }
 
+/* Role line. hero-type.js sets min-width on it (from the rendered width) to
+   stop the line collapsing as it types; the inline-block baseline keeps layout
+   stable even when that script doesn't run. */
+.home-hero__roles {
+  display: inline-block;
+}
+
 /* Blinking block cursor that trails the (typed) role line */
 .home-hero__cursor {
   display: inline-block;
