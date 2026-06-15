@@ -100,6 +100,40 @@
   content: "";
 }
 
+/* By-the-numbers band */
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  margin: 0 0 3rem;
+  background: color-mix(in srgb, var(--foreground) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.home-stats__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--background);
+}
+
+.home-stats__value {
+  font-size: calc(var(--font-size) * 1.9);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.home-stats__label {
+  font-size: calc(var(--font-size) * 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--foreground) 70%, var(--background));
+}
+
 /* Audience CTAs */
 .home-cta {
   display: grid;

@@ -20,6 +20,24 @@ proof = [
   "Code Is Law",
 ]
 
+# "By the numbers" credibility band. Edit freely — values are intentionally
+# conservative and defensible. Set to an empty list to hide the band.
+[[stats]]
+value = "2017"
+label = "Securing Ethereum since"
+
+[[stats]]
+value = "8+"
+label = "Marquee protocols audited"
+
+[[stats]]
+value = "10+"
+label = "Talks & podcasts"
+
+[[stats]]
+value = "15+"
+label = "Open-source projects"
+
 # Audience-routed calls to action. `primary = true` highlights the main one.
 [[cta]]
 title = "Need a security review?"
