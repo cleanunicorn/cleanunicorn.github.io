@@ -10,23 +10,19 @@
 
 {{- $site := .Site -}}
 {{- $author := $site.Params.author | default $site.Title -}}
-{{- $sameAs := slice
-  "https://x.com/cleanunicorn"
-  "https://www.linkedin.com/in/luca-daniel-5227267/"
-  "https://github.com/cleanunicorn"
-  "https://www.imdb.com/title/tt35931420/" -}}
 
-{{- /* Person object reused by Person/ProfilePage and as article author */ -}}
+{{- /* Person object reused by Person/ProfilePage and as article author.
+       Descriptive metadata lives in hugo.toml [languages.en.params]. */ -}}
 {{- $person := dict
   "@type" "Person"
   "name" $author
-  "alternateName" "CleanUnicorn"
+  "alternateName" ($site.Params.alternateName | default $author)
   "url" ($site.BaseURL | absURL)
   "image" ("/images/me.png" | absURL)
-  "jobTitle" "Security Researcher & Investor"
-  "description" "Ethereum security auditor, investor and builder working in blockchain since 2017; Technical Partner at Eden Block."
-  "knowsAbout" (slice "Smart Contract Security" "Ethereum" "Solidity" "EVM Internals" "DeFi" "Blockchain Security" "Venture Capital" "Decentralized AI")
-  "sameAs" $sameAs -}}
+  "jobTitle" $site.Params.jobTitle
+  "description" $site.Params.personDescription
+  "knowsAbout" $site.Params.knowsAbout
+  "sameAs" $site.Params.sameAs -}}
 
 {{- /* WebSite — every page */ -}}
 {{- $website := dict

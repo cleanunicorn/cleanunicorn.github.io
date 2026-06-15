@@ -34,6 +34,21 @@ pagination.pagerSize = 5
       readMore = "Read more"
       keywords = "Daniel Luca, CleanUnicorn, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, venture capital, decentralized AI"
 
+      # Schema.org Person metadata — consumed by partials/structured_data.html.
+      alternateName = "CleanUnicorn"
+      jobTitle = "Security Researcher & Investor"
+      personDescription = "Ethereum security auditor, investor and builder working in blockchain since 2017; Technical Partner at Eden Block."
+      sameAs = [
+        "https://x.com/cleanunicorn",
+        "https://www.linkedin.com/in/luca-daniel-5227267/",
+        "https://github.com/cleanunicorn",
+        "https://www.imdb.com/title/tt35931420/",
+      ]
+      knowsAbout = [
+        "Smart Contract Security", "Ethereum", "Solidity", "EVM Internals",
+        "DeFi", "Blockchain Security", "Venture Capital", "Decentralized AI",
+      ]
+
       [languages.en.params.twitter]
         site = "@cleanunicorn"
         creator = "@cleanunicorn"
