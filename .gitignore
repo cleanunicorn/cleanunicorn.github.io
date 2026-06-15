@@ -12,6 +12,11 @@ hugo.linux
 # Temporary lock file while building
 /.hugo_build.lock
 
+# Editor swap/backup files
+*.swp
+*.swo
+*~
+
 # Generated CV (built by `make cv-pdf` before Hugo build)
 /static/cv.html
 /static/cv.pdf
