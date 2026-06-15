@@ -10,6 +10,7 @@
 
 {{- $site := .Site -}}
 {{- $author := $site.Params.author | default $site.Title -}}
+{{- $baseURL := $site.BaseURL | absURL -}}
 
 {{- /* Person object reused by Person/ProfilePage and as article author.
        Descriptive metadata lives in hugo.toml [languages.en.params]. */ -}}
@@ -17,7 +18,7 @@
   "@type" "Person"
   "name" $author
   "alternateName" ($site.Params.alternateName | default $author)
-  "url" ($site.BaseURL | absURL)
+  "url" $baseURL
   "image" ("/images/me.png" | absURL)
   "jobTitle" $site.Params.jobTitle
   "description" $site.Params.personDescription
@@ -29,7 +30,7 @@
   "@context" "https://schema.org"
   "@type" "WebSite"
   "name" $site.Title
-  "url" ($site.BaseURL | absURL)
+  "url" $baseURL
   "description" $site.Params.subtitle
   "inLanguage" $site.Language.Lang
   "author" $person -}}
