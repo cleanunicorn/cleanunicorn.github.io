@@ -29,8 +29,14 @@ pagination.pagerSize = 5
     [languages.en.params]
       subtitle = "Security Researcher | Investor | Builder"
       owner = "Daniel Luca"
+      author = "Daniel Luca"
       menuMore = "Show more"
       readMore = "Read more"
+      keywords = "Daniel Luca, CleanUnicorn, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, venture capital, decentralized AI"
+
+      [languages.en.params.twitter]
+        site = "@cleanunicorn"
+        creator = "@cleanunicorn"
 
       [languages.en.params.logo]
         logoText = "Daniel Luca"

@@ -1,8 +1,7 @@
 +++
 title = "About me"
 draft = false
-slug = "about"
-showFullContent = true
+description = "Daniel Luca (CleanUnicorn) — self-taught software engineer, Ethereum security auditor and investor working in blockchain since 2017, now a Technical Partner in venture capital at the intersection of blockchain, AI and security."
 +++
 
 I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self-taught **software engineer**, **Ethereum security auditor** and **investor** working in the blockchain space **since 2017**.

@@ -2,6 +2,7 @@
 title = "Work"
 draft = false
 slug = "work"
+description = "Daniel Luca's work history — Technical Partner at Eden Block, security researcher at ConsenSys Diligence (Uniswap, Aave, Filecoin, Polygon audits), founder of Akira Tech, and co-founder of multiple startups."
 +++
 
 ## Technical Partner, Eden Block
