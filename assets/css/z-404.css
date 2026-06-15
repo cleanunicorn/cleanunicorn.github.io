@@ -1,0 +1,58 @@
+/* On-brand terminal 404 page (layouts/404.html).
+   Reuses the terminal theme's CSS variables so it adapts to the palette. */
+
+.notfound {
+  margin: 1.5rem 0 3rem;
+}
+
+.notfound__shell {
+  margin: 0 0 2rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--foreground) 4%, transparent);
+  overflow-x: auto;
+  font-size: calc(var(--font-size) * 0.92);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.notfound__prompt { color: var(--accent); }
+.notfound__path   { color: color-mix(in srgb, var(--foreground) 70%, var(--background)); }
+.notfound__err    { color: #e06c75; }
+
+.notfound__cursor {
+  display: inline-block;
+  margin-left: 0.1em;
+  color: var(--accent);
+  animation: notfound-blink 1.1s steps(1) infinite;
+}
+
+@keyframes notfound-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notfound__cursor { animation: none; }
+}
+
+.notfound__title {
+  margin: 0 0 0.6rem;
+}
+
+.notfound__lede {
+  margin: 0 0 1.6rem;
+  max-width: 56ch;
+  color: color-mix(in srgb, var(--foreground) 80%, var(--background));
+}
+
+.notfound__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.8rem;
+}
+
+.notfound__hint {
+  opacity: 0.6;
+  font-size: 0.85em;
+}

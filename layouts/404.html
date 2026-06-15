@@ -1,0 +1,20 @@
+{{ define "main" }}
+  <section class="notfound" aria-labelledby="notfound-title">
+    <pre class="notfound__shell" aria-hidden="true"><span class="notfound__prompt">visitor@danielluca</span>:<span class="notfound__path">~</span>$ cat {{ .RelPermalink }}
+cat: {{ .RelPermalink }}: <span class="notfound__err">No such file or directory</span>
+
+<span class="notfound__prompt">visitor@danielluca</span>:<span class="notfound__path">~</span>$ trace 404
+  → page never mined, or reorged away
+  → exit status 404<span class="notfound__cursor">&#9608;</span></pre>
+
+    <h1 id="notfound-title" class="notfound__title">404 — block not found</h1>
+    <p class="notfound__lede">{{ $.Site.Params.missingContentMessage | default "The page you're looking for isn't on this chain. Here are some valid entry points:" }}</p>
+
+    <nav class="notfound__links" aria-label="Suggested pages">
+      <a class="button inline" href="{{ "/" | absURL }}">cd ~ <span class="notfound__hint">home</span></a>
+      <a class="button inline" href="{{ "posts/" | absLangURL }}">ls posts <span class="notfound__hint">writing</span></a>
+      <a class="button inline" href="{{ "about/" | absLangURL }}">whoami <span class="notfound__hint">about</span></a>
+      <a class="button inline" href="{{ "contact/" | absLangURL }}">ping me <span class="notfound__hint">contact</span></a>
+    </nav>
+  </section>
+{{ end }}
