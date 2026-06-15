@@ -210,7 +210,7 @@ cleanunicorn.github.io/
 - Add `layouts/shortcodes/<name>.html`. Follow the pattern in `layouts/shortcodes/x.html`. Invoke from Markdown as `{{< name arg="..." >}}`.
 
 **New CSS rule:**
-- For component/page styles that layer on top of the theme's compiled CSS: add a `z-<name>.css` file under `assets/css/` (e.g. `assets/css/z-contact.css`). Every `assets/css/*.css` file is picked up, minified and fingerprinted by the theme's asset pipeline; the `z-` prefix keeps these custom additions grouped and last in load order. Put shared tokens/animations/utilities in `assets/css/z-base.css`.
+- For component/page styles that layer on top of the theme's compiled CSS: add a `z-<name>.css` file under `assets/css/` (e.g. `assets/css/z-contact.css`). Every `assets/css/*.css` file is picked up, minified and fingerprinted by the theme's asset pipeline; the `z-` prefix keeps these custom additions grouped and last in load order. Put shared tokens/animations/utilities in `assets/css/z-base.css` (e.g. the color tokens, the `blink` keyframe, and the `.sr-only` screen-reader-only utility already live there).
 - For post-image tweaks specifically: `assets/css/extended/` is mandated by the terminal theme.
 - For raw CSS shipped as-is: add to `static/css/` and reference from a partial in `layouts/partials/extend_head.html`.
 
