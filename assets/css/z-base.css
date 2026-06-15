@@ -9,6 +9,7 @@
   --c-text-muted: color-mix(in srgb, var(--foreground) 70%, var(--background));
   --c-text-faint: color-mix(in srgb, var(--foreground) 55%, var(--background));
   --c-hairline:   color-mix(in srgb, var(--foreground) 12%, transparent);
+  --c-error:      #e06c75; /* terminal red, used for error text */
 }
 
 /* Blinking terminal cursor, shared by the hero and 404 cursors. */

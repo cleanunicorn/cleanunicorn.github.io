@@ -19,7 +19,7 @@
 
 .notfound__prompt { color: var(--accent); }
 .notfound__path   { color: var(--c-text-muted); }
-.notfound__err    { color: #e06c75; }
+.notfound__err    { color: var(--c-error); }
 
 .notfound__cursor {
   display: inline-block;
