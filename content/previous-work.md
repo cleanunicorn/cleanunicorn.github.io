@@ -50,9 +50,9 @@ Founded [Akira Tech](https://github.com/akiratechhq) as a specialized security s
 * **Since** November 2018
 * **Until** August 2020
 
-[ConsenSys Diligence](https://diligence.consensys.net/) does smart contract audits and Ethereum blockchain security. I am part of the team doing security audits and consulting. I also do security research and speak whenever I get the chance.
+As part of [ConsenSys Diligence](https://diligence.consensys.net/) — a leading smart-contract audit and Ethereum security team — I delivered security audits and consulting for some of the most widely used protocols on Ethereum, and pursued security research and conference talks alongside the engagements.
 
-Audited:
+Selected audits:
 - [Uniswap](https://uniswap.org/) - popular DEX (decentralized exchange) platform written in Vyper
 - [Aave](https://aave.com/) - governance and token issuance
 - [Aragon](https://aragon.org/) - multiple apps reviewed
@@ -70,7 +70,7 @@ Audited:
 * **Since** February 2017
 * **Until** November 2018
 
-Alethio is a ConsenSys spoke which creates analytics for the Ethereum blockchain. I've built most of the data pipeline from that extracts the blockchain data, applied an [ontology](https://ethon.consensys.net/) and imported into multiple databases.
+Alethio was a ConsenSys spoke building analytics for the Ethereum blockchain. I built most of the data pipeline that extracts on-chain data, applies an [ontology](https://ethon.consensys.net/) and imports it into multiple databases — the foundation powering Alethio's analytics products.
 
 
 ---
