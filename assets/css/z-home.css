@@ -25,6 +25,32 @@
   color: var(--accent);
 }
 
+/* Terminal prompt before the role line */
+.home-hero__prompt {
+  margin-right: 0.6ch;
+  text-transform: none;
+  color: var(--comment, color-mix(in srgb, var(--foreground) 55%, var(--background)));
+}
+
+/* Blinking block cursor that trails the (typed) role line */
+.home-hero__cursor {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1em;
+  margin-left: 0.15ch;
+  vertical-align: -0.12em;
+  background: var(--accent);
+  animation: hero-blink 1.1s steps(1) infinite;
+}
+
+@keyframes hero-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__cursor { animation: none; }
+}
+
 .home-hero__headline {
   margin: 0 0 0.6rem;
   font-size: calc(var(--font-size) * 1.6);

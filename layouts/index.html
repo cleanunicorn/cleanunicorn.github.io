@@ -6,7 +6,10 @@
       <img class="home-hero__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="160" height="160" loading="eager">
     {{ end }}
     <div class="home-hero__body">
-      <p class="home-hero__eyebrow">{{ $.Site.Params.Subtitle }}</p>
+      <p class="home-hero__eyebrow">
+        <span class="home-hero__prompt" aria-hidden="true">~$ whoami</span>
+        <span class="home-hero__roles" data-typewriter>{{ $.Site.Params.Subtitle }}</span><span class="home-hero__cursor" aria-hidden="true"></span>
+      </p>
       <h1 class="home-hero__headline">{{ $home.headline | default $.Site.Title }}</h1>
       {{ with $home.subheadline }}
         <p class="home-hero__sub">{{ . }}</p>
@@ -68,4 +71,6 @@
       {{ end }}
     </div>
   </section>
+
+  <script src="{{ "js/hero-type.js" | absURL }}" defer></script>
 {{ end }}
