@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "content"
-ABOUT_MD = CONTENT / "about" / "about.md"
+ABOUT_MD = CONTENT / "about" / "_index.md"
 WORK_MD = CONTENT / "previous-work.md"
 CONFIG = ROOT / "hugo.toml"
 CSS_PATH = ROOT / "static" / "css" / "cv.css"

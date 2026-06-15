@@ -1,8 +1,7 @@
 +++
 title = "About me"
 draft = false
-slug = "about"
-showFullContent = true
+description = "Daniel Luca (CleanUnicorn) — self-taught software engineer, Ethereum security auditor and investor working in blockchain since 2017, now a Technical Partner in venture capital at the intersection of blockchain, AI and security."
 +++
 
 I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self-taught **software engineer**, **Ethereum security auditor** and **investor** working in the blockchain space **since 2017**.
@@ -17,6 +16,15 @@ This deep technical foundation eventually pulled me into **venture capital**, wh
 - [GitHub](https://github.com/cleanunicorn)
 - [Linkedin](https://www.linkedin.com/in/luca-daniel-5227267/)
 - [Download CV (PDF)](/cv.pdf)
+
+---
+
+## Highlights
+
+- **Featured in [Code Is Law (2025)](https://www.imdb.com/title/tt35931420/)** — a feature documentary on the DAO hack, the Indexed Finance heist and the "code is law" philosophy in crypto.
+- **Audited some of Ethereum's most-used protocols** — including [Uniswap](https://uniswap.org/), [Aave](https://aave.com/), [Filecoin](https://filecoin.io/) and [Polygon](https://polygon.technology/) — at [ConsenSys Diligence](https://diligence.consensys.net/).
+- **Technical Partner at [Eden Block](https://edenblock.com)**, an early-stage venture firm backing blockchain, Web3 infrastructure and decentralized AI.
+- **Spoke at [DEF CON 27](https://youtu.be/Qd9ubry-c_M), [EthCC](https://youtu.be/ZPoqwAbMWTE) and [ETHPrague](https://youtu.be/WUm34CV2s1I)** on exploits, honeypots and developer experience in Web3.
 
 ---
 
@@ -56,61 +64,36 @@ Or I am invited to podcasts:
 
 ---
 
-## Featured In
-
-- [Code Is Law (2025)](https://www.imdb.com/title/tt35931420/) — documentary on the DAO hack, Indexed Finance heist and the "code is law" philosophy in crypto.
-
----
-
 ## Projects
 
-### [AtlasPA](https://github.com/cleanunicorn/atlasPA)
-AI powered personal assistant for private use.
-
-### [drove](https://github.com/cleanunicorn/drove)
-llama.cpp server manager, chat interface, observability proxy and model manager.
-
-### [Rag-brain](https://github.com/cleanunicorn/rag-brain)
-Portable private AI memory built as a vector database and MCP server, easily pluggable into chatbots.
-
-### [Quill](https://github.com/cleanunicorn/quill)
-Command-line tool for transcribing audio files, YouTube videos, and podcasts using Faster Whisper.
-
-### [Karl](https://github.com/cleanunicorn/karl)
-Monitors smart contracts deployed on the Ethereum network and tests against vulnerabilities with Mythril. Reduces false positives by forking the blockchain and testing the exploit.
+A few things I'm proud of. There's more on [GitHub](https://github.com/cleanunicorn).
 
 ### [RL-Swarm Smart Contracts](https://github.com/gensyn-ai/rl-swarm-contracts)
-This repository contains the smart contracts for the [Reinforcement Learning Swarm](https://www.gensyn.ai/RLSwarm) for [Gensyn](https://www.gensyn.ai/)'s first public launch with a project which lets anyone, anywhere, join and participate in a distributed reinforcement learning system that learns faster together than alone.
+The smart contracts powering [Gensyn](https://www.gensyn.ai/)'s [RL Swarm](https://www.gensyn.ai/RLSwarm) — a distributed reinforcement-learning system that lets anyone, anywhere, join and train models that learn faster together than alone. Built for their first public launch.
 
-### [Multistream](https://github.com/cleanunicorn/multistream)
-A Node.js RTMP server that receives streams from OBS and restreams them to multiple platforms simultaneously like Twitch, YouTube, Kick. Has features to automatically record and transcribe, identifies clippable moments and helps generate short clips.
+### [Karl](https://github.com/cleanunicorn/karl)
+My security research, productized: it monitors live Ethereum smart contracts and tests them against vulnerabilities with Mythril, forking the chain to confirm real exploits and cut false positives.
 
-### [Ethereum Smart Contract Template](https://github.com/cleanunicorn/ethereum-smartcontract-template)
-This development quick start template is heavily inspired by [Georgios's template](https://github.com/gakonst/dapptools-template). Over time it was migrated to use [foundry](https://github.com/gakonst/foundry) since dapptools was deprecated.
+### [drove](https://github.com/cleanunicorn/drove)
+Local LLM infrastructure in one tool — a llama.cpp server manager, chat interface, observability proxy and model manager.
 
-### [Hitomi](https://github.com/cleanunicorn/hitomi)
-Yet another Ethereum web3 console for any node.
+### [Rag-brain](https://github.com/cleanunicorn/rag-brain)
+Portable, private AI memory: a vector database and MCP server you can plug into any chatbot.
 
-### [Santoku](https://github.com/cleanunicorn/santoku)
-It decodes ABI encoded hex strings into the original types. Try it [here](https://cleanunicorn.github.io/santoku/).
+### More projects
 
-### [Mythos](https://github.com/cleanunicorn/mythos)
-Mythos is a CLI client for the [MythX](https://mythx.io) API.
-
-### [Flaterra](https://github.com/cleanunicorn/flaterra)
-Flaterra parses the provided Solidity source file and adds any other `imported` files. This is useful if you want to upload your source code to a block explorer for verification, use it with [Remix](https://remix.ethereum.org) or to run analysis on it, for example with [MythX](https://mythx.io/) or [Mythril](https://github.com/ConsenSys/mythril-classic/).
-
-### [Midas](https://gitlab.com/cleanunicorn/eth-tipper) 
-A [Discord](https://discordapp.com) bot that acts as an Ethereum wallet and facilitates sending Ether between users.
-
-### [abi2signature](https://github.com/cleanunicorn/abi2signature)
-Generates the Ethereum ABI 4 byte signature.
-
-### [ranploy](https://github.com/cleanunicorn/ranploy)
-Generates the EVM code to deploy the specified runtime bytecode.
-
-### [artifaqt](https://github.com/consensys/artifaqt)
-Social token collectible IRL game part of the [DevCon4](https://devcon4.ethereum.org/) Ethereum conference.
+- [AtlasPA](https://github.com/cleanunicorn/atlasPA) — AI-powered personal assistant for private use.
+- [Quill](https://github.com/cleanunicorn/quill) — CLI tool for transcribing audio files, YouTube videos and podcasts using Faster Whisper.
+- [Multistream](https://github.com/cleanunicorn/multistream) — Node.js RTMP server that restreams OBS to Twitch, YouTube and Kick, with auto-record, transcription and clip detection.
+- [Ethereum Smart Contract Template](https://github.com/cleanunicorn/ethereum-smartcontract-template) — a Foundry-based dapp quick-start, inspired by [Georgios's template](https://github.com/gakonst/dapptools-template).
+- [Hitomi](https://github.com/cleanunicorn/hitomi) — an Ethereum web3 console for any node.
+- [Santoku](https://github.com/cleanunicorn/santoku) — decodes ABI-encoded hex strings into their original types. Try it [here](https://cleanunicorn.github.io/santoku/).
+- [Mythos](https://github.com/cleanunicorn/mythos) — CLI client for the [MythX](https://mythx.io) API.
+- [Flaterra](https://github.com/cleanunicorn/flaterra) — flattens a Solidity file and its `imports` into one source for verification or analysis (Remix, MythX, Mythril).
+- [Midas](https://gitlab.com/cleanunicorn/eth-tipper) — a [Discord](https://discordapp.com) bot that acts as an Ethereum wallet and sends Ether between users.
+- [abi2signature](https://github.com/cleanunicorn/abi2signature) — generates the Ethereum ABI 4-byte signature.
+- [ranploy](https://github.com/cleanunicorn/ranploy) — generates the EVM code to deploy a given runtime bytecode.
+- [artifaqt](https://github.com/consensys/artifaqt) — social token collectible IRL game from the [DevCon4](https://devcon4.ethereum.org/) Ethereum conference.
 
 ---
 
