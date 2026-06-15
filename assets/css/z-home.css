@@ -108,6 +108,22 @@
   color: color-mix(in srgb, var(--foreground) 70%, var(--background));
 }
 
+.home-stats__item--link {
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s ease;
+}
+
+.home-stats__item--link:hover,
+.home-stats__item--link:focus-visible {
+  background: color-mix(in srgb, var(--accent) 8%, var(--background));
+}
+
+.home-stats__item--link:hover .home-stats__label,
+.home-stats__item--link:focus-visible .home-stats__label {
+  color: var(--accent);
+}
+
 /* Audience CTAs */
 .home-cta {
   display: grid;

@@ -25,18 +25,22 @@ proof = [
 [[stats]]
 value = "2017"
 label = "Securing Ethereum since"
+url = "/work/"
 
 [[stats]]
 value = "8+"
 label = "Marquee protocols audited"
+url = "/work/#security-researcher-consensys-diligence"
 
 [[stats]]
 value = "10+"
 label = "Talks & podcasts"
+url = "/about/#talks"
 
 [[stats]]
 value = "15+"
 label = "Open-source projects"
+url = "/about/#projects"
 
 # Audience-routed calls to action. `primary = true` highlights the main one.
 [[cta]]

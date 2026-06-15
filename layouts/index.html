@@ -28,10 +28,17 @@
   {{ with $home.stats }}
     <section class="home-stats" aria-label="Track record by the numbers">
       {{ range . }}
-        <div class="home-stats__item">
-          <span class="home-stats__value">{{ .value }}</span>
-          <span class="home-stats__label">{{ .label }}</span>
-        </div>
+        {{ if .url }}
+          <a class="home-stats__item home-stats__item--link" href="{{ .url }}">
+            <span class="home-stats__value">{{ .value }}</span>
+            <span class="home-stats__label">{{ .label }}</span>
+          </a>
+        {{ else }}
+          <div class="home-stats__item">
+            <span class="home-stats__value">{{ .value }}</span>
+            <span class="home-stats__label">{{ .label }}</span>
+          </div>
+        {{ end }}
       {{ end }}
     </section>
   {{ end }}
