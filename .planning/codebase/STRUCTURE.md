@@ -15,6 +15,9 @@ cleanunicorn.github.io/
 │   └── default.md               # Frontmatter template used by `hugo new`
 ├── assets/
 │   └── css/
+│       ├── z-base.css            # Shared tokens + cursor-blink animation for z-*.css
+│       ├── z-home.css            # Homepage landing styles (hero, stats, CTAs)
+│       ├── z-404.css             # Terminal 404 page styles
 │       └── extended/
 │           └── center-images.css # Picked up by terminal theme's asset pipeline
 ├── content/                     # All Markdown content (source of truth)
@@ -27,15 +30,19 @@ cleanunicorn.github.io/
 │   │       └── *.png            # Co-located post images
 │   └── previous-work.md         # Work history; also consumed by CV generator
 ├── data/
+│   ├── home.toml               # Homepage hero/landing content (.Site.Data.home)
 │   └── skills.toml              # Categorized skills consumed by CV generator
 ├── layouts/                     # Project-level overrides of theme templates
+│   ├── 404.html                 # Custom terminal-styled 404 page
+│   ├── index.html               # Homepage landing template (hero, stats, CTAs)
 │   ├── _default/
 │   │   └── _markup/
 │   │       └── render-link.html # Goldmark hook: external links → target=_blank
 │   ├── partials/
 │   │   ├── extend_head.html     # Conditional KaTeX include
 │   │   ├── extended_head.html   # Conditional KaTeX include (alt name)
-│   │   └── math.html            # KaTeX <link>/<script> tags
+│   │   ├── math.html            # KaTeX <link>/<script> tags
+│   │   └── structured_data.html # Schema.org JSON-LD (WebSite/Person/BlogPosting)
 │   └── shortcodes/
 │       └── x.html               # `{{< x user="..." id="..." >}}` tweet embed
 ├── public/                      # Hugo build output (gitignored)
@@ -55,6 +62,8 @@ cleanunicorn.github.io/
 │   │   ├── favicon-16x16.png
 │   │   ├── favicon-32x32.png
 │   │   └── me.png
+│   ├── js/
+│   │   └── hero-type.js          # Hero role-line typewriter (progressive enhancement)
 │   ├── presentations/
 │   │   ├── blockchainhackers-iv/
 │   │   └── defcon27/
@@ -83,23 +92,23 @@ cleanunicorn.github.io/
 
 **`layouts/`:**
 - Purpose: Project-level template overrides and additions; takes precedence over the theme.
-- Contains: Partials, render hooks, shortcodes.
-- Key files: `layouts/partials/extend_head.html`, `layouts/_default/_markup/render-link.html`, `layouts/shortcodes/x.html`.
+- Contains: Templates (homepage `index.html`, `404.html`), partials, render hooks, shortcodes.
+- Key files: `layouts/index.html`, `layouts/404.html`, `layouts/partials/extend_head.html`, `layouts/partials/structured_data.html`, `layouts/_default/_markup/render-link.html`, `layouts/shortcodes/x.html`.
 
 **`assets/`:**
 - Purpose: Inputs for Hugo's asset pipeline (Sass, asset bundling).
-- Contains: CSS extensions auto-included by the terminal theme.
-- Key files: `assets/css/extended/center-images.css`.
+- Contains: CSS extensions auto-included by the terminal theme (`resources.Match "css/*.css"`).
+- Key files: `assets/css/z-base.css` (shared tokens/animations), `assets/css/z-home.css`, `assets/css/z-404.css`, `assets/css/extended/center-images.css`.
 
 **`static/`:**
 - Purpose: Files copied verbatim into `public/` at build time.
-- Contains: Raw CSS not in the asset pipeline, images, presentation decks, generated CV.
-- Key files: `static/css/cv.css`, `static/images/me.png`, `static/terminal.css`. Generated: `static/cv.html`, `static/cv.pdf`.
+- Contains: Raw CSS not in the asset pipeline, JavaScript, images, presentation decks, generated CV.
+- Key files: `static/css/cv.css`, `static/js/hero-type.js`, `static/images/me.png`, `static/terminal.css`. Generated: `static/cv.html`, `static/cv.pdf`.
 
 **`data/`:**
 - Purpose: Structured non-Markdown inputs.
-- Contains: `skills.toml` (categorized skill lists used by the CV generator and available to templates as `.Site.Data.skills`).
-- Key files: `data/skills.toml`.
+- Contains: `home.toml` (homepage landing content, available as `.Site.Data.home`) and `skills.toml` (categorized skill lists used by the CV generator and available as `.Site.Data.skills`).
+- Key files: `data/home.toml`, `data/skills.toml`.
 
 **`scripts/`:**
 - Purpose: Pre-build / utility scripts run from the Makefile.
@@ -141,7 +150,11 @@ cleanunicorn.github.io/
 
 **Core Logic:**
 - `scripts/generate_cv.py`: Markdown → HTML CV generator.
-- `layouts/partials/extend_head.html` / `extended_head.html`: Theme `<head>` extension points (currently used to conditionally load KaTeX).
+- `layouts/index.html`: Homepage landing template (hero typewriter, stats band, CTAs), driven by `data/home.toml`.
+- `layouts/404.html`: Custom terminal-styled 404 page.
+- `layouts/partials/extend_head.html` / `extended_head.html`: Theme `<head>` extension points (KaTeX, structured data, analytics).
+- `layouts/partials/structured_data.html`: Schema.org JSON-LD (WebSite/Person/ProfilePage/BlogPosting).
+- `static/js/hero-type.js`: Hero role-line typewriter (progressive enhancement, reduced-motion aware).
 - `layouts/_default/_markup/render-link.html`: Custom link rendering (external links open in new tab).
 - `layouts/shortcodes/x.html`: Twitter/X embed shortcode.
 
@@ -152,6 +165,8 @@ cleanunicorn.github.io/
 - `content/posts/<slug>/index.md`: Each blog post (Hugo leaf bundle).
 
 **Styling:**
+- `assets/css/z-base.css`: Shared CSS tokens (`--c-text-*`, `--c-hairline`, `--c-error`), the `blink` cursor keyframe, and the `.sr-only` utility, reused by the other `z-*.css` files.
+- `assets/css/z-home.css`, `assets/css/z-404.css`: Page-specific styles (asset pipeline, picked up by `css/*.css`).
 - `assets/css/extended/center-images.css`: Centers post images (asset pipeline).
 - `static/css/custom.css`, `static/css/syntax.css`, `static/terminal.css`: Raw CSS shipped to `public/`.
 - `static/css/cv.css`: Inlined into generated `static/cv.html`.
@@ -195,7 +210,8 @@ cleanunicorn.github.io/
 - Add `layouts/shortcodes/<name>.html`. Follow the pattern in `layouts/shortcodes/x.html`. Invoke from Markdown as `{{< name arg="..." >}}`.
 
 **New CSS rule:**
-- For rules that should layer on top of the theme's compiled CSS: add a `.css` file to `assets/css/extended/` (e.g. `assets/css/extended/my-rule.css`).
+- For component/page styles that layer on top of the theme's compiled CSS: add a `z-<name>.css` file under `assets/css/` (e.g. `assets/css/z-contact.css`). Every `assets/css/*.css` file is picked up, minified and fingerprinted by the theme's asset pipeline; the `z-` prefix keeps these custom additions grouped and last in load order. Put shared tokens/animations/utilities in `assets/css/z-base.css`.
+- For post-image tweaks specifically: `assets/css/extended/` is mandated by the terminal theme.
 - For raw CSS shipped as-is: add to `static/css/` and reference from a partial in `layouts/partials/extend_head.html`.
 
 **New static asset (image, PDF, slide deck):**
