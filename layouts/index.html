@@ -25,6 +25,17 @@
     </section>
   {{ end }}
 
+  {{ with $home.stats }}
+    <section class="home-stats" aria-label="Track record by the numbers">
+      {{ range . }}
+        <div class="home-stats__item">
+          <span class="home-stats__value">{{ .value }}</span>
+          <span class="home-stats__label">{{ .label }}</span>
+        </div>
+      {{ end }}
+    </section>
+  {{ end }}
+
   {{ with $home.cta }}
     <section class="home-cta" aria-label="Ways to work together">
       {{ range . }}
