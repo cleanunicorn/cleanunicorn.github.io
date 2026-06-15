@@ -16,7 +16,7 @@ pagination.pagerSize = 5
 
 [params]
   contentTypeName = "about"
-  showMenuItems = 3
+  showMenuItems = 4
   fullWidthTheme = false
   centerTheme = true
   autoCover = true
@@ -52,3 +52,8 @@ pagination.pagerSize = 5
         name = "Posts"
         url = "/posts/"
         weight = 30
+      [[languages.en.menu.main]]
+        identifier = "contact"
+        name = "Contact"
+        url = "/contact/"
+        weight = 40
