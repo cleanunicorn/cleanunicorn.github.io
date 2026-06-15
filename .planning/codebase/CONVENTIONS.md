@@ -127,8 +127,13 @@ This is a Hugo static site, so "code" mostly means Markdown content, TOML config
 - Math support is opt-in per page via `math = true` in frontmatter, which triggers `layouts/partials/math.html` from `extend_head.html`.
 - Inline TeX uses `$...$` and block TeX uses `$$...$$` (Goldmark passthrough is enabled in `hugo.toml`).
 - Twitter/X embeds use the custom shortcode `{{< x user="handle" id="tweet-id" >}}` defined in `layouts/shortcodes/x.html`.
-- Theme overrides go through `assets/css/extended/` (compiled by Hugo) for theme-aware styles, or `static/css/` for plain static stylesheets loaded by the layout.
+- Component/page styles go in a `z-<name>.css` file under `assets/css/` (compiled by Hugo's asset pipeline, which picks up every `css/*.css`); shared tokens, animations and utilities live in `assets/css/z-base.css`. `assets/css/extended/` remains for theme-mandated post-image tweaks, and `static/css/` for plain static stylesheets loaded by the layout.
 - The terminal theme is a git submodule pinned in `.gitmodules` (`themes/terminal` → `hugo-theme-terminal`); update with `make update-theme`, never edit the submodule directly.
+
+## Commit Messages
+
+- No commit format is enforced (no commit-lint or hook in the repo). The history mixes sentence-case summaries (e.g. "Add terminal typewriter to homepage hero") with Conventional Commits (`type(scope): subject`, e.g. `refactor(css): unify cursor-blink keyframe`).
+- Prefer Conventional Commits for new work, scoping each commit to a single concern, so history stays scannable and individual changes revert cleanly.
 
 ---
 
