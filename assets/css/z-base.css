@@ -2,6 +2,15 @@
    theme's CSS variables. Loaded alongside the other z-*.css files by the
    theme's asset pipeline (resources.Match "css/*.css"). */
 
+/* Semantic tones derived from the theme palette, reused across z-*.css so the
+   color-mix recipes live in one place. */
+:root {
+  --c-text-soft:  color-mix(in srgb, var(--foreground) 80%, var(--background));
+  --c-text-muted: color-mix(in srgb, var(--foreground) 70%, var(--background));
+  --c-text-faint: color-mix(in srgb, var(--foreground) 55%, var(--background));
+  --c-hairline:   color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
 /* Blinking terminal cursor, shared by the hero and 404 cursors. */
 @keyframes blink {
   50% { opacity: 0; }

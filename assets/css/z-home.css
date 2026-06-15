@@ -29,7 +29,7 @@
 .home-hero__prompt {
   margin-right: 0.6ch;
   text-transform: none;
-  color: var(--comment, color-mix(in srgb, var(--foreground) 55%, var(--background)));
+  color: var(--comment, var(--c-text-faint));
 }
 
 /* Blinking block cursor that trails the (typed) role line */
@@ -52,7 +52,7 @@
 .home-hero__sub {
   margin: 0;
   max-width: 60ch;
-  color: color-mix(in srgb, var(--foreground) 80%, var(--background));
+  color: var(--c-text-soft);
 }
 
 /* Credibility strip */
@@ -63,15 +63,15 @@
   gap: 0.5rem 0.9rem;
   padding: 0.9rem 0;
   margin: 0 0 2.5rem;
-  border-top: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  border-top: 1px solid var(--c-hairline);
+  border-bottom: 1px solid var(--c-hairline);
 }
 
 .proof-strip__label {
   font-size: calc(var(--font-size) * 0.8);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--comment, color-mix(in srgb, var(--foreground) 55%, var(--background)));
+  color: var(--comment, var(--c-text-faint));
 }
 
 .proof-strip__items {
@@ -98,8 +98,8 @@
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1px;
   margin: 0 0 3rem;
-  background: color-mix(in srgb, var(--foreground) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: var(--c-hairline);
+  border: 1px solid var(--c-hairline);
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -123,7 +123,7 @@
   font-size: calc(var(--font-size) * 0.8);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--foreground) 70%, var(--background));
+  color: var(--c-text-muted);
 }
 
 /* Audience CTAs */
@@ -157,7 +157,7 @@
   margin: 0 0 1.1rem;
   flex: 1 1 auto;
   font-size: calc(var(--font-size) * 0.9);
-  color: color-mix(in srgb, var(--foreground) 80%, var(--background));
+  color: var(--c-text-soft);
 }
 
 .home-cta__link {

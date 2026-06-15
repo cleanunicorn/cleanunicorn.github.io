@@ -18,7 +18,7 @@
 }
 
 .notfound__prompt { color: var(--accent); }
-.notfound__path   { color: color-mix(in srgb, var(--foreground) 70%, var(--background)); }
+.notfound__path   { color: var(--c-text-muted); }
 .notfound__err    { color: #e06c75; }
 
 .notfound__cursor {
@@ -35,7 +35,7 @@
 .notfound__lede {
   margin: 0 0 1.6rem;
   max-width: 56ch;
-  color: color-mix(in srgb, var(--foreground) 80%, var(--background));
+  color: var(--c-text-soft);
 }
 
 .notfound__links {
