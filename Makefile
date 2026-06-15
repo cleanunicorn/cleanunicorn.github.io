@@ -15,7 +15,7 @@ help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 dev: ## Run server (drafts+future). For remote access set HOST=<lan-ip>, e.g. make dev HOST=192.168.1.50
-	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender $(if $(HOST),--baseURL http://$(HOST))
+	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender --ignoreCache --gc --noHTTPCache $(if $(HOST),--baseURL http://$(HOST))
 
 build: ## Build production site into $(PUBLIC_DIR)
 	$(HUGO)
