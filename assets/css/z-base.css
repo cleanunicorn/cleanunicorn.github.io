@@ -12,6 +12,20 @@
   --c-error:      #e06c75; /* terminal red, used for error text */
 }
 
+/* Visually hidden, but exposed to assistive technology. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* Blinking terminal cursor, shared by the hero and 404 cursors. */
 @keyframes blink {
   50% { opacity: 0; }
