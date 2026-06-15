@@ -1,0 +1,13 @@
+/* Shared primitives for the custom (z-*) stylesheets, layered on the terminal
+   theme's CSS variables. Loaded alongside the other z-*.css files by the
+   theme's asset pipeline (resources.Match "css/*.css"). */
+
+/* Blinking terminal cursor, shared by the hero and 404 cursors. */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__cursor,
+  .notfound__cursor { animation: none; }
+}

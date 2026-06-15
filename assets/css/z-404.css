@@ -25,15 +25,7 @@
   display: inline-block;
   margin-left: 0.1em;
   color: var(--accent);
-  animation: notfound-blink 1.1s steps(1) infinite;
-}
-
-@keyframes notfound-blink {
-  50% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .notfound__cursor { animation: none; }
+  animation: blink 1.1s steps(1) infinite; /* keyframe + reduced-motion in z-base.css */
 }
 
 .notfound__title {
