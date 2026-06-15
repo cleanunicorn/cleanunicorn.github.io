@@ -5,6 +5,10 @@
 (function () {
   "use strict";
 
+  var CHAR_DELAY_MS = 32;   // base delay between characters
+  var CHAR_JITTER_MS = 34;  // random extra delay, for an irregular human cadence
+  var START_DELAY_MS = 300; // pause before typing so the prompt registers first
+
   var el = document.querySelector(".home-hero__roles[data-typewriter]");
   if (!el) return;
 
@@ -21,10 +25,9 @@
     if (i < full.length) {
       i += 1;
       // Slightly irregular cadence reads more like real typing.
-      setTimeout(tick, 32 + Math.random() * 34);
+      setTimeout(tick, CHAR_DELAY_MS + Math.random() * CHAR_JITTER_MS);
     }
   }
 
-  // Small delay so the prompt registers before typing begins.
-  setTimeout(tick, 300);
+  setTimeout(tick, START_DELAY_MS);
 })();
