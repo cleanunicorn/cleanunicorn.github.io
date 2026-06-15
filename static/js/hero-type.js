@@ -17,6 +17,12 @@
   if (reduce) return;
 
   var full = el.textContent;
+
+  // Reserve the rendered width before clearing so the line doesn't collapse and
+  // reflow as it types back out (avoids layout shift / a jumping headline).
+  el.style.display = "inline-block";
+  el.style.minWidth = el.getBoundingClientRect().width + "px";
+
   el.textContent = "";
 
   var i = 0;
