@@ -1,0 +1,68 @@
+{{- /*
+  Schema.org JSON-LD structured data.
+  - WebSite (every page)
+  - Person + ProfilePage (home and /about/)
+  - BlogPosting (single posts)
+  Improves how Google/LinkedIn/X interpret the site and enables rich results.
+  Note: jsonify output must be piped through safeJS, otherwise html/template
+  re-encodes it as a JS string inside the <script> element.
+*/ -}}
+
+{{- $site := .Site -}}
+{{- $author := $site.Params.author | default $site.Title -}}
+{{- $sameAs := slice
+  "https://x.com/cleanunicorn"
+  "https://www.linkedin.com/in/luca-daniel-5227267/"
+  "https://github.com/cleanunicorn"
+  "https://www.imdb.com/title/tt35931420/" -}}
+
+{{- /* Person object reused by Person/ProfilePage and as article author */ -}}
+{{- $person := dict
+  "@type" "Person"
+  "name" $author
+  "alternateName" "CleanUnicorn"
+  "url" ($site.BaseURL | absURL)
+  "image" ("/images/me.png" | absURL)
+  "jobTitle" "Security Researcher & Investor"
+  "description" "Ethereum security auditor, investor and builder working in blockchain since 2017; Technical Partner at Eden Block."
+  "knowsAbout" (slice "Smart Contract Security" "Ethereum" "Solidity" "EVM Internals" "DeFi" "Blockchain Security" "Venture Capital" "Decentralized AI")
+  "sameAs" $sameAs -}}
+
+{{- /* WebSite — every page */ -}}
+{{- $website := dict
+  "@context" "https://schema.org"
+  "@type" "WebSite"
+  "name" $site.Title
+  "url" ($site.BaseURL | absURL)
+  "description" $site.Params.subtitle
+  "inLanguage" $site.Language.Lang
+  "author" $person -}}
+<script type="application/ld+json">{{ $website | jsonify | safeJS }}</script>
+
+{{- if or .IsHome (eq .RelPermalink "/about/") }}
+  {{- $profile := dict
+    "@context" "https://schema.org"
+    "@type" "ProfilePage"
+    "url" .Permalink
+    "mainEntity" $person -}}
+  <script type="application/ld+json">{{ $profile | jsonify | safeJS }}</script>
+{{- end }}
+
+{{- if and .IsPage (eq .Type "posts") }}
+  {{- $img := "og-image.png" | absURL -}}
+  {{- with .Params.cover }}{{ $img = . | absURL }}{{ end -}}
+  {{- $posting := dict
+    "@context" "https://schema.org"
+    "@type" "BlogPosting"
+    "headline" .Title
+    "url" .Permalink
+    "mainEntityOfPage" .Permalink
+    "datePublished" (.Date.Format "2006-01-02")
+    "description" (.Description | default (.Summary | plainify))
+    "image" $img
+    "author" $person
+    "publisher" $person
+    "keywords" (delimit (.Params.keywords | default (slice)) ", ") -}}
+  {{- if not .Lastmod.IsZero }}{{ $posting = merge $posting (dict "dateModified" (.Lastmod.Format "2006-01-02")) }}{{ end -}}
+  <script type="application/ld+json">{{ $posting | jsonify | safeJS }}</script>
+{{- end }}
