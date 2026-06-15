@@ -1,0 +1,71 @@
+{{ define "main" }}
+  {{ $home := $.Site.Data.home }}
+
+  <section class="home-hero">
+    {{ with $home.photo }}
+      <img class="home-hero__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="160" height="160" loading="eager">
+    {{ end }}
+    <div class="home-hero__body">
+      <p class="home-hero__eyebrow">{{ $.Site.Params.Subtitle }}</p>
+      <h1 class="home-hero__headline">{{ $home.headline | default $.Site.Title }}</h1>
+      {{ with $home.subheadline }}
+        <p class="home-hero__sub">{{ . }}</p>
+      {{ end }}
+    </div>
+  </section>
+
+  {{ with $home.proof }}
+    <section class="proof-strip" aria-label="Selected audits and affiliations">
+      <span class="proof-strip__label">Trusted on</span>
+      <ul class="proof-strip__items">
+        {{ range . }}
+          <li>{{ . }}</li>
+        {{ end }}
+      </ul>
+    </section>
+  {{ end }}
+
+  {{ with $home.cta }}
+    <section class="home-cta" aria-label="Ways to work together">
+      {{ range . }}
+        <div class="home-cta__card{{ if .primary }} home-cta__card--primary{{ end }}">
+          <h2 class="home-cta__title">{{ .title }}</h2>
+          <p class="home-cta__text">{{ .text }}</p>
+          <a class="home-cta__link button inline" href="{{ .url }}">{{ .label }} &rarr;</a>
+        </div>
+      {{ end }}
+    </section>
+  {{ end }}
+
+  {{ if .Content }}
+    <div class="index-content">{{ .Content }}</div>
+  {{ end }}
+
+  <section class="home-writing">
+    <div class="home-writing__head">
+      <h2>Latest writing</h2>
+      <a class="home-writing__all" href="{{ "posts/" | absLangURL }}">All posts &rarr;</a>
+    </div>
+    <div class="posts">
+      {{ $posts := where $.Site.RegularPages "Type" "posts" }}
+      {{ range first 3 $posts }}
+        <article class="post on-list">
+          <h3 class="post-title">
+            <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+          </h3>
+          <div class="post-meta">
+            {{- if .Date -}}
+              <time class="post-date">{{- partial "post-date" . -}}</time>
+            {{- end -}}
+          </div>
+          <div class="post-content">
+            {{ if .Description }}<p>{{ .Description | markdownify }}</p>{{ else }}{{ .Summary }}{{ end }}
+          </div>
+          <div>
+            <a class="read-more button inline" href="{{ .RelPermalink }}">[{{ $.Site.Params.ReadMore }}]</a>
+          </div>
+        </article>
+      {{ end }}
+    </div>
+  </section>
+{{ end }}
