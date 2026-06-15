@@ -1,0 +1,41 @@
+# Homepage hero + landing content.
+# Edit freely — consumed by layouts/index.html. No template changes needed.
+
+headline = "I help blockchain & AI founders ship systems that survive adversarial conditions."
+subheadline = "Security researcher, investor and builder. I audit the code, run the technical diligence, and back the teams building trust-minimized infrastructure."
+
+# Portrait shown in the hero. Lives in static/images/.
+photo = "/images/me.png"
+photoAlt = "Daniel Luca"
+
+# Credibility strip — names of notable audits, employers and stages.
+proof = [
+  "Uniswap",
+  "Aave",
+  "Filecoin",
+  "Polygon",
+  "ConsenSys Diligence",
+  "Eden Block",
+  "DEF CON",
+  "Code Is Law",
+]
+
+# Audience-routed calls to action. `primary = true` highlights the main one.
+[[cta]]
+title = "Need a security review?"
+text = "Smart-contract audits and adversarial code review for protocols that can't afford to be wrong."
+label = "Request an audit"
+url = "https://www.linkedin.com/in/luca-daniel-5227267/"
+primary = true
+
+[[cta]]
+title = "Raising or building?"
+text = "Research-driven technical diligence and hands-on support via Eden Block."
+label = "Get in touch"
+url = "https://x.com/cleanunicorn"
+
+[[cta]]
+title = "Want to follow my work?"
+text = "Essays on security, EVM internals and applied AI — plus talks and podcasts."
+label = "Read the writing"
+url = "/posts/"

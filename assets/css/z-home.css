@@ -1,0 +1,141 @@
+/* Homepage landing — hero, credibility strip, audience CTAs, latest writing.
+   Uses the terminal theme's CSS variables so it adapts to the theme palette. */
+
+.home-hero {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 1rem 0 2.5rem;
+}
+
+.home-hero__photo {
+  flex: 0 0 auto;
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  border-radius: var(--radius);
+}
+
+.home-hero__eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: calc(var(--font-size) * 0.85);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.home-hero__headline {
+  margin: 0 0 0.6rem;
+  font-size: calc(var(--font-size) * 1.6);
+  line-height: 1.25;
+}
+
+.home-hero__sub {
+  margin: 0;
+  max-width: 60ch;
+  color: color-mix(in srgb, var(--foreground) 80%, var(--background));
+}
+
+/* Credibility strip */
+.proof-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.9rem;
+  padding: 0.9rem 0;
+  margin: 0 0 2.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+.proof-strip__label {
+  font-size: calc(var(--font-size) * 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--comment, color-mix(in srgb, var(--foreground) 55%, var(--background)));
+}
+
+.proof-strip__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.proof-strip__items li {
+  font-size: calc(var(--font-size) * 0.85);
+  white-space: nowrap;
+}
+
+.proof-strip__items li::before {
+  content: "";
+}
+
+/* Audience CTAs */
+.home-cta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 0 0 3rem;
+}
+
+.home-cta__card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+}
+
+.home-cta__card--primary {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.home-cta__title {
+  margin: 0 0 0.5rem;
+  font-size: calc(var(--font-size) * 1.05);
+}
+
+.home-cta__text {
+  margin: 0 0 1.1rem;
+  flex: 1 1 auto;
+  font-size: calc(var(--font-size) * 0.9);
+  color: color-mix(in srgb, var(--foreground) 80%, var(--background));
+}
+
+.home-cta__link {
+  align-self: flex-start;
+}
+
+/* Latest writing */
+.home-writing__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-writing__head h2 {
+  margin: 0;
+}
+
+.home-writing__all {
+  font-size: calc(var(--font-size) * 0.85);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .home-hero {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.2rem;
+  }
+  .home-hero__sub { margin-inline: auto; }
+  .home-cta__link { align-self: stretch; text-align: center; }
+}
