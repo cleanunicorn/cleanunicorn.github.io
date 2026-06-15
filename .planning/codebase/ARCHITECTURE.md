@@ -84,6 +84,7 @@
 - Contains: `home.toml` (homepage landing content) and `skills.toml` (categorized skill lists used by the CV generator).
 - Depends on: nothing.
 - Used by: `layouts/index.html` via `.Site.Data.home`; `scripts/generate_cv.py` and Hugo templates via `.Site.Data.skills`.
+- Principle: content that changes often or is purely declarative (hero copy, credibility stats, SEO metadata) lives in `data/` TOML or `hugo.toml` params rather than hardcoded in templates, so editors don't touch markup.
 
 **Presentation / template layer:**
 - Purpose: Convert content + data into HTML.
@@ -244,6 +245,8 @@
 **Validation:** No explicit content validation. Hugo enforces template correctness; frontmatter typos silently fall through (e.g. an unset `math` simply skips the KaTeX include).
 
 **SEO / structured data:** `layouts/partials/structured_data.html` emits Schema.org JSON-LD on every page (WebSite always; ProfilePage on home/about; BlogPosting on posts), sourced from site params (`hugo.toml [languages.en.params]`) and page frontmatter. `jsonify | safeJS` is required so `html/template` does not re-encode the JSON inside the `<script>` element.
+
+**Accessibility:** Decorative terminal flourishes are hidden from assistive tech (`aria-hidden` on the hero prompt/cursor and the 404 shell art); animations honor `prefers-reduced-motion` (centralized rule in `z-base.css`). Where visual and announced content diverge, use the `.sr-only` utility (`z-base.css`) to supply a screen-reader-only string and `aria-hidden="true"` on the visual fragments — see the homepage stats band in `layouts/index.html` (`<span class="sr-only">label: value</span>`).
 
 **Authentication:** None. Site is fully public; CI uses GitHub-provided OIDC tokens for Pages deploy (`permissions: id-token: write` in the workflow).
 
