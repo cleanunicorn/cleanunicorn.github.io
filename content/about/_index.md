@@ -102,6 +102,7 @@ I like science fiction, fantasy, comic books, philosophy and psychology.
 Some of the books I enjoyed:
 
 <div class="cols">
+<!-- BOOKS:START — managed by scripts/update_books.py via `make books`; edits between the markers are preserved and merged with Goodreads. -->
 
 * **Algorithms to Live By**, by Brian Christian and Tom Griffiths
 * **The Three Body Problem** by Liu Cixin
@@ -117,6 +118,7 @@ Some of the books I enjoyed:
 * **American Gods** by Neil Gaiman
 * **Choose Yourself** by James Altucher
 
+<!-- BOOKS:END -->
 </div>
 
 <!-- ## Conferences

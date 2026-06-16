@@ -9,7 +9,7 @@ DATE := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help serve serve-drafts build build-drafts clean new update-theme submodules cv cv-pdf
+.PHONY: help serve serve-drafts build build-drafts clean new update-theme submodules cv cv-pdf books
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -49,3 +49,6 @@ cv-pdf: cv ## Generate CV as PDF into static/ (served by Hugo at /cv.pdf)
 	@which chromium >/dev/null 2>&1 && CHROME=chromium || CHROME=google-chrome; \
 	$$CHROME --headless --disable-gpu --print-to-pdf=$(STATIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(STATIC_DIR)/cv.html 2>/dev/null; \
 	echo "PDF written to $(STATIC_DIR)/cv.pdf"
+
+books: ## Refresh the About page Books list from Goodreads (merges with existing). Use ARGS="..." to pass flags.
+	python3 scripts/update_books.py $(ARGS)
