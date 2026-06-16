@@ -2,6 +2,7 @@
 date = '2023-10-10T13:47:24-03:00'
 draft = false
 title = 'EIP 7514: Balancing Urgency With Long Term Vision'
+description = "Why Ethereum capped validator churn at 8 — trading exponential validator growth for linear, and buying time to scale the client software."
 readingTime = true
 +++
 

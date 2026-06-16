@@ -7,8 +7,7 @@ description = "Daniel Luca's work history — Technical Partner at Eden Block, s
 
 ## Technical Partner, Eden Block
 
-* **Company** Eden Block
-* **Since** November 2022
+*November 2022 – Present*
 
 Technical Partner at [Eden Block](https://edenblock.com) an early-stage venture capital firm focused on blockchain, Web3 infrastructure and Decentralized AI. Provided technical diligence and research for investment decisions, advised portfolio companies on product strategy, software architecture, and security best practices. Collaborated with founders and teams across the portfolio to address technical challenges and drive technology adoption. Helped shape Eden Block’s research-driven investment approach and supported the growth of startups building the foundational layers of the decentralized internet.
 
@@ -27,9 +26,7 @@ Worked closely with portfolio companies such as:
 
 ## Co-Founder, FiatDAO
 
-* **Company** FiatDAO
-* **Since** November 2021
-* **Deployed** April 2022
+*November 2021 · Deployed April 2022*
 
 Co-founded and built [FiatDAO](https://fiatdao.com), a decentralized autonomous organization (DAO) focused on DeFi tools for fixed-income assets on Ethereum. Helped design and build the platform, letting users use their fixed-income positions as collateral to access liquidity and mint stablecoins. Worked on protocol development, governance, and smart contract security, partnering with a global team to launch and improve the product.
 
@@ -37,8 +34,7 @@ Co-founded and built [FiatDAO](https://fiatdao.com), a decentralized autonomous 
 
 ## Founder, Security Researcher, Akira Tech
 
-* **Company** Akira Tech
-* **Since** October 2020
+*October 2020 – Present*
 
 Founded [Akira Tech](https://github.com/akiratechhq) as a specialized security shop with a focus on comprehensive security audits, code reviews, and cyber risk assessments for blockchain and software projects. Led technical engagements with clients, identifying vulnerabilities and recommending actionable solutions to improve system security. Delivered security reports and collaborated with development teams to implement best practices for secure smart contract development.
 
@@ -46,9 +42,7 @@ Founded [Akira Tech](https://github.com/akiratechhq) as a specialized security s
 
 ## Security Researcher, ConsenSys Diligence
 
-* **Company** ConsenSys Diligence
-* **Since** November 2018
-* **Until** August 2020
+*November 2018 – August 2020*
 
 As part of [ConsenSys Diligence](https://diligence.consensys.net/) — a leading smart-contract audit and Ethereum security team — I delivered security audits and consulting for some of the most widely used protocols on Ethereum, and pursued security research and conference talks alongside the engagements.
 
@@ -66,9 +60,7 @@ Selected audits:
 
 ## Developer, Alethio
 
-* **Company** ConsenSys
-* **Since** February 2017
-* **Until** November 2018
+*February 2017 – November 2018 · ConsenSys*
 
 Alethio was a ConsenSys spoke building analytics for the Ethereum blockchain. I built most of the data pipeline that extracts on-chain data, applies an [ontology](https://ethon.consensys.net/) and imports it into multiple databases — the foundation powering Alethio's analytics products.
 
@@ -77,7 +69,7 @@ Alethio was a ConsenSys spoke building analytics for the Ethereum blockchain. I 
 
 ## Blockchain Workshops, Bucharest
 
-* **Since** 2018
+*Since 2018*
 
 Developed and held a series of long format workshops which cover the basics of blockchain, Solidity, EVM, private chains setup, consensus algorithms, smart contract design and other related topics.
 
@@ -85,9 +77,7 @@ Developed and held a series of long format workshops which cover the basics of b
 
 ## Cofounder / CTO, Fitpass
 
-* **Company** Fitpass
-* **Since** May 2016
-* **Until** December 2017
+*May 2016 – December 2017*
 
 Fitpass is platform for fitness studios and classes based in Bucharest, Romania. Cofounded and built the product, backend and frontend.
 
@@ -95,9 +85,7 @@ Fitpass is platform for fitness studios and classes based in Bucharest, Romania.
 
 ## Cofounder / CTO, Lendia
 
-* **Company** Lendia
-* **Since** February 2015
-* **Until** December 2016
+*February 2015 – December 2016*
 
 Lendia was a company aggregating lending offers from multiple banks. Cofounded and built the product.
 
@@ -105,9 +93,7 @@ Lendia was a company aggregating lending offers from multiple banks. Cofounded a
 
 ## Owner, ElasticOrange
 
-* **Company** ElasticOrange
-* **Since** October 2014
-* **Until** January 2017
+*October 2014 – January 2017*
 
 ElasticOrange was a software company that developed products for international clients.
 
@@ -115,9 +101,7 @@ ElasticOrange was a software company that developed products for international c
 
 ## Developer, Filebox
 
-* **Company** Synco Telecom
-* **Since** May 2008
-* **Until** September 2010
+*May 2008 – September 2010 · Synco Telecom*
 
 Filebox was one of the biggest file sharing websites in Romania having 100k uniques per day. We designed the complete software stack, as well as maintained the hardware powering all of it.
 

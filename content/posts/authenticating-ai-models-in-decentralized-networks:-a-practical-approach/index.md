@@ -2,6 +2,7 @@
 date = '2024-07-22T14:31:28+01:00'
 draft = false
 title = 'Authenticating AI Models in Decentralized Networks: A Practical Approach'
+description = "Verifying that an AI model is genuine and unaltered in decentralized networks — why watermarking falls short, and how statistical uniqueness does better."
 math = true
 readingTime = true
 +++

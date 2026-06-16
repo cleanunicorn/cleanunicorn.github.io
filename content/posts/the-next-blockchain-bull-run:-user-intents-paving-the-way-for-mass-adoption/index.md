@@ -2,6 +2,7 @@
 date = '2023-12-07T14:37:14-03:00'
 draft = false
 title = 'The Next Blockchain Bull Run: User Intents Paving the Way for Mass Adoption'
+description = "Why Intents — declaring the outcome you want, not the exact steps — could abstract away crypto's complexity and unlock the next wave of adoption."
 readingTime = true
 +++
 

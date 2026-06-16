@@ -51,6 +51,13 @@ def md_to_html(md: str) -> str:
             out.append("")
             continue
 
+        # skip standalone block-level HTML wrappers (e.g. layout-only <div>s)
+        if re.match(r"^</?(div|section|aside)\b[^>]*>$", stripped, re.IGNORECASE):
+            if in_ul:
+                out.append("</ul>")
+                in_ul = False
+            continue
+
         # headings
         hm = re.match(r"^(#{1,6})\s+(.*)", stripped)
         if hm:
@@ -150,8 +157,22 @@ def parse_about() -> dict:
     bio_match = re.match(r"^(.*?)(?=^##\s)", body, re.MULTILINE | re.DOTALL)
     bio = bio_match.group(1).strip() if bio_match else ""
 
+    # The intro carries a one-line "Download my CV — or find me on …" row.
+    # Pull the social links out of it for the header, and drop the line from
+    # the bio (a "download this CV" link is meaningless inside the CV itself).
+    contact: list[tuple[str, str]] = []
+    cv_line_re = re.compile(r"^.*Download (?:my )?CV.*$", re.MULTILINE)
+    cv_line = cv_line_re.search(bio)
+    if cv_line:
+        for text, url in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", cv_line.group(0)):
+            if "cv.pdf" in url.lower() or "download" in text.lower():
+                continue
+            contact.append((text, url))
+        bio = cv_line_re.sub("", bio).strip()
+
     return {
         "bio": bio,
+        "contact": contact,
         "talks": extract_section(body, "Talks"),
         "podcasts": extract_section(body, "Podcasts"),
         "projects": extract_section(body, "Projects"),
@@ -292,15 +313,14 @@ def generate_html(output: Path) -> None:
 
     sections = []
 
-    # Bio
+    # Summary / bio
     if about["bio"]:
         sections.append(f'<section class="bio">\n{md_to_html(about["bio"])}\n</section>')
 
-    # Contact / Links — strip the "Download CV" entry (self-referential in the CV)
-    if about["links"]:
-        links_md = re.sub(r"^- \[Download CV.*\n?", "", about["links"], flags=re.MULTILINE)
+    # Work experience — lead with proof
+    if work_md:
         sections.append(
-            f'<section class="links">\n<h2>Contact</h2>\n{md_to_html(links_md)}\n</section>'
+            f'<section class="work">\n<h2>Experience</h2>\n{build_work_html(work_md)}\n</section>'
         )
 
     # Skills
@@ -308,12 +328,6 @@ def generate_html(output: Path) -> None:
     if skills:
         sections.append(
             f'<section class="skills">\n<h2>Skills</h2>\n{build_skills_html(skills)}\n</section>'
-        )
-
-    # Work experience
-    if work_md:
-        sections.append(
-            f'<section class="work">\n<h2>Experience</h2>\n{build_work_html(work_md)}\n</section>'
         )
 
     # Talks
@@ -341,6 +355,14 @@ def generate_html(output: Path) -> None:
 
     body = "\n\n".join(sections)
 
+    # Header contact row — social links pulled from the About intro, plus the site.
+    contact = list(about.get("contact", []))
+    contact.append(("cleanunicorn.github.io", "https://cleanunicorn.github.io"))
+    contact_html = " ".join(
+        f'<a href="{html.escape(url)}">{html.escape(text)}</a>'
+        for text, url in contact
+    )
+
     html_doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -355,6 +377,7 @@ def generate_html(output: Path) -> None:
   <header>
     <h1>{html.escape(config["name"])}</h1>
     <p class="subtitle">{html.escape(config["subtitle"])}</p>
+    <nav class="contact">{contact_html}</nav>
   </header>
 
   <main>

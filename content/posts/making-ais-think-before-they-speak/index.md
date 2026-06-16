@@ -1,7 +1,8 @@
 +++
 date = '2024-11-30T15:16:12+01:00'
 draft = true
-title = 'Making Ais Think Before They Speak'
+title = 'Making AIs Think Before They Speak'
+description = "Why raw model size isn't enough: what poker and Go AIs reveal about making LLMs plan and reason before they answer."
 readingTime = true
 +++
 

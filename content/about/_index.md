@@ -10,12 +10,7 @@ With a deep passion for open-source technologies, security, blockchain and Artif
 
 This deep technical foundation eventually pulled me into **venture capital**, where I now operate at the intersection of blockchain, AI, and security. I focus on research-driven technical due diligence and deal sourcing, utilizing my background as a Blockchain Architect to support founders well beyond the initial check. Whether I am auditing code or evaluating a seed round, **my philosophy remains rooted in open-source technologies and long-term fundamentals**. I am committed to building and backing resilient, secure solutions that drive the industry forward through sound engineering practices.
 
-## Links
-
-- [Twitter / X](https://x.com/cleanunicorn)
-- [GitHub](https://github.com/cleanunicorn)
-- [Linkedin](https://www.linkedin.com/in/luca-daniel-5227267/)
-- [Download CV (PDF)](/cv.pdf)
+**[Download my CV (PDF)](/cv.pdf)** — or find me on [X / Twitter](https://x.com/cleanunicorn), [GitHub](https://github.com/cleanunicorn) and [LinkedIn](https://www.linkedin.com/in/luca-daniel-5227267/).
 
 ---
 
@@ -38,6 +33,8 @@ This deep technical foundation eventually pulled me into **venture capital**, wh
 
 Sometimes, I give talks about things that I find interesting.
 
+<div class="cols">
+
 - [2025 ETHCluj - Beyond "Trust me, bro" Engineering LLM reliability](https://youtu.be/PZtU1BapbJg)
 - [2025 Cypherpunk Congress #1 - The Privacy paradox in AI](https://youtu.be/bz6b6YeM4NM)
 - [2024 NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess](https://www.youtube.com/watch?v=4ibFG_Do1j0)
@@ -52,15 +49,17 @@ Sometimes, I give talks about things that I find interesting.
 - [The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence](https://thebitcoinpodcast.com/the-bitcoin-podcast-283/)
 - [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://youtu.be/c-5r4-5rxCA?t=5339)
 
+</div>
+
 ---
 
 ## Podcasts
 
 Or I am invited to podcasts:
 
-- [2025 Decentralized Al: The Next Shift - Daniel Luca](https://www.youtube.com/watch?v=ZmzPLI9CJRo)
+- [2025 Decentralized AI: The Next Shift - Daniel Luca](https://www.youtube.com/watch?v=ZmzPLI9CJRo)
 - [2025 The Code Is Law Movie, The DAO and Indexed Finance Heists, Crypto Culture](https://www.youtube.com/watch?v=CTUhbYXopys)
-- [2024 How VCs invests in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU)
+- [2024 How VCs invest in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU)
 
 ---
 
@@ -102,19 +101,22 @@ Portable, private AI memory: a vector database and MCP server you can plug into 
 I like science fiction, fantasy, comic books, philosophy and psychology.
 Some of the books I enjoyed:
 
-* **Algorithms to Live By**, by Brian Christian and Tom Griffiths
-* **The Three Body Problem** by Liu Cixin
+<div class="cols">
+<!-- BOOKS:START — managed by scripts/update_books.py via `make books`; edits between the markers are preserved and merged with Goodreads. -->
+
+* **The Hero of Ages** by Brandon Sanderson
+* **Harry Potter and the Prisoner of Azkaban** by J.K. Rowling
+* **Mistborn: The Final Empire** by Brandon Sanderson
+* **The Name of the Wind** by Patrick Rothfuss
+* **Venture Deals: Be Smarter than Your Lawyer and Venture Capitalist** by Brad Feld
 * **Project Hail Mary** by Andy Weir
-* **Mistborn Series** by Brandon Sanderson
-* **Watchmen** by Alan Moore
-* **Meditations** by Marcus Aurelius
-* **The Sense of Style** by Steven Pinker
-* **The Courage To Be Disliked** by Ichiro Kishimi, Fumitake Koga
-* **Thinking, Fast and Slow** by Daniel Kahneman
-* **Foundation series** by Isaac Asimov
-* **Predictably Irrational** by Dan Ariely
-* **American Gods** by Neil Gaiman
-* **Choose Yourself** by James Altucher
+* **Death's End** by Liu Cixin
+* **The Well of Ascension** by Brandon Sanderson
+* **Harry Potter and the Philosopher's Stone** by J.K. Rowling
+* **Harry Potter and the Chamber of Secrets** by J.K. Rowling
+
+<!-- BOOKS:END -->
+</div>
 
 <!-- ## Conferences
 

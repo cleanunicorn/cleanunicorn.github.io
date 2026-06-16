@@ -2,6 +2,7 @@
 date = '2019-02-11T12:47:55-03:00'
 draft = false
 title = 'Poison Block Explorer Byte Code'
+description = "How an attacker can trick a block explorer into showing harmless bytecode for a malicious contract — a reverted-transaction bug in BlockChair and BlockScout."
 readingTime = true
 +++
 
