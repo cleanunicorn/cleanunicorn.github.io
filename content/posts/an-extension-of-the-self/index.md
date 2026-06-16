@@ -6,7 +6,7 @@ authorTwitter = "cleanunicorn" #do not include @
 cover = ""
 # tags = ["ai", "llm", "mcp", "rag", "memory", "vector", "database"]
 keywords = ["ai", "llm", "rag", "memory", "vector", "database"]
-description = ""
+description = "Why today's AI tools suffer from 'digital amnesia' — and how to build portable, private long-term memory you actually own, with a working demo and code."
 showFullContent = false
 readingTime = true
 +++

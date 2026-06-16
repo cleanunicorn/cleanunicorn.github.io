@@ -18,7 +18,7 @@
 }
 
 .home-hero__eyebrow {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.7rem;
   font-size: calc(var(--font-size) * 0.85);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -51,14 +51,16 @@
 }
 
 .home-hero__headline {
-  margin: 0 0 0.6rem;
-  font-size: calc(var(--font-size) * 1.6);
-  line-height: 1.25;
+  margin: 0 0 0.85rem;
+  font-size: calc(var(--font-size) * 1.9);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
 }
 
 .home-hero__sub {
   margin: 0;
   max-width: 60ch;
+  line-height: 1.6;
   color: var(--c-text-soft);
 }
 

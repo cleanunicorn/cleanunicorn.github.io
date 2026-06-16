@@ -2,6 +2,7 @@
 date = '2024-06-13T14:44:47-03:00'
 draft = false
 title = 'The Inception of Doppelganger Networks'
+description = "A new class of chains that mirror Ethereum but bend its rules — how Shadow's 'free logs' work, and whether Doppelganger Networks are progress or recentralization."
 readingTime = true
 +++
 

@@ -1,7 +1,8 @@
 +++
 date = '2024-02-29T14:23:45+01:00'
 draft = false
-title = 'The Right Way to Use Transient Storage (Eip 1153)'
+title = 'The Right Way to Use Transient Storage (EIP 1153)'
+description = "Transient storage (EIP-1153) cuts gas costs but is easy to misuse — the traps that introduce bugs and widen the attack surface, and how to avoid them."
 readingTime = true
 +++
 
