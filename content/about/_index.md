@@ -104,19 +104,16 @@ Some of the books I enjoyed:
 <div class="cols">
 <!-- BOOKS:START — managed by scripts/update_books.py via `make books`; edits between the markers are preserved and merged with Goodreads. -->
 
-* **Algorithms to Live By**, by Brian Christian and Tom Griffiths
-* **The Three Body Problem** by Liu Cixin
+* **The Hero of Ages** by Brandon Sanderson
+* **Harry Potter and the Prisoner of Azkaban** by J.K. Rowling
+* **Mistborn: The Final Empire** by Brandon Sanderson
+* **The Name of the Wind** by Patrick Rothfuss
+* **Venture Deals: Be Smarter than Your Lawyer and Venture Capitalist** by Brad Feld
 * **Project Hail Mary** by Andy Weir
-* **Mistborn Series** by Brandon Sanderson
-* **Watchmen** by Alan Moore
-* **Meditations** by Marcus Aurelius
-* **The Sense of Style** by Steven Pinker
-* **The Courage To Be Disliked** by Ichiro Kishimi, Fumitake Koga
-* **Thinking, Fast and Slow** by Daniel Kahneman
-* **Foundation series** by Isaac Asimov
-* **Predictably Irrational** by Dan Ariely
-* **American Gods** by Neil Gaiman
-* **Choose Yourself** by James Altucher
+* **Death's End** by Liu Cixin
+* **The Well of Ascension** by Brandon Sanderson
+* **Harry Potter and the Philosopher's Stone** by J.K. Rowling
+* **Harry Potter and the Chamber of Secrets** by J.K. Rowling
 
 <!-- BOOKS:END -->
 </div>
