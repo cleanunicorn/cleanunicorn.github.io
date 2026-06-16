@@ -10,12 +10,7 @@ With a deep passion for open-source technologies, security, blockchain and Artif
 
 This deep technical foundation eventually pulled me into **venture capital**, where I now operate at the intersection of blockchain, AI, and security. I focus on research-driven technical due diligence and deal sourcing, utilizing my background as a Blockchain Architect to support founders well beyond the initial check. Whether I am auditing code or evaluating a seed round, **my philosophy remains rooted in open-source technologies and long-term fundamentals**. I am committed to building and backing resilient, secure solutions that drive the industry forward through sound engineering practices.
 
-## Links
-
-- [Twitter / X](https://x.com/cleanunicorn)
-- [GitHub](https://github.com/cleanunicorn)
-- [Linkedin](https://www.linkedin.com/in/luca-daniel-5227267/)
-- [Download CV (PDF)](/cv.pdf)
+**[Download my CV (PDF)](/cv.pdf)** — or find me on [X / Twitter](https://x.com/cleanunicorn), [GitHub](https://github.com/cleanunicorn) and [LinkedIn](https://www.linkedin.com/in/luca-daniel-5227267/).
 
 ---
 
@@ -58,9 +53,9 @@ Sometimes, I give talks about things that I find interesting.
 
 Or I am invited to podcasts:
 
-- [2025 Decentralized Al: The Next Shift - Daniel Luca](https://www.youtube.com/watch?v=ZmzPLI9CJRo)
+- [2025 Decentralized AI: The Next Shift - Daniel Luca](https://www.youtube.com/watch?v=ZmzPLI9CJRo)
 - [2025 The Code Is Law Movie, The DAO and Indexed Finance Heists, Crypto Culture](https://www.youtube.com/watch?v=CTUhbYXopys)
-- [2024 How VCs invests in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU)
+- [2024 How VCs invest in crypto](https://www.youtube.com/watch?v=SW-UNwZP5LU)
 
 ---
 

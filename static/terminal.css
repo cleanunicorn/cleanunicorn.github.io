@@ -1,5 +1,5 @@
-/* Fira Code: https://github.com/tonsky/FiraCode */
-@import url('https://cdn.staticdelivr.com/gfonts/css2?family=Fira+Code:wght@300..700&display=swap');
+/* Fira Code is self-hosted by the theme via @font-face (themes/terminal/assets/css/fonts.css);
+   no webfont @import is needed here. */
 
 :root {
   --background: #1a170f;

@@ -29,7 +29,7 @@ url = "/work/"
 
 [[stats]]
 value = "8+"
-label = "Marquee protocols audited"
+label = "Protocols audited"
 url = "/work/#security-researcher-consensys-diligence"
 
 [[stats]]
