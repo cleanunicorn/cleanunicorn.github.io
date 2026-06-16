@@ -37,6 +37,15 @@ h3 { font-size: calc(var(--font-size) * 1.12); }
 
 p { line-height: 1.7; }
 
+/* Long, short-item lists (About: Talks, Books) flow into balanced columns
+   on wide viewports and collapse to one column on narrow ones. */
+.cols ul {
+  column-width: 21rem;
+  column-gap: 2.5rem;
+  margin-top: 0.5rem;
+}
+.cols li { break-inside: avoid; }
+
 /* CV/Work date lines: a wholly-italic paragraph sitting directly under a
    section heading is metadata, not prose — render it as a quiet meta line. */
 .content h2 + p > em:only-child {

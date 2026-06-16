@@ -33,6 +33,8 @@ This deep technical foundation eventually pulled me into **venture capital**, wh
 
 Sometimes, I give talks about things that I find interesting.
 
+<div class="cols">
+
 - [2025 ETHCluj - Beyond "Trust me, bro" Engineering LLM reliability](https://youtu.be/PZtU1BapbJg)
 - [2025 Cypherpunk Congress #1 - The Privacy paradox in AI](https://youtu.be/bz6b6YeM4NM)
 - [2024 NFTBucharest - Decyphering the Bitcoin Ordinals Giant Mess](https://www.youtube.com/watch?v=4ibFG_Do1j0)
@@ -46,6 +48,8 @@ Sometimes, I give talks about things that I find interesting.
 - [BlockchainHackers IV - Mastering Ethereum CTFs](/presentations//blockchainhackers-iv/Mastering-Ethereum-CTFs.pdf)
 - [The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence](https://thebitcoinpodcast.com/the-bitcoin-podcast-283/)
 - [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://youtu.be/c-5r4-5rxCA?t=5339)
+
+</div>
 
 ---
 
@@ -97,6 +101,8 @@ Portable, private AI memory: a vector database and MCP server you can plug into 
 I like science fiction, fantasy, comic books, philosophy and psychology.
 Some of the books I enjoyed:
 
+<div class="cols">
+
 * **Algorithms to Live By**, by Brian Christian and Tom Griffiths
 * **The Three Body Problem** by Liu Cixin
 * **Project Hail Mary** by Andy Weir
@@ -110,6 +116,8 @@ Some of the books I enjoyed:
 * **Predictably Irrational** by Dan Ariely
 * **American Gods** by Neil Gaiman
 * **Choose Yourself** by James Altucher
+
+</div>
 
 <!-- ## Conferences
 

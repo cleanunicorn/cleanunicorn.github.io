@@ -24,7 +24,7 @@ proof = [
 # conservative and defensible. Set to an empty list to hide the band.
 [[stats]]
 value = "2017"
-label = "Securing Ethereum since"
+label = "Securing Ethereum"
 url = "/work/"
 
 [[stats]]
