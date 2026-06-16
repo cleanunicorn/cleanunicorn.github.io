@@ -2,22 +2,40 @@
 # Edit freely — consumed by layouts/index.html. No template changes needed.
 
 headline = "I help blockchain & AI founders ship systems that survive adversarial conditions."
-subheadline = "Security researcher, investor and builder. I audit the code, run the technical diligence, and back the teams building trust-minimized infrastructure."
+subheadline = "I audit the code, run the technical diligence, and back the teams building trust-minimized infrastructure — in the space since 2017."
+
+# Short identity line shown beside the portrait.
+name = "Daniel Luca"
+location = "Bucharest, Romania"
+status = "Open to audits & advisory"
 
 # Portrait shown in the hero. Lives in static/images/.
 photo = "/images/me.png"
 photoAlt = "Daniel Luca"
 
-# Credibility strip — names of notable audits, employers and stages.
-proof = [
+# Primary hero calls to action. The first is emphasised.
+[[actions]]
+label = "Request an audit"
+url = "https://www.linkedin.com/in/luca-daniel-5227267/"
+primary = true
+
+[[actions]]
+label = "Read the writing"
+url = "/posts/"
+
+# Credibility strip — framed honestly: protocols audited, firms advised, where
+# the work has been featured. Edit freely.
+[proof]
+label = "Audited · Advised · Featured"
+items = [
   "Uniswap",
   "Aave",
   "Filecoin",
   "Polygon",
   "ConsenSys Diligence",
   "Eden Block",
-  "DEF CON",
-  "Code Is Law",
+  "DEF CON 27",
+  "Code Is Law (2025)",
 ]
 
 # "By the numbers" credibility band. Edit freely — values are intentionally

@@ -1,35 +1,3 @@
-/* Sitewide "Connect" footer block (layouts/partials/extended_footer.html). */
-
-.connect-footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
-}
-
-.connect-footer__label {
-  font-size: calc(var(--font-size) * 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: color-mix(in srgb, var(--foreground) 55%, var(--background));
-}
-
-.connect-footer__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.connect-footer__links li::before {
-  content: "";
-}
-
-.connect-footer__links a {
-  font-size: calc(var(--font-size) * 0.85);
-}
+/* Connect-footer styles moved to z-layout.css; Contact-page styles moved to
+   z-content.css (.page-contact). This file is intentionally empty, kept so any
+   external reference to it still resolves. */

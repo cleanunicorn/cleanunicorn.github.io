@@ -1,0 +1,151 @@
+/* =============================================================================
+   z-content.css — Long-form pages: About, Work, prose
+   -----------------------------------------------------------------------------
+   Turns dense walls of monospace into scannable, hierarchical documents while
+   keeping the terminal voice. Scoped to .index-content (About) and the per-page
+   classes (.page-work) so blog-post bodies are unaffected.
+   ========================================================================== */
+
+/* ---- Section headings in prose -------------------------------------------- */
+/* A quiet emerald tick marks top-level sections — a single, consistent device. */
+.content h2:not(.page-title):not(.post-title)::before {
+  content: "";
+  display: inline-block;
+  width: 0.85em;
+  height: 0.14em;
+  margin-right: 0.55em;
+  vertical-align: 0.22em;
+  background: var(--accent);
+}
+.table-of-contents h2::before,
+.section-head__more::before { content: none !important; }
+
+/* ---- Generic prose page --------------------------------------------------- */
+.index-content { margin: 0; }
+.index-content > p,
+.index-content > ul,
+.index-content > ol { max-width: var(--measure); }
+.index-content > p:first-child { font-size: 1.08rem; line-height: 1.7; color: var(--text); }
+
+/* ---- About: highlights ---------------------------------------------------- */
+/* The four headline credibility lines — give them weight and breathing room. */
+.index-content--about h2 + ul {
+  max-width: var(--measure);
+  list-style: none;
+  margin-left: 0;
+}
+.index-content--about h2 + ul > li {
+  position: relative;
+  padding-left: 1.4em;
+  margin: var(--sp-3) 0;
+  line-height: 1.6;
+}
+.index-content--about h2 + ul > li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+/* ---- Multi-column lists (Talks, Books) ------------------------------------ */
+.cols ul {
+  column-width: 20rem;
+  column-gap: var(--sp-7);
+  margin-top: var(--sp-3);
+  max-width: none;
+}
+.cols li { break-inside: avoid; }
+
+/* ---- About: projects ------------------------------------------------------ */
+/* Featured projects read as a clean, editorial register — accent name, then a
+   tight description — like well-kept `ls` output. */
+.index-content--about h3 {
+  margin: var(--sp-5) 0 var(--sp-1);
+  font-size: 1.05rem;
+}
+.index-content--about h3 a { color: var(--accent); text-decoration: none; }
+.index-content--about h3 a:hover { color: var(--accent-bright); }
+.index-content--about h3 + p {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+/* ---- Work: timeline ------------------------------------------------------- */
+.page-work .post-content { margin-top: var(--sp-6); }
+
+/* Continuous rail down the experience. */
+.page-work .post-content > div {
+  position: relative;
+  padding-left: var(--sp-6);
+  border-left: 1px solid var(--hairline);
+}
+.page-work hr { display: none; }      /* role headings provide the rhythm */
+
+/* Each role = a node on the rail. */
+.page-work .post-content h2 {
+  position: relative;
+  margin-top: var(--sp-7);
+  font-size: 1.18rem;
+}
+.page-work .post-content h2:first-child { margin-top: 0; }
+.page-work .post-content h2::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--sp-6) * -1 - 0.5px);
+  top: 0.5em;
+  width: 9px; height: 9px;
+  margin: 0;
+  transform: translateX(-50%);
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--background);
+}
+
+/* The italic date line directly under a role → a quiet meta label. */
+.page-work .post-content h2 + p > em:only-child {
+  display: inline-block;
+  margin: 0.1rem 0 var(--sp-2);
+  font-style: normal;
+  font-size: var(--fs-small);
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+.page-work .post-content p,
+.page-work .post-content ul { max-width: var(--measure); color: var(--text-body); }
+.page-work .post-content ul { margin-top: var(--sp-2); }
+
+/* ---- Contact -------------------------------------------------------------- */
+.page-contact .post-content { margin-top: var(--sp-5); }
+.page-contact .post-content h2 { margin-top: var(--sp-7); }
+.page-contact .post-content h3 {
+  margin: var(--sp-5) 0 var(--sp-2);
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.page-contact .post-content h3 + p { max-width: var(--measure); color: var(--text-body); }
+
+/* The "→ Best via …" routing line. */
+.page-contact .post-content p:has(a) + p { margin-top: var(--sp-1); }
+
+/* "Find me" link list → quiet, tappable rows. */
+.page-contact .post-content h2:last-of-type + ul {
+  list-style: none;
+  margin-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-5);
+}
+.page-contact .post-content h2:last-of-type + ul li { margin: 0; }
+.page-contact .post-content h2:last-of-type + ul a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--hairline-strong);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.page-contact .post-content h2:last-of-type + ul a:hover { border-color: var(--accent); color: var(--accent); }

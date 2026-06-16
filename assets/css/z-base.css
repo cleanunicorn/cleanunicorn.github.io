@@ -1,37 +1,240 @@
-/* Shared primitives for the custom (z-*) stylesheets, layered on the terminal
-   theme's CSS variables. Loaded alongside the other z-*.css files by the
-   theme's asset pipeline (resources.Match "css/*.css"). */
+/* =============================================================================
+   z-base.css — Design system foundation
+   -----------------------------------------------------------------------------
+   The single source of truth for the site's visual language: design tokens,
+   base element typography, accessibility utilities and motion. Layered on top
+   of the terminal theme's main.css (loaded earlier by the asset pipeline), so
+   the rules here win. Component styles live in the other z-*.css files and
+   inherit every token defined below.
 
-/* Semantic tones derived from the theme palette, reused across z-*.css so the
-   color-mix recipes live in one place. */
+   Direction: a refined terminal — monospace throughout, warm near-black ground,
+   a single emerald accent. The "hacker" identity is the brand (security
+   researcher / CleanUnicorn); the craft is in the hierarchy, rhythm and
+   restraint, not in decoration.
+   ========================================================================== */
+
 :root {
-  --c-text-soft:  color-mix(in srgb, var(--foreground) 80%, var(--background));
-  --c-text-muted: color-mix(in srgb, var(--foreground) 70%, var(--background));
-  --c-text-faint: color-mix(in srgb, var(--foreground) 55%, var(--background));
-  --c-hairline:   color-mix(in srgb, var(--foreground) 12%, transparent);
-  --c-error:      #e06c75; /* terminal red, used for error text */
+  /* ---- Palette ------------------------------------------------------------ */
+  --background: #1a170f;        /* warm near-black ground                      */
+  --foreground: #eceae5;        /* warm white                                  */
+  --accent:        #3fd68a;     /* emerald — 9.5:1 on --background (AAA)        */
+  --accent-bright: #74e7af;     /* hover / active                              */
+
+  /* Surfaces — depth comes from warm tints + hairlines, never soft shadows.   */
+  --surface-1:      #201c13;    /* cards, wells                                */
+  --surface-2:      #26221833;  /* faint raised wash                           */
+  --accent-wash:        color-mix(in srgb, var(--accent) 9%,  var(--background));
+  --accent-wash-strong: color-mix(in srgb, var(--accent) 15%, var(--background));
+
+  /* Text ramp — every value verified ≥ WCAG AA on --background.               */
+  --text:        #eceae5;       /* 14.9:1 — headings, emphasis                 */
+  --text-body:   #dcd9d1;       /* 12.7:1 — long-form body copy                */
+  --text-muted:  #adaba5;       /*  7.8:1 — meta, secondary, dates             */
+  --text-faint:  #97958e;       /*  6.0:1 — small uppercase labels             */
+
+  /* Lines */
+  --hairline:        color-mix(in srgb, var(--foreground) 13%, transparent);
+  --hairline-strong: color-mix(in srgb, var(--foreground) 24%, transparent);
+  --accent-line:     color-mix(in srgb, var(--accent) 38%, transparent);
+
+  /* Semantic */
+  --danger: #e06c75;            /* terminal red — errors, the DAO/heist motif  */
+
+  /* Back-compat aliases for tokens referenced by older z-*.css rules.         */
+  --c-text-soft:  var(--text-body);
+  --c-text-muted: var(--text-muted);
+  --c-text-faint: var(--text-faint);
+  --c-hairline:   var(--hairline);
+  --c-error:      var(--danger);
+  --muted:        var(--text-muted);
+
+  /* ---- Type --------------------------------------------------------------- */
+  --font-mono:
+    "Fira Code", "JetBrains Mono", ui-monospace, "SFMono-Regular",
+    Menlo, Monaco, Consolas, "Ubuntu Mono", monospace;
+
+  --font-size: 1rem;            /* 16px base                                   */
+  --line-height: 1.62;          /* base UI leading                             */
+  --leading-prose: 1.78;        /* long-form reading                           */
+  --leading-tight: 1.18;        /* display / headings                          */
+  --measure: 66ch;              /* prose line length — lands ~60–68 chars      */
+
+  /* Modular type scale (fluid where it earns it). */
+  --fs-display: clamp(1.9rem, 1.18rem + 3.0vw, 2.9rem);
+  --fs-h1:      clamp(1.55rem, 1.28rem + 1.1vw, 1.95rem);
+  --fs-h2:      1.32rem;
+  --fs-h3:      1.1rem;
+  --fs-small:   0.82rem;
+  --fs-micro:   0.74rem;
+
+  /* ---- Spacing (8px base) ------------------------------------------------- */
+  --sp-1: 0.25rem;  --sp-2: 0.5rem;  --sp-3: 0.75rem; --sp-4: 1rem;
+  --sp-5: 1.5rem;   --sp-6: 2rem;    --sp-7: 3rem;    --sp-8: 4rem;  --sp-9: 6rem;
+
+  /* ---- Form ---------------------------------------------------------------- */
+  --radius: 0;                  /* sharp corners are part of the terminal look */
+  --radius-sm: 2px;
+
+  /* ---- Motion ------------------------------------------------------------- */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --dur-slow: 280ms;
 }
 
-/* Visually hidden, but exposed to assistive technology. */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
+/* Reset residual UA margins (theme only normalises box-sizing). */
+*, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
+
+/* ---- Body & rhythm -------------------------------------------------------- */
+body {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-variant-ligatures: contextual;
+  line-height: var(--line-height);
+  color: var(--text-body);
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Consistent vertical rhythm — tighter and more deliberate than the theme's
+   blanket 25px. */
+p, ul, ol, figure, table, pre, blockquote { margin: 0 0 var(--sp-5); }
+h1, h2, h3, h4, h5, h6 { margin: var(--sp-6) 0 var(--sp-4); }
+* + h2 { margin-top: var(--sp-7); }
+:where(h1, h2, h3, h4, h5, h6):first-child { margin-top: 0; }
+
+/* ---- Headings ------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+h4, h5, h6 { font-size: var(--font-size); }
+
+b, strong, th { font-weight: 600; color: var(--text); }
+
+/* ---- Links ---------------------------------------------------------------- */
+a { color: var(--accent); }
+
+.content a {
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--accent-line);
+  transition: color var(--dur-fast) var(--ease),
+              text-decoration-color var(--dur-fast) var(--ease);
+}
+.content a:hover { color: var(--accent-bright); text-decoration-color: currentColor; }
+
+/* ---- Prose primitives ----------------------------------------------------- */
+.content p { line-height: var(--leading-prose); }
+
+/* Constrain measure on flowing copy for comfortable reading. */
+.post-content p, .post-content ul, .post-content ol,
+.index-content p, .index-content ul, .index-content ol,
+.notfound__lede { max-width: var(--measure); }
+
+ul, ol { margin-left: 1.4em; }
+.content li { margin: var(--sp-2) 0; line-height: 1.65; }
+li::marker { color: var(--accent); }
+
+hr {
   border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
+  height: 1px;
+  background: var(--hairline);
+  margin: var(--sp-7) 0;
 }
 
-/* Blinking terminal cursor, shared by the hero and 404 cursors. */
-@keyframes blink {
-  50% { opacity: 0; }
+blockquote {
+  margin: var(--sp-5) 0;
+  padding: 0.2rem 0 0.2rem var(--sp-4);
+  border: 0;
+  border-left: 2px solid var(--accent);
+  color: var(--text-muted);
+  font-style: italic;
+}
+blockquote::before { content: none; }
+
+/* ---- Code ----------------------------------------------------------------- */
+code, kbd {
+  color: color-mix(in srgb, var(--foreground) 6%, var(--accent));
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.05em 0.4em;
+  font-size: 0.92em;
+}
+pre {
+  color: color-mix(in srgb, var(--foreground) 6%, var(--accent));
+  background: var(--surface-1) !important;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+pre code { border: 0; background: none; padding: 0; }
+
+/* ---- Media ---------------------------------------------------------------- */
+.content img {
+  margin-inline: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+
+/* ---- Tables --------------------------------------------------------------- */
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--hairline); padding: var(--sp-2) var(--sp-3); text-align: left; }
+thead th { background: var(--accent-wash); letter-spacing: 0.03em; }
+
+/* ---- Accessibility & utilities -------------------------------------------- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Skip link — first focusable element, visible only when focused. */
+.skip-link {
+  position: absolute;
+  left: var(--sp-3);
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 0.9rem;
+  background: var(--accent);
+  color: var(--background);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top var(--dur) var(--ease);
+}
+.skip-link:focus { top: var(--sp-3); }
+
+/* Unified, high-visibility focus ring. */
+a:focus-visible, button:focus-visible, .button:focus-visible,
+input:focus-visible, textarea:focus-visible, select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection { background: color-mix(in srgb, var(--accent) 80%, var(--background)); color: var(--background); }
+
+/* ---- Motion --------------------------------------------------------------- */
+@keyframes blink { 50% { opacity: 0; } }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-hero__cursor,
-  .notfound__cursor { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

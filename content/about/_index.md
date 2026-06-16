@@ -4,11 +4,11 @@ draft = false
 description = "Daniel Luca (CleanUnicorn) — self-taught software engineer, Ethereum security auditor and investor working in blockchain since 2017, now a Technical Partner in venture capital at the intersection of blockchain, AI and security."
 +++
 
-I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania, a self-taught **software engineer**, **Ethereum security auditor** and **investor** working in the blockchain space **since 2017**.
+I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania — a self-taught **software engineer**, **Ethereum security auditor** and **investor** working in blockchain **since 2017**.
 
-With a deep passion for open-source technologies, security, blockchain and Artificial Intelligence, I bring a practitioner’s mindset to every project. I prioritize trust-minimized architectures and rigorous code reviews to ensure systems hold up under real adversarial conditions, rather than relying on short-lived narratives.
+I care about open source, security, and getting the details right. I favour trust-minimized architectures and adversarial code review: systems that hold up under attack, not ones that ride a narrative.
 
-This deep technical foundation eventually pulled me into **venture capital**, where I now operate at the intersection of blockchain, AI, and security. I focus on research-driven technical due diligence and deal sourcing, utilizing my background as a Blockchain Architect to support founders well beyond the initial check. Whether I am auditing code or evaluating a seed round, **my philosophy remains rooted in open-source technologies and long-term fundamentals**. I am committed to building and backing resilient, secure solutions that drive the industry forward through sound engineering practices.
+That technical grounding pulled me into **venture capital**, where I run research-driven technical diligence and source deals at the intersection of blockchain, AI and security. Whether I'm auditing a contract or evaluating a seed round, **the lens is the same — open source, sound engineering and long-term fundamentals over hype.**
 
 **[Download my CV (PDF)](/cv.pdf)** — or find me on [X / Twitter](https://x.com/cleanunicorn), [GitHub](https://github.com/cleanunicorn) and [LinkedIn](https://www.linkedin.com/in/luca-daniel-5227267/).
 

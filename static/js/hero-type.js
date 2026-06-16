@@ -9,7 +9,7 @@
   var CHAR_JITTER_MS = 34;  // random extra delay, for an irregular human cadence
   var START_DELAY_MS = 300; // pause before typing so the prompt registers first
 
-  var el = document.querySelector(".home-hero__roles[data-typewriter]");
+  var el = document.querySelector(".hero__roles[data-typewriter]");
   if (!el) return;
 
   var reduce = window.matchMedia &&
@@ -18,10 +18,12 @@
 
   var full = el.textContent;
 
-  // Reserve the rendered width before clearing so the line doesn't collapse and
-  // reflow as it types back out (avoids layout shift / a jumping headline).
+  // Reserve the rendered height before clearing so the block doesn't collapse
+  // vertically as it types (avoids layout shift / a jumping headline). Height,
+  // not width — reserving width overflows the column on narrow screens where
+  // the role line wraps.
   el.style.display = "inline-block";
-  el.style.minWidth = el.getBoundingClientRect().width + "px";
+  el.style.minHeight = el.getBoundingClientRect().height + "px";
 
   el.textContent = "";
 

@@ -2,6 +2,8 @@
 title = "Work"
 draft = false
 slug = "work"
+class = "page-work"
+lede = "From building Ethereum's early analytics pipeline to auditing the protocols millions rely on — and now backing the teams building what's next."
 description = "Daniel Luca's work history — Technical Partner at Eden Block, security researcher at ConsenSys Diligence (Uniswap, Aave, Filecoin, Polygon audits), founder of Akira Tech, and co-founder of multiple startups."
 +++
 
@@ -9,7 +11,7 @@ description = "Daniel Luca's work history — Technical Partner at Eden Block, s
 
 *November 2022 – Present*
 
-Technical Partner at [Eden Block](https://edenblock.com) an early-stage venture capital firm focused on blockchain, Web3 infrastructure and Decentralized AI. Provided technical diligence and research for investment decisions, advised portfolio companies on product strategy, software architecture, and security best practices. Collaborated with founders and teams across the portfolio to address technical challenges and drive technology adoption. Helped shape Eden Block’s research-driven investment approach and supported the growth of startups building the foundational layers of the decentralized internet.
+Technical diligence and research partner at [Eden Block](https://edenblock.com), an early-stage VC backing blockchain, Web3 infrastructure and decentralized AI. I run the technical evaluation behind investment decisions and work hands-on with founders on architecture, security and product — from first check through scaling — helping shape the firm's research-driven approach.
 
 Worked closely with portfolio companies such as:
 

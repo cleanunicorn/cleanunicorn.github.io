@@ -2,11 +2,11 @@
 title = "Connect"
 draft = false
 slug = "contact"
+class = "page-contact"
+lede = "I'm always happy to talk to people building serious things in blockchain, security and AI. The fastest way to reach me is a DM on X or a message on LinkedIn."
 description = "Get in touch with Daniel Luca — smart-contract audits, technical diligence, investment, speaking and collaboration."
 showFullContent = true
 +++
-
-I'm always happy to talk to people building serious things in blockchain, security and AI. The fastest way to reach me is a DM on X or a message on LinkedIn — pick whichever fits.
 
 ## I'd love to hear from you if…
 

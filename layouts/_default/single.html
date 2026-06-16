@@ -1,0 +1,56 @@
+{{ define "main" }}
+<article class="post{{ with .Params.class }} {{ . }}{{ end }}">
+  <header class="page-head">
+    <h1 class="page-title">{{ .Title | markdownify }}</h1>
+    <div class="post-meta">
+      {{- if and .Date (eq .Type "posts") -}}
+        <time class="post-date">
+          {{- partial "post-date" . -}}
+          {{- if and $.Site.Params.showLastUpdated .Lastmod -}}
+            &nbsp;{{- partial "post-lastmod" . -}}
+          {{- end -}}
+        </time>
+      {{- end -}}
+      {{- if eq .Type "posts" -}}
+        <span class="post-readtime">{{ .ReadingTime }} min read</span>
+      {{- end -}}
+      {{- with .Params.Author -}}
+        <span class="post-author">{{ . }}</span>
+      {{- end -}}
+    </div>
+    {{ with .Params.lede }}<p class="page-lede">{{ . | markdownify }}</p>{{ end }}
+  </header>
+
+  {{ if .Params.tags }}
+    <span class="post-tags">
+      {{ range .Params.tags }}
+      #<a href="{{ (urlize (printf "tags/%s/" .)) | absLangURL }}">{{ . }}</a>&nbsp;
+      {{ end }}
+    </span>
+  {{ end }}
+  {{ partial "cover.html" . }}
+
+  {{ if (.Params.Toc | default .Site.Params.Toc) }}
+    <div class="table-of-contents">
+      <h2>{{ (.Params.TocTitle | default .Site.Params.TocTitle) | default "Table of Contents" }}</h2>
+      {{ .TableOfContents }}
+    </div>
+  {{ end }}
+
+  <div class="post-content">
+    {{- with .Content -}}
+      <div>
+        {{ . | replaceRE "(<h[1-9] id=\"([^\"]+)\".+)(</h[1-9]+>)" `${1}<a href="#${2}" class="hanchor" ariaLabel="Anchor">#</a> ${3}` | safeHTML }}
+      </div>
+    {{- end -}}
+  </div>
+
+  {{ if eq .Type $.Site.Params.contentTypeName }}
+    {{ partial "posts_pagination.html" . }}
+  {{ end }}
+
+  {{ if not (.Params.hideComments | default false) }}
+    {{ partial "comments.html" . }}
+  {{ end }}
+</article>
+{{ end }}

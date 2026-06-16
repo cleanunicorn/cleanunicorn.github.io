@@ -1,0 +1,126 @@
+/* =============================================================================
+   z-layout.css — Header, navigation, footer
+   -----------------------------------------------------------------------------
+   Strips the terminal theme's template tells (the emerald "barcode" stripe, the
+   "made by panr" colophon) and rebuilds the chrome with deliberate hierarchy.
+   ========================================================================== */
+
+/* ---- Container ------------------------------------------------------------ */
+.container.center { max-width: 53rem; padding: var(--sp-6) var(--sp-6) 0; }
+
+/* ---- Header / masthead ---------------------------------------------------- */
+.header { margin-bottom: var(--sp-6); }
+
+.header__inner { gap: var(--sp-4); padding-top: var(--sp-2); }
+
+/* Kill the theme's decorative repeating-gradient "barcode" — the loudest
+   template tell on the page. Replace with a quiet hairline that ties the logo
+   into the grid. */
+.header__logo::after {
+  content: "";
+  align-self: center;
+  height: 1px;
+  margin-left: var(--sp-4);
+  background: var(--hairline);
+}
+
+/* Logo: a terminal prompt mark, not a filled chip. Reads as identity, not UI. */
+.logo {
+  background: transparent;
+  color: var(--text);
+  padding: 0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.logo::before {
+  content: "~/";
+  color: var(--accent);
+  font-weight: 400;
+  margin-right: 0.1ch;
+}
+.header__logo a { transition: opacity var(--dur) var(--ease); }
+.header__logo a:hover { opacity: 0.78; }
+
+/* ---- Primary navigation --------------------------------------------------- */
+.navigation-menu { margin: var(--sp-3) 0 0; }
+
+.navigation-menu__inner > li:not(:last-of-type) { margin-right: var(--sp-5); }
+
+.navigation-menu a {
+  position: relative;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding-bottom: 3px;
+  transition: color var(--dur-fast) var(--ease);
+}
+.navigation-menu a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.navigation-menu a:hover { color: var(--text); }
+.navigation-menu a:hover::after,
+.navigation-menu a[aria-current="page"]::after { transform: scaleX(1); }
+.navigation-menu a[aria-current="page"] { color: var(--accent); }
+
+/* Mobile-menu trigger inherits accent; keep it crisp. */
+.menu--mobile .menu__trigger { border-color: var(--accent-line); }
+
+/* ---- Footer colophon ------------------------------------------------------ */
+.footer { padding: var(--sp-7) 0 var(--sp-5); opacity: 1; }
+.footer__inner { justify-content: flex-start; }
+
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-4);
+  width: 100%;
+  font-size: var(--fs-small);
+  color: var(--text-faint);
+}
+.colophon a { color: var(--text-muted); text-decoration: none; }
+.colophon a:hover { color: var(--accent); }
+.colophon__sep { color: var(--hairline-strong); }
+
+/* ---- Connect block (extended_footer.html) --------------------------------- */
+.connect-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-5);
+  margin-top: 0;
+  padding: var(--sp-5) 0 var(--sp-7);
+  border-top: 1px solid var(--hairline);
+}
+.connect-footer__label {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-faint);
+}
+.connect-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  margin: 0; padding: 0;
+  list-style: none;
+}
+.connect-footer__links li::before { content: ""; }
+.connect-footer__links a {
+  font-size: var(--fs-small);
+  color: var(--text);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+.connect-footer__links a:hover { color: var(--accent); }
+
+@media (max-width: 560px) {
+  .container.center { padding: var(--sp-5) var(--sp-5) 0; }
+}

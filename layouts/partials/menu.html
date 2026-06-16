@@ -1,0 +1,39 @@
+{{- /* Primary navigation. Overrides the theme partial to mark the active
+   section with aria-current="page" (drives the active underline + colour in
+   z-layout.css and improves screen-reader orientation). */ -}}
+{{- $currentPage := . -}}
+<nav class="navigation-menu" aria-label="Primary">
+  <ul class="navigation-menu__inner menu--desktop">
+    {{ if or $.Site.Params.showMenuItems ( eq .Site.Params.showMenuItems 0 ) }}
+      {{ range first $.Site.Params.showMenuItems $.Site.Menus.main }}
+        {{ if not .HasChildren }}
+          {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) (and (ne .URL "/") (hasPrefix $currentPage.RelPermalink (.URL | relLangURL))) }}
+          <li><a href="{{ .URL }}"{{ if $active }} aria-current="page"{{ end }}{{ if .Params.NewTab }} target="_blank"{{ end }}>{{ .Name }}</a></li>
+        {{ end }}
+      {{ end }}
+      {{ if gt (len $.Site.Menus.main) $.Site.Params.showMenuItems }}
+        <li>
+          <ul class="menu">
+            <li class="menu__trigger">{{ $.Site.Params.menuMore }}&nbsp;▾</li>
+            <li>
+              <ul class="menu__dropdown">
+                {{ range last (sub (len $.Site.Menus.main) $.Site.Params.showMenuItems) $.Site.Menus.main }}
+                  {{ if not .HasChildren }}
+                    <li><a href="{{ .URL }}"{{ if .Params.NewTab }} target="_blank"{{ end }}>{{ .Name }}</a></li>
+                  {{ end }}
+                {{ end }}
+              </ul>
+            </li>
+          </ul>
+        </li>
+      {{ end }}
+    {{ else }}
+      {{ range $.Site.Menus.main }}
+        {{ if not .HasChildren }}
+          {{ $active := or ($currentPage.IsMenuCurrent "main" .) (and (ne .URL "/") (hasPrefix $currentPage.RelPermalink (.URL | relLangURL))) }}
+          <li><a href="{{ .URL }}"{{ if $active }} aria-current="page"{{ end }}{{ if .Params.NewTab }} target="_blank"{{ end }}>{{ .Name }}</a></li>
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  </ul>
+</nav>

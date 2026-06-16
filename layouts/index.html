@@ -1,27 +1,42 @@
 {{ define "main" }}
   {{ $home := $.Site.Data.home }}
 
-  <section class="home-hero">
-    {{ with $home.photo }}
-      <img class="home-hero__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="160" height="160" loading="eager">
-    {{ end }}
-    <div class="home-hero__body">
-      <p class="home-hero__eyebrow">
-        <span class="home-hero__prompt" aria-hidden="true">~$ whoami</span>
-        <span class="home-hero__roles" data-typewriter>{{ $.Site.Params.Subtitle }}</span><span class="home-hero__cursor" aria-hidden="true"></span>
+  <section class="hero">
+    <div class="hero__intro">
+      <p class="hero__eyebrow">
+        <span class="hero__prompt" aria-hidden="true">~$ whoami</span>
+        <span class="hero__roles" data-typewriter>{{ $.Site.Params.Subtitle }}</span><span class="hero__cursor" aria-hidden="true"></span>
       </p>
-      <h1 class="home-hero__headline">{{ $home.headline | default $.Site.Title }}</h1>
+      <h1 class="hero__headline">{{ $home.headline | default $.Site.Title }}</h1>
       {{ with $home.subheadline }}
-        <p class="home-hero__sub">{{ . }}</p>
+        <p class="hero__sub">{{ . }}</p>
+      {{ end }}
+      {{ with $home.actions }}
+        <div class="hero__actions">
+          {{ range . }}
+            <a class="btn{{ if .primary }} btn--primary{{ end }}" href="{{ .url }}">{{ .label }}{{ if .primary }} <span aria-hidden="true">→</span>{{ end }}</a>
+          {{ end }}
+        </div>
       {{ end }}
     </div>
+
+    {{ with $home.photo }}
+      <aside class="hero__card">
+        <img class="hero__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="200" height="200" loading="eager" fetchpriority="high">
+        <p class="hero__id">
+          <span class="hero__name">{{ $home.name | default $.Site.Title }}</span>
+          {{ with $home.location }}<span class="hero__meta">{{ . }}</span>{{ end }}
+          {{ with $home.status }}<span class="hero__avail"><span class="hero__dot" aria-hidden="true"></span>{{ . }}</span>{{ end }}
+        </p>
+      </aside>
+    {{ end }}
   </section>
 
   {{ with $home.proof }}
-    <section class="proof-strip" aria-label="Selected audits and affiliations">
-      <span class="proof-strip__label">Trusted on</span>
-      <ul class="proof-strip__items">
-        {{ range . }}
+    <section class="proof" aria-label="Track record">
+      <span class="proof__label">{{ .label | default "Selected work" }}</span>
+      <ul class="proof__items">
+        {{ range .items }}
           <li>{{ . }}</li>
         {{ end }}
       </ul>
@@ -29,19 +44,19 @@
   {{ end }}
 
   {{ with $home.stats }}
-    <section class="home-stats" aria-label="Track record by the numbers">
+    <section class="stats" aria-label="Track record by the numbers">
       {{ range . }}
         {{ if .url }}
-          <a class="home-stats__item home-stats__item--link" href="{{ .url }}">
+          <a class="stats__item stats__item--link" href="{{ .url }}">
             <span class="sr-only">{{ .label }}: {{ .value }}</span>
-            <span class="home-stats__value" aria-hidden="true">{{ .value }}</span>
-            <span class="home-stats__label" aria-hidden="true">{{ .label }}</span>
+            <span class="stats__value" aria-hidden="true">{{ .value }}</span>
+            <span class="stats__label" aria-hidden="true">{{ .label }}</span>
           </a>
         {{ else }}
-          <div class="home-stats__item">
+          <div class="stats__item">
             <span class="sr-only">{{ .label }}: {{ .value }}</span>
-            <span class="home-stats__value" aria-hidden="true">{{ .value }}</span>
-            <span class="home-stats__label" aria-hidden="true">{{ .label }}</span>
+            <span class="stats__value" aria-hidden="true">{{ .value }}</span>
+            <span class="stats__label" aria-hidden="true">{{ .label }}</span>
           </div>
         {{ end }}
       {{ end }}
@@ -49,14 +64,17 @@
   {{ end }}
 
   {{ with $home.cta }}
-    <section class="home-cta" aria-label="Ways to work together">
-      {{ range . }}
-        <div class="home-cta__card{{ if .primary }} home-cta__card--primary{{ end }}">
-          <h2 class="home-cta__title">{{ .title }}</h2>
-          <p class="home-cta__text">{{ .text }}</p>
-          <a class="home-cta__link button inline" href="{{ .url }}">{{ .label }} &rarr;</a>
-        </div>
-      {{ end }}
+    <section class="offer" aria-label="Ways to work together">
+      <h2 class="section-head">How I can help</h2>
+      <div class="offer__grid">
+        {{ range . }}
+          <a class="offer__card{{ if .primary }} offer__card--primary{{ end }}" href="{{ .url }}">
+            <h3 class="offer__title">{{ .title }}</h3>
+            <p class="offer__text">{{ .text }}</p>
+            <span class="offer__link">{{ .label }} <span aria-hidden="true">→</span></span>
+          </a>
+        {{ end }}
+      </div>
     </section>
   {{ end }}
 
@@ -64,10 +82,10 @@
     <div class="index-content">{{ .Content }}</div>
   {{ end }}
 
-  <section class="home-writing">
-    <div class="home-writing__head">
+  <section class="writing">
+    <div class="section-head section-head--row">
       <h2>Latest writing</h2>
-      <a class="home-writing__all" href="{{ "posts/" | absLangURL }}">All posts &rarr;</a>
+      <a class="section-head__more" href="{{ "posts/" | absLangURL }}">All posts <span aria-hidden="true">→</span></a>
     </div>
     <div class="posts">
       {{ $posts := where $.Site.RegularPages "Type" "posts" }}
@@ -80,12 +98,13 @@
             {{- if .Date -}}
               <time class="post-date">{{- partial "post-date" . -}}</time>
             {{- end -}}
+            <span class="post-readtime">{{ .ReadingTime }} min read</span>
           </div>
           <div class="post-content">
             {{ if .Description }}<p>{{ .Description | markdownify }}</p>{{ else }}{{ .Summary }}{{ end }}
           </div>
           <div>
-            <a class="read-more button inline" href="{{ .RelPermalink }}">[{{ $.Site.Params.ReadMore }}]</a>
+            <a class="read-more button inline" href="{{ .RelPermalink }}">Read more <span aria-hidden="true">→</span></a>
           </div>
         </article>
       {{ end }}

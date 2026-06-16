@@ -13,11 +13,25 @@
 
 {{ template "_internal/google_analytics.html" . }}
 
-{{ $css := resources.Match "css/*.css" }}
-{{ range $css }}
-  {{ $styles := . | minify | fingerprint }}
-  <link rel="stylesheet" href="{{ $styles.Permalink }}">
+{{- /* Load order matters: the terminal theme's own CSS first, then the site's
+   z-*.css design-system layer so its tokens and overrides win cleanly.
+   (resources.Match otherwise returns project assets before theme assets.) */ -}}
+{{ $all := resources.Match "css/*.css" }}
+{{ $theme := slice }}
+{{ $design := slice }}
+{{ range $all }}
+  {{ if hasPrefix (path.Base .Name) "z-" }}
+    {{ $design = $design | append . }}
+  {{ else }}
+    {{ $theme = $theme | append . }}
+  {{ end }}
 {{ end }}
+{{- /* append B A => [A..., B...]; we want theme first, then the design layer.
+   Concatenate into a single fingerprinted bundle (one request instead of ~20). */ -}}
+{{ $bundle := (append $design $theme) | resources.Concat "css/site.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $bundle.RelPermalink }}">
+<link rel="preload" as="font" type="font/woff2" href="{{ "fonts/FiraCode-Latin.woff2" | relURL }}" crossorigin>
+
 <!-- Custom Terminal.css styles -->
 {{ if (fileExists "static/terminal.css") -}}
   <link rel="stylesheet" href="{{ "terminal.css" | absURL }}">

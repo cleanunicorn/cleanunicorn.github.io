@@ -1,0 +1,22 @@
+{{- /* Footer. Overrides the theme partial to replace the "Powered by Hugo ::
+   Theme made by panr" colophon (a credibility leak on a personal brand site)
+   with a quiet, owned colophon. The theme's JS bundle (mobile menu + code-copy)
+   and the extended footer are preserved. */ -}}
+<footer class="footer">
+  <div class="footer__inner">
+    <p class="colophon">
+      <span>© {{ now.Year }} {{ $.Site.Params.owner | default $.Site.Title }}</span>
+      <span class="colophon__sep" aria-hidden="true">·</span>
+      <span>Bucharest, Romania</span>
+      <span class="colophon__sep" aria-hidden="true">·</span>
+      <a href="https://github.com/cleanunicorn/cleanunicorn.github.io" target="_blank" rel="noopener">Source</a>
+    </p>
+  </div>
+</footer>
+
+{{ $menu := resources.Get "js/menu.js" | js.Build }}
+{{ $cp := resources.Get "js/code.js" | js.Build }}
+{{ $bundle := slice $menu $cp | resources.Concat "bundle.js" | resources.Minify }}
+<script type="text/javascript" src="{{ $bundle.RelPermalink }}"></script>
+
+{{ partial "extended_footer.html" . }}
