@@ -52,7 +52,9 @@ def circular(img: Image.Image, size: int) -> Image.Image:
     return img
 
 
-def fit_font(draw, text, kind, max_size, max_width):
+def fit_font(
+    draw: ImageDraw.ImageDraw, text: str, kind: str, max_size: int, max_width: int
+) -> ImageFont.FreeTypeFont:
     """Largest font of `kind` at which `text` fits within `max_width`."""
     size = max_size
     while size > 10:
