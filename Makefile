@@ -50,5 +50,5 @@ cv-pdf: cv ## Generate CV as PDF into static/ (served by Hugo at /cv.pdf)
 	$$CHROME --headless --disable-gpu --print-to-pdf=$(STATIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(STATIC_DIR)/cv.html 2>/dev/null; \
 	echo "PDF written to $(STATIC_DIR)/cv.pdf"
 
-books: ## Refresh the About page Books list from Goodreads (merges with existing). Use ARGS="..." to pass flags.
+books: ## Refresh the About page Books list: top 10 from Goodreads + existing, by rating/popularity. ARGS="--top 12" etc.
 	python3 scripts/update_books.py $(ARGS)
