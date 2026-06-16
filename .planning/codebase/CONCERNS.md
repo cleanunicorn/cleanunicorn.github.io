@@ -11,7 +11,7 @@
 - Fix approach: Add a scheduled GitHub Actions workflow (e.g., monthly cron) that runs `git submodule update --remote --merge themes/terminal`, opens a PR, and runs the build to verify nothing breaks. Document a manual review step before merging because the theme is template-heavy and breakage is easy to miss.
 
 **Custom regex-based Markdown parser in CV generator:**
-- Issue: `scripts/generate_cv.py` ships its own minimalist Markdown engine (`md_to_html`, `inline_md`, `_parse_skills_fallback`). It handles only the small subset of constructs currently used in `content/about/about.md` and `content/previous-work.md` (headings, lists, links, bold/italic/code, the `relref` shortcode). Anything outside that subset (tables, nested lists, fenced code blocks, footnotes, images, multi-line links, escaped pipes) silently produces malformed HTML.
+- Issue: `scripts/generate_cv.py` ships its own minimalist Markdown engine (`md_to_html`, `inline_md`, `_parse_skills_fallback`). It handles only the small subset of constructs currently used in `content/about/_index.md` and `content/previous-work.md` (headings, lists, links, bold/italic/code, the `relref` shortcode). Anything outside that subset (tables, nested lists, fenced code blocks, footnotes, images, multi-line links, escaped pipes) silently produces malformed HTML.
 - Files: `scripts/generate_cv.py:32-114`, `scripts/generate_cv.py:166-198`
 - Impact: Adding a new construct to either source file (e.g., a code block or table) breaks the generated CV without any visible error. The generator runs in CI (`make cv-pdf`) and feeds Chromium, so a broken CV PDF will silently ship.
 - Fix approach: Either (a) restrict the CV source to a documented subset and add a CI check that fails on disallowed Markdown constructs, or (b) reuse Hugo itself by rendering a dedicated `/cv/` template and printing it (eliminates the parser entirely).
@@ -34,9 +34,9 @@
 - Impact: Adds noise (and a small cost) to every deploy log; signals "still debugging" rather than a maintained pipeline.
 - Fix approach: Delete the step, or guard it behind `if: failure()`.
 
-**Double-slash link in `about.md`:**
+**Double-slash link in `_index.md`:**
 - Issue: `[BlockchainHackers IV - Mastering Ethereum CTFs](/presentations//blockchainhackers-iv/...)` has a stray `//` between segments.
-- Files: `content/about/about.md:43`
+- Files: `content/about/_index.md:43`
 - Impact: Browsers normalize this, but external link checkers and OG-scraping bots may flag or mishandle it; canonical URLs become inconsistent.
 - Fix approach: Drop the duplicate slash.
 
@@ -60,9 +60,9 @@
 - Trigger: Setting `draft = false` or building with `-D`.
 - Workaround: Either finish and publish, move out of `content/posts/`, or store in a branch — leaving long-lived drafts in `main` invites accidents.
 
-**`about.md` Talks list contains a truncated entry (post-edit):**
-- Symptoms: After the most recent edit to `content/about/about.md` the first ETHCluj entry reads "Beyond \"Trust me, bro\" Engineering LLM reliability" — verify this is the intended title; the previous version cut off at "LLM" and the bracketing has unmatched-quote risk for any downstream Markdown linter.
-- Files: `content/about/about.md:33`
+**`_index.md` Talks list contains a truncated entry (post-edit):**
+- Symptoms: After the most recent edit to `content/about/_index.md` the first ETHCluj entry reads "Beyond \"Trust me, bro\" Engineering LLM reliability" — verify this is the intended title; the previous version cut off at "LLM" and the bracketing has unmatched-quote risk for any downstream Markdown linter.
+- Files: `content/about/_index.md:33`
 - Trigger: Markdown linters that escape on unmatched quotes inside link text.
 - Workaround: Confirm the talk title is complete and consider replacing the literal `"…"` with smart quotes or escaping to avoid future linter trips.
 
@@ -87,7 +87,7 @@
 - Recommendations: Add a CI step that greps PR-diff Markdown for `<script`, `<iframe>`, or `on*=` attributes and fails the build if present without an explicit allow-list comment.
 
 **Generated CV inlines all CSS, but is built from user-controlled markdown:**
-- Risk: `scripts/generate_cv.py` wraps `cv.css` inside `<style>…</style>` and writes the resulting HTML to `static/cv.html` (then to `cv.pdf` via headless Chromium). The Markdown source it reads is escaped via `inline_md`, but the order of operations escapes `&<>` *before* applying the link/bold/code regexes — meaning a value like `**a<>b**` becomes `<strong>a&lt;&gt;b</strong>` (correct), but a malformed regex match could still emit unbalanced tags. More importantly, anything an attacker can land in `about.md` ends up in a PDF that is then served on the live site.
+- Risk: `scripts/generate_cv.py` wraps `cv.css` inside `<style>…</style>` and writes the resulting HTML to `static/cv.html` (then to `cv.pdf` via headless Chromium). The Markdown source it reads is escaped via `inline_md`, but the order of operations escapes `&<>` *before* applying the link/bold/code regexes — meaning a value like `**a<>b**` becomes `<strong>a&lt;&gt;b</strong>` (correct), but a malformed regex match could still emit unbalanced tags. More importantly, anything an attacker can land in `_index.md` ends up in a PDF that is then served on the live site.
 - Files: `scripts/generate_cv.py:90-114`, `static/cv.html`, `static/cv.pdf`
 - Current mitigation: Single-author repo; HTML escaping in `inline_md`.
 - Recommendations: Move CV generation to Hugo templates (eliminates the homemade escape pipeline) or add a small unit test that round-trips a known-malicious Markdown snippet through the generator and asserts safe output.
@@ -125,9 +125,9 @@
 - Test coverage: Zero. There is no test that the CV builds, that it contains expected sections, or that the PDF is non-empty.
 
 **Theme submodule + heavy reliance on theme partials:**
-- Files: `themes/terminal/`, `layouts/partials/extend_head.html`, `layouts/partials/extended_head.html`
-- Why fragile: Two near-identical filenames exist (`extend_head.html` and `extended_head.html`) and both are loaded — `extended_head.html` references `extend_head.html` indirectly through theme partial chains. Any rename upstream (the theme's `head.html` calls `extended_head.html`) would silently disable math rendering. The duplicated `{{- if .Params.math }}{{- partial "math.html" . }}{{- end }}` block in `extended_head.html` (lines 1-3 are repeated twice) suggests an accidental copy-paste.
-- Safe modification: Consolidate into one of the two partials and document which one the theme actually invokes (currently `extended_head.html` per `themes/terminal/layouts/partials/head.html:79`).
+- Files: `themes/terminal/`, `layouts/partials/extended_head.html`, `layouts/partials/head.html`
+- Why fragile: The site extends the theme's `<head>` through `layouts/partials/extended_head.html`, which conditionally includes `math.html` (KaTeX), `structured_data.html`, and `analytics.html`. The theme's own `head.html` is what invokes `extended_head.html`; any rename or refactor upstream would silently drop math rendering, structured data, and analytics.
+- Safe modification: When bumping the theme, confirm `themes/terminal/layouts/partials/head.html` still calls `partial "extended_head"`; otherwise the override chain breaks.
 - Test coverage: None — math rendering breakage would only be caught by visiting a `math = true` post manually.
 
 **`hugo.toml` + theme params are minimal:**
@@ -147,7 +147,7 @@
 **Theme `hugo-theme-terminal` upstream activity:**
 - Risk: The theme is at v4.2.3; the repo's recent activity history (per local submodule log) shows mostly cosmetic fixes for over a year. No public commitment to security maintenance.
 - Impact: If the upstream goes unmaintained, any Hugo breaking change will require a fork or a theme migration.
-- Migration plan: Hugo themes that are currently maintained and visually similar include `hugo-paper`, `PaperMod`, or `hugo-coder`. Forking `terminal` into the org is also viable since the customization surface is small (`extend_head.html`, `extended_head.html`, `math.html`, `x.html`, `_markup/render-link.html`, `static/css/custom.css`).
+- Migration plan: Hugo themes that are currently maintained and visually similar include `hugo-paper`, `PaperMod`, or `hugo-coder`. Forking `terminal` into the org is also viable since the customization surface is small (`extended_head.html`, `math.html`, `x.html`, `_markup/render-link.html`, `static/css/cv.css`, `assets/css/z-*.css`).
 
 **Twitter/X embed script (`platform.twitter.com/widgets.js`):**
 - Risk: X frequently changes embed behavior, sometimes breaking embeds for unauthenticated viewers.
@@ -162,7 +162,7 @@
 ## Missing Critical Features
 
 **No link checker in CI:**
-- Problem: Outbound link rot is silent. `content/about/about.md` already contains a noticeably-stale link surface (Discord URL `discordapp.com` → now `discord.com`, `consensys/mythril-classic` deprecated, `dapptools-template` archived) and the project lists a GitLab project (`gitlab.com/cleanunicorn/eth-tipper` for Midas) that should be verified.
+- Problem: Outbound link rot is silent. `content/about/_index.md` already contains a noticeably-stale link surface (Discord URL `discordapp.com` → now `discord.com`, `consensys/mythril-classic` deprecated, `dapptools-template` archived) and the project lists a GitLab project (`gitlab.com/cleanunicorn/eth-tipper` for Midas) that should be verified.
 - Blocks: Reader trust; SEO. Search engines downweigh sites with broken outbound links.
 - Fix approach: Add `lychee-action` (or `markdown-link-check`) as a non-blocking nightly cron workflow. Filter to `content/**` and `static/**` (skip social URLs that 403 to bots).
 

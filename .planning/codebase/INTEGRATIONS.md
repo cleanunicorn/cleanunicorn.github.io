@@ -8,7 +8,7 @@
 - jsDelivr - Serves KaTeX assets
   - Endpoint: `https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/...`
   - Files loaded: `katex.min.css`, `katex.min.js`, `contrib/auto-render.min.js`
-  - Loaded by: `layouts/partials/math.html` (only when frontmatter `math: true` is set, gated in `layouts/partials/extend_head.html` and `layouts/partials/extended_head.html`)
+  - Loaded by: `layouts/partials/math.html` (only when frontmatter `math: true` is set, gated in `layouts/partials/extended_head.html`)
   - Subresource Integrity (SRI) hashes pinned for all three assets
   - Auth: None (public CDN)
 
@@ -30,9 +30,9 @@
   - Defined in `.github/workflows/hugo.yml`
 
 **External Content Links (referenced but not integrated):**
-- YouTube - Talk and podcast videos linked from `content/about/about.md`
-- IMDb - Documentary reference (`Code Is Law (2025)`) in `content/about/about.md`
-- LinkedIn / X / GitHub - Profile links in `content/about/about.md`
+- YouTube - Talk and podcast videos linked from `content/about/_index.md`
+- IMDb - Documentary reference (`Code Is Law (2025)`) in `content/about/_index.md`
+- LinkedIn / X / GitHub - Profile links in `content/about/_index.md`
 
 ## Data Storage
 

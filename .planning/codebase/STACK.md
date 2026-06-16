@@ -5,13 +5,13 @@
 ## Languages
 
 **Primary:**
-- Markdown - Site content (`content/posts/`, `content/about/about.md`, `content/previous-work.md`)
+- Markdown - Site content (`content/posts/`, `content/about/_index.md`, `content/previous-work.md`)
 - HTML/Go templates - Hugo layouts and partials (`layouts/`, `themes/terminal/layouts/`)
 - TOML - Site configuration and structured data (`hugo.toml`, `data/skills.toml`, frontmatter blocks)
 - Python 3 - CV generator script (`scripts/generate_cv.py`, ~395 lines)
 
 **Secondary:**
-- CSS - Custom styling and CV print layout (`static/css/custom.css`, `static/css/cv.css`, `static/css/syntax.css`, `static/terminal.css`, `assets/css/`)
+- CSS - Custom styling and CV print layout (`static/css/cv.css`, `static/terminal.css`, `assets/css/`)
 - Make - Build orchestration (`Makefile`)
 - YAML - CI/CD pipeline (`.github/workflows/hugo.yml`)
 - Shell (bash) - GitHub Actions inline scripts and Make recipes
@@ -34,7 +34,7 @@
 
 **Core:**
 - Hugo (extended build) 0.152.2 - Static site generator; configured by `hugo.toml`
-- hugo-theme-terminal 4.2.0 - Theme submodule at `themes/terminal/` (sourced from `https://github.com/panr/hugo-theme-terminal.git`)
+- hugo-theme-terminal 4.2.3 - Theme submodule at `themes/terminal/` (sourced from `https://github.com/panr/hugo-theme-terminal.git`)
 - Dart Sass 1.93.2 - SCSS compilation in CI (`.github/workflows/hugo.yml` line ~31)
 
 **Testing:**

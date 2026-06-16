@@ -9,9 +9,9 @@ This is a Hugo static site, so "code" mostly means Markdown content, TOML config
 **Files:**
 - Markdown content uses lowercase, hyphenated slugs that mirror post titles. Examples: `content/posts/an-extension-of-the-self/index.md`, `content/posts/the-right-way-to-use-transient-storage-(eip-1153)/index.md`.
 - Each post is a Hugo page bundle: a directory named after the slug containing `index.md` plus colocated assets (e.g. `image.png`, `image 1.png`).
-- Top-level singletons live as flat markdown files: `content/_index.md`, `content/previous-work.md`, `content/about/about.md`.
-- Hugo layout files use lowercase with underscores: `layouts/partials/extend_head.html`, `layouts/partials/extended_head.html`, `layouts/partials/math.html`, `layouts/shortcodes/x.html`.
-- Static assets are grouped by type under `static/`: `static/css/custom.css`, `static/css/cv.css`, `static/css/syntax.css`, `static/images/`, `static/presentations/`.
+- Top-level singletons live as flat markdown files: `content/_index.md`, `content/previous-work.md`, `content/about/_index.md`.
+- Hugo layout files use lowercase with underscores: `layouts/partials/extended_head.html`, `layouts/partials/math.html`, `layouts/shortcodes/x.html`.
+- Static assets are grouped by type under `static/`: `static/css/cv.css`, `static/images/`, `static/presentations/`.
 - Python scripts are snake_case: `scripts/generate_cv.py`.
 - Data files use lowercase TOML: `data/skills.toml`, `hugo.toml`.
 - The Make target convention is kebab-case (`serve-drafts`, `build-drafts`, `update-theme`, `cv-pdf`).
@@ -22,7 +22,7 @@ This is a Hugo static site, so "code" mostly means Markdown content, TOML config
 
 **Variables (Python):**
 - snake_case for locals (`in_ul`, `links_md`, `talks_md`, `bio_match`, `html_doc`).
-- UPPER_SNAKE_CASE for module-level path constants at the top of `scripts/generate_cv.py`: `ROOT`, `CONTENT`, `ABOUT_MD`, `WORK_MD`, `CONFIG`, `CSS_PATH`, `SKILLS_PATH`.
+- UPPER_SNAKE_CASE for module-level path constants at the top of `scripts/generate_cv.py`: `ROOT`, `CONTENT`, `ABOUT_MD`, `WORK_MD`, `CONFIG`, `CSS_PATH`, `SKILLS_PATH`. (`ABOUT_MD` resolves to `content/about/_index.md`.)
 
 **Types (Python):**
 - Built-in generics with PEP 604 union syntax (`str | None`, `list[str]`, `list[tuple[str, list[str]]]`, `dict`). The codebase targets Python 3.10+ in practice and explicitly opts into `tomllib` on 3.11+.
@@ -42,8 +42,8 @@ This is a Hugo static site, so "code" mostly means Markdown content, TOML config
 - No formatter is configured (no `.prettierrc`, `pyproject.toml`, `ruff.toml`, `.editorconfig`, etc. exist).
 - Python code in `scripts/generate_cv.py` follows PEP 8 visually: 4-space indent, two blank lines between top-level functions, dashed comment banners (`# ----...`) to separate logical sections (markdown helpers, content extractors, HTML generation, CLI).
 - Markdown uses standard CommonMark; lists use `-` bullets; emphasis uses `**bold**` and `*italic*`.
-- HTML in layouts uses Hugo template syntax (`{{ ... }}`, `{{- ... -}}`) with leading-dash whitespace stripping inside conditionals — see `layouts/partials/extend_head.html`.
-- CSS uses 2- or 4-space indentation depending on file (`static/css/cv.css` uses 2 spaces, `static/css/custom.css` uses 4 spaces). CSS custom properties grouped under `:root` in `static/css/cv.css`.
+- HTML in layouts uses Hugo template syntax (`{{ ... }}`, `{{- ... -}}`) with leading-dash whitespace stripping inside conditionals — see `layouts/partials/extended_head.html`.
+- CSS uses 2-space indentation (`static/css/cv.css`, `assets/css/z-*.css`). CSS custom properties are grouped under `:root` in `static/css/cv.css` and `assets/css/z-base.css`.
 
 **Linting:**
 - None configured. Treat the existing files as the style reference when adding new content or scripts.
@@ -124,10 +124,10 @@ This is a Hugo static site, so "code" mostly means Markdown content, TOML config
 - New posts are scaffolded with `make new POST="My Post Title"`, which slugifies the title (`tr ' ' '-' | tr '[:upper:]' '[:lower:]'`) and runs `hugo new posts/<slug>/index.md`. Always use this target so the archetype frontmatter is applied.
 - Posts default to `draft = true`; flip to `false` before publishing.
 - Use page bundles (post-as-directory with `index.md`) so images and other assets can live next to the markdown and be referenced relatively (`![image.png](./image.png)`).
-- Math support is opt-in per page via `math = true` in frontmatter, which triggers `layouts/partials/math.html` from `extend_head.html`.
+- Math support is opt-in per page via `math = true` in frontmatter, which triggers `layouts/partials/math.html` from `extended_head.html`.
 - Inline TeX uses `$...$` and block TeX uses `$$...$$` (Goldmark passthrough is enabled in `hugo.toml`).
 - Twitter/X embeds use the custom shortcode `{{< x user="handle" id="tweet-id" >}}` defined in `layouts/shortcodes/x.html`.
-- Component/page styles go in a `z-<name>.css` file under `assets/css/` (compiled by Hugo's asset pipeline, which picks up every `css/*.css`); shared tokens, animations and utilities live in `assets/css/z-base.css`. `assets/css/extended/` remains for theme-mandated post-image tweaks, and `static/css/` for plain static stylesheets loaded by the layout.
+- Component/page styles go in a `z-<name>.css` file under `assets/css/` (compiled by Hugo's asset pipeline, which picks up every `css/*.css`); shared tokens, animations and utilities live in `assets/css/z-base.css`. `static/css/` holds plain static stylesheets loaded by the layout.
 - The terminal theme is a git submodule pinned in `.gitmodules` (`themes/terminal` → `hugo-theme-terminal`); update with `make update-theme`, never edit the submodule directly.
 
 ## Commit Messages

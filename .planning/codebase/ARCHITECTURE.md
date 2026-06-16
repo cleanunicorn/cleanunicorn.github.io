@@ -18,7 +18,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │        Pre-build Generators (Make targets / scripts)         │
 │  `scripts/generate_cv.py` → `static/cv.html` & `cv.pdf`      │
-│  reads `content/about/about.md`, `content/previous-work.md`, │
+│  reads `content/about/_index.md`, `content/previous-work.md`, │
 │  `data/skills.toml`, `static/css/cv.css`                     │
 └────────────────────────────┬────────────────────────────────┘
                              │
@@ -66,7 +66,7 @@
 **Key Characteristics:**
 - Content-as-source: all narrative content lives as Markdown files under `content/` with TOML frontmatter (`+++ ... +++`).
 - Theme inheritance: `themes/terminal` is consumed as a git submodule; project-level `layouts/` and `assets/` selectively override theme files using Hugo's lookup precedence (project beats theme).
-- Pre-build derivation: `make cv-pdf` runs before `hugo` in CI to regenerate `static/cv.html` / `static/cv.pdf` from the same Markdown sources, so the live site links to a CV that is always in sync with `about.md`, `previous-work.md`, and `data/skills.toml`.
+- Pre-build derivation: `make cv-pdf` runs before `hugo` in CI to regenerate `static/cv.html` / `static/cv.pdf` from the same Markdown sources, so the live site links to a CV that is always in sync with `_index.md`, `previous-work.md`, and `data/skills.toml`.
 - No server-side runtime: all output is fully static. Browser-side code is minimal — third-party CDN scripts (KaTeX for math, Twitter widgets for the `x` shortcode) plus one small first-party progressive-enhancement script (`static/js/hero-type.js`, the hero typewriter).
 
 ## Layers
@@ -89,14 +89,14 @@
 **Presentation / template layer:**
 - Purpose: Convert content + data into HTML.
 - Location: `layouts/` (project overrides) + `themes/terminal/layouts/` (defaults).
-- Contains: Templates (`index.html` homepage, `404.html`), partials (`extend_head.html`, `extended_head.html`, `math.html`, `structured_data.html`), shortcodes (`x.html`), markup render hooks (`_default/_markup/render-link.html`).
+- Contains: Templates (`index.html` homepage, `404.html`), partials (`extended_head.html`, `math.html`, `structured_data.html`), shortcodes (`x.html`), markup render hooks (`_default/_markup/render-link.html`).
 - Depends on: theme defaults; content frontmatter (`.Params.math` toggles KaTeX include); `data/home.toml` (homepage); site params (structured data).
 - Used by: Hugo at build time.
 
 **Asset / styling layer:**
 - Purpose: CSS, JavaScript, images, fonts, prebuilt static files.
 - Location: `assets/css/` (Hugo asset pipeline; every `css/*.css` is minified + fingerprinted) and `static/` (copied verbatim into `public/`).
-- Contains: `assets/css/z-base.css` (shared tokens/animation/`.sr-only`), `assets/css/z-home.css`, `assets/css/z-404.css`, `assets/css/extended/center-images.css`; `static/js/hero-type.js`; `static/terminal.css`, `static/css/{custom,cv,syntax}.css`, `static/images/`, `static/presentations/`.
+- Contains: `assets/css/z-base.css` (shared tokens/animation/`.sr-only`), `assets/css/z-home.css`, `assets/css/z-404.css`, and the other `z-*.css` files; `static/js/hero-type.js`; `static/terminal.css`, `static/css/cv.css`, `static/images/`, `static/presentations/`.
 - Depends on: theme conventions for the asset pipeline.
 - Used by: theme templates and the generated CV HTML.
 
@@ -104,7 +104,7 @@
 - Purpose: Produce derived artifacts from content before Hugo runs.
 - Location: `scripts/`
 - Contains: `scripts/generate_cv.py` (stdlib-only Python).
-- Depends on: `content/about/about.md`, `content/previous-work.md`, `data/skills.toml`, `static/css/cv.css`, `hugo.toml`.
+- Depends on: `content/about/_index.md`, `content/previous-work.md`, `data/skills.toml`, `static/css/cv.css`, `hugo.toml`.
 - Used by: `Makefile` targets `cv` and `cv-pdf`; CI workflow.
 
 **Build / deploy layer:**
@@ -122,7 +122,7 @@
 3. CI installs Hugo extended, Dart Sass, Node, Go, Chromium (`.github/workflows/hugo.yml:37-66`).
 4. CI runs `make cv-pdf`, which runs `python3 scripts/generate_cv.py -o static/cv.html` then headless Chromium prints to `static/cv.pdf` (`Makefile:46-50`).
 5. CI runs `hugo --gc --minify --baseURL ...` (`.github/workflows/hugo.yml:88-94`).
-6. Hugo loads `hugo.toml`, walks `content/`, applies theme + local `layouts/` overrides, processes `assets/css/extended/*.css` through the asset pipeline, and copies `static/` verbatim into `public/`.
+6. Hugo loads `hugo.toml`, walks `content/`, applies theme + local `layouts/` overrides, processes `assets/css/*.css` through the asset pipeline, and copies `static/` verbatim into `public/`.
 7. `actions/upload-pages-artifact@v3` uploads `public/`; `actions/deploy-pages@v4` publishes it to GitHub Pages (`.github/workflows/hugo.yml:103-115`).
 
 ### Local Development Flow
@@ -134,7 +134,7 @@
 
 ### CV Generation Flow
 
-1. `scripts/generate_cv.py` reads `hugo.toml`, `content/about/about.md`, `content/previous-work.md`, `data/skills.toml`, `static/css/cv.css` (`scripts/generate_cv.py:18-24`).
+1. `scripts/generate_cv.py` reads `hugo.toml`, `content/about/_index.md`, `content/previous-work.md`, `data/skills.toml`, `static/css/cv.css` (`scripts/generate_cv.py:18-24`).
 2. Strips TOML frontmatter, converts a Markdown subset to HTML inline, groups skills by category.
 3. Writes a single self-contained HTML file to the path passed via `-o` (defaults to `public/cv.html` per the docstring; `Makefile` overrides to `static/cv.html` so Hugo serves it at `/cv.html`).
 4. `make cv-pdf` then drives headless Chromium to print that HTML to `static/cv.pdf`.
@@ -153,12 +153,12 @@
 
 **Frontmatter (TOML):**
 - Purpose: Declarative per-page metadata (title, date, tags, `math`, `cover`, `showFullContent`, etc.).
-- Examples: `content/posts/*/index.md`, `content/about/about.md`, `content/previous-work.md`.
-- Pattern: `+++ ... +++` TOML block at the top of every Markdown file. The `math` flag toggles KaTeX inclusion via `layouts/partials/extend_head.html`.
+- Examples: `content/posts/*/index.md`, `content/about/_index.md`, `content/previous-work.md`.
+- Pattern: `+++ ... +++` TOML block at the top of every Markdown file. The `math` flag toggles KaTeX inclusion via `layouts/partials/extended_head.html`.
 
 **Theme override:**
 - Purpose: Add or replace a theme template without forking the theme.
-- Examples: `layouts/partials/extend_head.html` (theme extension hook), `layouts/_default/_markup/render-link.html` (Goldmark render hook that opens external links in a new tab).
+- Examples: `layouts/partials/extended_head.html` (theme extension hook), `layouts/_default/_markup/render-link.html` (Goldmark render hook that opens external links in a new tab).
 - Pattern: Place a file at the same path under project `layouts/` as it lives under `themes/terminal/layouts/`; Hugo's lookup order picks the project copy.
 
 **Shortcode:**
@@ -168,7 +168,7 @@
 
 **Asset pipeline extension:**
 - Purpose: Inject extra CSS into the theme's compiled stylesheet without editing the theme.
-- Examples: `assets/css/z-home.css`, `assets/css/z-404.css`, `assets/css/z-base.css` (shared tokens/animation/utilities); `assets/css/extended/center-images.css`.
+- Examples: `assets/css/z-home.css`, `assets/css/z-404.css`, `assets/css/z-base.css` (shared tokens/animation/utilities), and the other `z-*.css` files.
 - Pattern: Drop a `z-<name>.css` file into `assets/css/`; every `css/*.css` is picked up, minified and fingerprinted by the pipeline. The `z-` prefix groups custom additions and keeps shared primitives (`z-base.css`) reusable across them.
 
 ## Entry Points
@@ -196,11 +196,11 @@
 ## Architectural Constraints
 
 - **No server runtime:** Output must be pure static files servable by GitHub Pages. No backend code runs in production.
-- **Theme is a git submodule:** Editing files inside `themes/terminal/` is not a project change — it is an upstream change. Local customization MUST happen via project-level `layouts/`, `assets/css/extended/`, and `static/`. Use `make update-theme` to bump.
+- **Theme is a git submodule:** Editing files inside `themes/terminal/` is not a project change — it is an upstream change. Local customization MUST happen via project-level `layouts/`, `assets/css/`, and `static/`. Use `make update-theme` to bump.
 - **Generated artifacts are gitignored:** `public/`, `resources/_gen/`, `static/cv.html`, `static/cv.pdf` MUST NOT be committed (`.gitignore`). CI regenerates them on every build.
 - **Hugo extended required:** `hugo.toml` enables Goldmark passthrough + classed syntax highlighting; CI installs `hugo_extended_*` because Dart Sass is also required.
 - **Submodule init required:** Local clones MUST run `git submodule update --init --recursive` (or `make submodules`) before building, or the theme directory will be empty.
-- **CV generator depends on file paths:** `scripts/generate_cv.py` hard-codes paths to `content/about/about.md`, `content/previous-work.md`, `data/skills.toml`, and `static/css/cv.css`. Renaming or moving any of these breaks `make cv`.
+- **CV generator depends on file paths:** `scripts/generate_cv.py` hard-codes paths to `content/about/_index.md`, `content/previous-work.md`, `data/skills.toml`, and `static/css/cv.css`. Renaming or moving any of these breaks `make cv`.
 - **External CDN dependency for math:** KaTeX CSS/JS load from `cdn.jsdelivr.net` with SRI hashes (`layouts/partials/math.html`); offline builds will render but math will not display until the CDN is reachable in the browser.
 
 ## Anti-Patterns
@@ -209,7 +209,7 @@
 
 **What happens:** Modifying files under `themes/terminal/` to tweak look or behavior.
 **Why it's wrong:** Changes live inside a submodule pointing at a third-party repo and are lost (or cause merge conflicts) the next time `make update-theme` runs.
-**Do this instead:** Create a same-path file under `layouts/` to override a template (see `layouts/partials/extend_head.html`), or drop CSS into `assets/css/extended/` (see `assets/css/extended/center-images.css`).
+**Do this instead:** Create a same-path file under `layouts/` to override a template (see `layouts/partials/extended_head.html`), or add a `z-<name>.css` file under `assets/css/`.
 
 ### Committing generated artifacts
 
@@ -226,8 +226,8 @@
 ### Hard-coding HTML in Markdown for cross-cutting features
 
 **What happens:** Pasting raw `<script>` / `<link>` tags into post bodies to enable math, embeds, etc.
-**Why it's wrong:** Duplicates concerns across posts and bypasses the `extend_head` partial pattern.
-**Do this instead:** Toggle a frontmatter flag (e.g. `math = true`) and let `layouts/partials/extend_head.html` conditionally include the relevant `<head>` partial; for embeds, add a shortcode under `layouts/shortcodes/` (see `layouts/shortcodes/x.html`).
+**Why it's wrong:** Duplicates concerns across posts and bypasses the `extended_head` partial pattern.
+**Do this instead:** Toggle a frontmatter flag (e.g. `math = true`) and let `layouts/partials/extended_head.html` conditionally include the relevant `<head>` partial; for embeds, add a shortcode under `layouts/shortcodes/` (see `layouts/shortcodes/x.html`).
 
 ## Error Handling
 
