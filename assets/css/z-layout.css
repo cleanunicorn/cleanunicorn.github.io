@@ -72,6 +72,9 @@
 /* Mobile-menu trigger inherits accent; keep it crisp. */
 .menu--mobile .menu__trigger { border-color: var(--accent-line); }
 
+/* Keep dropdown items on a single line (was wrapping "Contact" → "conta"/"ct"). */
+.menu__dropdown > li a { white-space: nowrap; }
+
 /* ---- Footer colophon ------------------------------------------------------ */
 .footer { padding: var(--sp-7) 0 var(--sp-5); opacity: 1; }
 .footer__inner { justify-content: flex-start; }

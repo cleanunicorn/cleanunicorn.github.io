@@ -24,7 +24,7 @@
       <aside class="hero__card">
         <img class="hero__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="200" height="200" loading="eager" fetchpriority="high">
         <p class="hero__id">
-          <span class="hero__name">{{ $home.name | default $.Site.Title }}</span>
+          <span class="hero__name">{{ $home.name | default $.Site.Title }}{{ with $home.nickname }} <span class="hero__alias">“{{ . }}”</span>{{ end }}</span>
           {{ with $home.location }}<span class="hero__meta">{{ . }}</span>{{ end }}
           {{ with $home.status }}<span class="hero__avail"><span class="hero__dot" aria-hidden="true"></span>{{ . }}</span>{{ end }}
         </p>

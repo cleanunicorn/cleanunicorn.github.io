@@ -6,8 +6,8 @@ subheadline = "I audit the code, run the technical diligence, and back the teams
 
 # Short identity line shown beside the portrait.
 name = "Daniel Luca"
+nickname = "CleanUnicorn"
 location = "Bucharest, Romania"
-status = "Open to audits & advisory"
 
 # Portrait shown in the hero. Lives in static/images/.
 photo = "/images/me.png"
@@ -34,6 +34,7 @@ items = [
   "Polygon",
   "ConsenSys Diligence",
   "Eden Block",
+  "Gensyn",
   "DEF CON 27",
   "Code Is Law (2025)",
 ]

@@ -15,7 +15,7 @@ Technical diligence and research partner at [Eden Block](https://edenblock.com),
 
 Worked closely with portfolio companies such as:
 
-- [Gensyn](https://www.gensyn.ai/)
+- [Gensyn](https://www.gensyn.ai/) — helped launch their testnet
 - [Biconomy](https://www.biconomy.io/)
 - [Fair](https://fair.xyz/)
 - [Hypurrfi](https://app.hypurr.fi/)
