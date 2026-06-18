@@ -9,7 +9,7 @@
   <section class="poster" aria-label="Daniel Luca — contact">
     <div class="poster__frame">
       {{ with $home.photo }}
-        <img class="poster__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="640" height="800" loading="eager" fetchpriority="high">
+        <img class="poster__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="400" height="400" loading="eager" fetchpriority="high">
       {{ end }}
       <div class="poster__wash" aria-hidden="true"></div>
       <div class="poster__scrim" aria-hidden="true"></div>

@@ -10,7 +10,7 @@ nickname = "CleanUnicorn"
 location = "Bucharest, Romania"
 
 # Portrait shown in the hero. Lives in static/images/.
-photo = "/images/me.png"
+photo = "/images/daniel-luca.jpg"
 photoAlt = "Daniel Luca"
 
 # Primary hero calls to action. The first is emphasised.
