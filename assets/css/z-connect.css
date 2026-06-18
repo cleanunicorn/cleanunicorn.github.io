@@ -3,8 +3,8 @@
    ----------------------------------------------------------------------------
    A connect-first homepage that fuses two treatments:
      1. POSTER HERO — an iOS-18 contact poster: a large portrait under a CSS-only
-        emerald duotone wash + gradient scrim, the name set big over it, alias,
-        tagline and an availability pill. (Identity + availability live here.)
+        emerald duotone wash + gradient scrim, the name set big over it, alias
+        and tagline. (Identity lives here.)
      2. BOARD PANEL — a bordered, sharp-cornered channel table beneath it: a
         featured Cal.com booking row pinned first, then the channels as
         brand-tinted rows (Channel · Handle · action).
@@ -27,10 +27,11 @@
   overflow: hidden;
   border: 1px solid var(--accent-line);
   border-radius: var(--radius);
+  /* A tight inner ring + a soft, contained drop shadow — no wide emerald bleed
+     that would make the hero feel like it escapes the column. */
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent),
-    0 24px 60px -28px color-mix(in srgb, var(--accent) 40%, transparent),
-    0 2px 0 0 var(--background);
+    0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent),
+    0 16px 38px -34px color-mix(in srgb, var(--accent) 28%, transparent);
   background: var(--background);
   /* portrait fills the frame; aspect ratio keeps it poster-like on all widths */
   aspect-ratio: 4 / 5;
@@ -66,17 +67,24 @@
       var(--background) 100%);
 }
 
-/* Contrast scrim behind the text block (bottom-anchored) — WCAG AA over image */
+/* Contrast scrims — WCAG AA for text over the portrait. Two bands: a small top
+   band so the terminal eyebrow stays legible over bright regions of the photo,
+   and the main bottom band behind the name / tagline block. */
 .poster__scrim {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--background) 94%, transparent) 0%,
-    color-mix(in srgb, var(--background) 86%, transparent) 22%,
-    color-mix(in srgb, var(--background) 40%, transparent) 48%,
-    transparent 72%);
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--background) 80%, transparent) 0%,
+      transparent 20%),
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--background) 94%, transparent) 0%,
+      color-mix(in srgb, var(--background) 86%, transparent) 22%,
+      color-mix(in srgb, var(--background) 40%, transparent) 48%,
+      transparent 72%);
 }
 
 /* Terminal eyebrow, top-left over the image */
@@ -142,32 +150,6 @@
   line-height: 1.55;
   color: var(--text-body);
   text-shadow: 0 1px 12px color-mix(in srgb, var(--background) 75%, transparent);
-}
-
-.poster__avail {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6ch;
-  margin-top: var(--sp-4);
-  padding: 0.42rem 0.85rem;
-  font-size: var(--fs-micro);
-  letter-spacing: 0.02em;
-  color: var(--text);
-  background: color-mix(in srgb, var(--background) 62%, transparent);
-  border: 1px solid var(--accent-line);
-  border-radius: var(--radius);
-  backdrop-filter: blur(4px);
-}
-.poster__dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--accent-bright);
-  box-shadow: 0 0 0 3px var(--accent-wash-strong);
-  animation: poster-pulse 2.4s var(--ease) infinite;
-}
-@keyframes poster-pulse {
-  0%, 100% { box-shadow: 0 0 0 3px var(--accent-wash-strong); }
-  50%      { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 8%, transparent); }
 }
 
 /* ===========================================================================
@@ -236,7 +218,10 @@
   text-decoration: none;
   transition: background var(--dur) var(--ease);
 }
-.board__row:first-of-type { border-top: 0; }
+/* List wrapper carries no list styling; the panel border + row hairlines divide. */
+.board__list { list-style: none; margin: 0; padding: 0; }
+.board__item { margin: 0; }
+.board__item:first-child .board__row { border-top: 0; }
 
 /* Brand-tinted hover for the standard channel rows */
 .board__row:hover {
@@ -299,7 +284,8 @@
   color: var(--text-faint);
   transition: color var(--dur) var(--ease);
 }
-.board__connect span { transition: transform var(--dur) var(--ease); }
+.board__connect span,
+.board__cta span { transition: transform var(--dur) var(--ease); }
 .board__row:hover .board__connect { color: var(--brand, var(--accent)); }
 .board__row:hover .board__connect span { transform: translateX(3px); }
 
@@ -314,10 +300,7 @@
 .board__row--featured:hover {
   background: var(--accent-wash-strong);
 }
-.board__row--featured:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
+/* focus-visible is inherited from .board__row (featured rows carry that class). */
 .board__row--featured .board__chname { color: var(--accent-bright); }
 .board__row--featured .board__handle { color: color-mix(in srgb, var(--accent) 60%, var(--text-muted)); }
 
@@ -329,7 +312,6 @@
   border-radius: var(--radius);
   transition: background var(--dur) var(--ease);
 }
-.board__cta span { transition: transform var(--dur) var(--ease); }
 .board__row--featured:hover .board__cta { background: var(--accent-bright); }
 .board__row--featured:hover .board__cta span { transform: translateX(3px); }
 
@@ -340,9 +322,10 @@
 /* ---- Desktop (≥768px): cinematic, wider poster + roomy board ------------- */
 @media (min-width: 768px) {
   .poster__frame {
-    aspect-ratio: 16 / 7;
-    min-height: 460px;
-    max-height: 560px;
+    /* A balanced hero rectangle — not a wide letterbox that reads as "too wide". */
+    aspect-ratio: 3 / 2;
+    min-height: 440px;
+    max-height: 600px;
   }
   .poster__photo { object-position: 60% 20%; }
   /* On wide screens, fade the scrim from the left so text sits on a darker side */
@@ -399,7 +382,7 @@
   /* Hide the handle cell entirely when empty so the row doesn't gain dead space */
   .board__col--handle:empty { display: none; }
 
-  .board__row--featured { padding-block: var(--sp-4); }
+  .board__row--featured { padding-block: var(--sp-4); min-height: 56px; }
 }
 
 /* ---- Short viewports: cap the poster so at least the booking row is
@@ -408,7 +391,9 @@
   .poster__frame {
     aspect-ratio: auto;
     height: 56vh;
-    min-height: 360px;
+    /* Let 56vh actually govern on short/landscape phones (don't let a tall
+       min-height push the booking row back below the fold). */
+    min-height: 0;
   }
 }
 
@@ -423,7 +408,6 @@
 @media (prefers-reduced-motion: reduce) {
   .poster { animation: none; }
   .poster__cursor { animation: none; }
-  .poster__dot { animation: none; }
   .board { animation: none; }
   .board__connect span,
   .board__cta span { transition: none; }

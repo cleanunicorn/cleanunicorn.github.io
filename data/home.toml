@@ -87,15 +87,17 @@ url = "/posts/"
 # layouts/partials/brand-icon.html; styling in assets/css/z-connect.css).
 # `featured = true` promotes the booking row to the primary call to action.
 # The booking link points at a Cal.com 30-minute scheduling page.
+# `tagline` feeds the poster hero; `note` introduces the board.
 # -----------------------------------------------------------------------------
 [connect]
 label = "Let's connect"
 note = "Every way to reach me — pick whatever you already live in."
+tagline = "Blockchain security researcher, investor & builder — securing Ethereum since 2017."
 
 [[connect.links]]
 net = "calendar"
 label = "Book a meeting"
-sub = "Grab a slot on my calendar"
+sub = "cal.com · 30 min"
 url = "https://cal.com/daniel-luca-cleanunicorn/30min"
 featured = true
 

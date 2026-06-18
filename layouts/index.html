@@ -1,7 +1,9 @@
 {{ define "main" }}
   {{ $home := $.Site.Data.home }}
 
-  {{ $brands := dict "calendar" "#3fd68a" "telegram" "#2aabee" "x" "#e7e9ea" "github" "#e6edf3" "linkedin" "#3b96d8" }}
+  {{/* Per-network brand colours for the channel rows. The featured (calendar)
+       row tints from --accent in CSS, so it needs no entry here. */}}
+  {{ $brands := dict "telegram" "#2aabee" "x" "#e7e9ea" "github" "#e6edf3" "linkedin" "#3b96d8" }}
 
   {{/* ---- POSTER HERO: iOS-18 "Contact Poster" for the web ----------------- */}}
   <section class="poster" aria-label="Daniel Luca — contact">
@@ -20,8 +22,7 @@
       <div class="poster__id">
         <h1 class="poster__name">{{ $home.name | default $.Site.Title }}</h1>
         {{ with $home.nickname }}<span class="poster__alias">“{{ . }}”</span>{{ end }}
-        <p class="poster__tagline">Blockchain security researcher, investor &amp; builder — securing Ethereum since 2017.</p>
-        <span class="poster__avail"><span class="poster__dot" aria-hidden="true"></span>Open to audits, diligence &amp; a good conversation</span>
+        {{ with $home.connect.tagline }}<p class="poster__tagline">{{ . }}</p>{{ end }}
       </div>
     </div>
   </section>
@@ -32,39 +33,32 @@
       <h2 class="board__head-label" id="connect-head">{{ .label }}</h2>
       {{ with .note }}<p class="board__note board__note--lead">{{ . }}</p>{{ end }}
 
-      <div class="board__panel" role="table" aria-label="{{ .label }}">
-        <div class="board__head" role="row" aria-hidden="true">
+      <div class="board__panel">
+        <div class="board__head" aria-hidden="true">
           <span class="board__col board__col--ch">Channel</span>
           <span class="board__col board__col--handle">Handle</span>
           <span class="board__col board__col--act"></span>
         </div>
 
-        {{ range .links }}
-          {{ $brand := index $brands .net | default "#3fd68a" }}
-          {{ $ext := hasPrefix .url "http" }}
-          {{ if .featured }}
-            <a class="board__row board__row--featured" role="row"
-               href="{{ .url }}"{{ if $ext }} target="_blank" rel="me noopener"{{ end }}>
-              <span class="board__col board__col--ch" role="cell">
-                <span class="board__icon board__icon--accent" aria-hidden="true">{{ partial "brand-icon.html" .net }}</span>
-                <span class="board__chname">{{ .label }}</span>
-              </span>
-              <span class="board__col board__col--handle" role="cell"><span class="board__handle">cal.com · 30 min</span></span>
-              <span class="board__col board__col--act" role="cell"><span class="board__cta">Reserve <span aria-hidden="true">→</span></span></span>
-            </a>
-          {{ else }}
-            <a class="board__row" role="row"
-               style="{{ printf "--brand: %s;" $brand | safeCSS }}"
-               href="{{ .url }}"{{ if $ext }} target="_blank" rel="me noopener"{{ end }}>
-              <span class="board__col board__col--ch" role="cell">
-                <span class="board__icon" aria-hidden="true">{{ partial "brand-icon.html" .net }}</span>
-                <span class="board__chname">{{ .label }}</span>
-              </span>
-              <span class="board__col board__col--handle" role="cell">{{ with .sub }}<span class="board__handle">{{ . }}</span>{{ end }}</span>
-              <span class="board__col board__col--act" role="cell"><span class="board__connect">Connect <span aria-hidden="true">→</span></span></span>
-            </a>
+        <ul class="board__list">
+          {{ range .links }}
+            {{ $brand := index $brands .net | default "#3fd68a" }}
+            {{ $ext := hasPrefix .url "http" }}
+            <li class="board__item">
+              <a class="board__row{{ if .featured }} board__row--featured{{ end }}"
+                 {{- if not .featured }} style="{{ printf "--brand: %s;" $brand | safeCSS }}"{{ end }}
+                 href="{{ .url }}"{{ if $ext }} target="_blank" rel="me noopener"{{ end }}>
+                <span class="board__col board__col--ch">
+                  <span class="board__icon{{ if .featured }} board__icon--accent{{ end }}" aria-hidden="true">{{ partial "brand-icon.html" .net }}</span>
+                  <span class="board__chname">{{ .label }}</span>
+                </span>
+                <span class="board__col board__col--handle">{{ with .sub }}<span class="board__handle">{{ . }}</span>{{ end }}</span>
+                <span class="board__col board__col--act"><span class="{{ if .featured }}board__cta{{ else }}board__connect{{ end }}">{{ if .featured }}Reserve{{ else }}Connect{{ end }} <span aria-hidden="true">→</span></span></span>
+                {{ if $ext }}<span class="sr-only"> (opens in new tab)</span>{{ end }}
+              </a>
+            </li>
           {{ end }}
-        {{ end }}
+        </ul>
       </div>
     </section>
   {{ end }}
