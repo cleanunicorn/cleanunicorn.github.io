@@ -34,7 +34,6 @@ pagination.pagerSize = 5
       owner = "Daniel Luca"
       author = "Daniel Luca"
       menuMore = "Show more"
-      readMore = "Read more"
       keywords = "Daniel Luca, CleanUnicorn, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, venture capital, decentralized AI"
 
       # Schema.org Person metadata — consumed by partials/structured_data.html.
