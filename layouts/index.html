@@ -14,15 +14,19 @@
       <div class="poster__wash" aria-hidden="true"></div>
       <div class="poster__scrim" aria-hidden="true"></div>
 
-      <p class="poster__eyebrow">
-        <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
-        <span class="poster__roles" data-typewriter>{{ $.Site.Params.Subtitle }}</span><span class="poster__cursor" aria-hidden="true"></span>
-      </p>
+      {{/* The frame bleeds full-width; this inner column stays pinned to the
+           53rem content grid so the name aligns with the header and board. */}}
+      <div class="poster__inner">
+        <p class="poster__eyebrow">
+          <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
+          <span class="poster__roles" data-typewriter>{{ $.Site.Params.Subtitle }}</span><span class="poster__cursor" aria-hidden="true"></span>
+        </p>
 
-      <div class="poster__id">
-        <h1 class="poster__name">{{ $home.name | default $.Site.Title }}</h1>
-        {{ with $home.nickname }}<span class="poster__alias">“{{ . }}”</span>{{ end }}
-        {{ with $home.connect.tagline }}<p class="poster__tagline">{{ . }}</p>{{ end }}
+        <div class="poster__id">
+          <h1 class="poster__name">{{ $home.name | default $.Site.Title }}</h1>
+          {{ with $home.nickname }}<span class="poster__alias">“{{ . }}”</span>{{ end }}
+          {{ with $home.connect.tagline }}<p class="poster__tagline">{{ . }}</p>{{ end }}
+        </div>
       </div>
     </div>
   </section>

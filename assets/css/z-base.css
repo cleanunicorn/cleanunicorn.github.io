@@ -87,6 +87,11 @@
 
 /* ---- Body & rhythm -------------------------------------------------------- */
 body {
+  /* The home hero breaks out to 100vw (margin: 0 calc(50% - 50vw)). Clip any
+     sub-pixel/scrollbar overshoot here so a full-bleed child never spawns a
+     horizontal scrollbar. `clip` (not `hidden`) keeps normal vertical scroll
+     and doesn't create a scroll container. */
+  overflow-x: clip;
   font-family: var(--font-mono);
   font-weight: 400;
   font-variant-ligatures: contextual;
