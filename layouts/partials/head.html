@@ -32,18 +32,9 @@
 <link rel="stylesheet" href="{{ $bundle.RelPermalink }}">
 <link rel="preload" as="font" type="font/woff2" href="{{ "fonts/FiraCode-Latin.woff2" | relURL }}" crossorigin>
 
-<!-- Custom Terminal.css styles -->
-{{ if (fileExists "static/terminal.css") -}}
-  <link rel="stylesheet" href="{{ "terminal.css" | absURL }}">
-{{- end }}
-<!-- Custom CSS to override theme properties (/static/style.css) -->
-{{ if (fileExists "static/style.css") -}}
-  <link rel="stylesheet" href="{{ "style.css" | absURL }}">
-{{- end }}
-
 <!-- Icons -->
-<link rel="shortcut icon" href="{{ "favicon.png" | absURL }}">
-<link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | absURL }}">
+<link rel="shortcut icon" href="{{ "favicon.png" | relURL }}">
+<link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
 
 <!-- Resolve the share image: per-page cover if set, else the site default -->
 {{ $shareImage := "og-image.png" | absURL }}
