@@ -298,6 +298,18 @@ def build_work_html(work_md: str) -> str:
     return "\n".join(parts)
 
 
+def build_section_html(class_name: str, heading: str, md: str, intro_re: str = "") -> str:
+    """Wrap markdown in a titled <section>, optionally dropping a leading intro.
+
+    `intro_re` (matched with DOTALL) strips a lead-in sentence — e.g. the
+    "Sometimes I speak…" line before the talks list — that doesn't belong in
+    the CV.
+    """
+    if intro_re:
+        md = re.sub(intro_re, "", md, flags=re.DOTALL)
+    return f'<section class="{class_name}">\n<h2>{heading}</h2>\n{md_to_html(md)}\n</section>'
+
+
 def generate_html(output: Path) -> None:
     """Assemble and write the CV HTML file."""
     config = parse_config()
@@ -328,19 +340,18 @@ def generate_html(output: Path) -> None:
 
     # Talks
     if about["talks"]:
-        # Remove the intro sentence if present
-        talks_md = re.sub(r"^Sometimes.*?\n\n", "", about["talks"], flags=re.DOTALL)
         # Remove indented sub-items (e.g. "  - [Slides](...)")
-        talks_md = re.sub(r"\n\s+-\s+\[Slides\].*", "", talks_md)
+        talks_md = re.sub(r"\n\s+-\s+\[Slides\].*", "", about["talks"])
         sections.append(
-            f'<section class="talks">\n<h2>Talks &amp; Presentations</h2>\n{md_to_html(talks_md)}\n</section>'
+            build_section_html("talks", "Talks &amp; Presentations", talks_md,
+                               r"^Sometimes.*?\n\n")
         )
 
     # Podcasts
     if about["podcasts"]:
-        podcasts_md = re.sub(r"^Or I am.*?\n\n", "", about["podcasts"], flags=re.DOTALL)
         sections.append(
-            f'<section class="podcasts">\n<h2>Podcasts</h2>\n{md_to_html(podcasts_md)}\n</section>'
+            build_section_html("podcasts", "Podcasts", about["podcasts"],
+                               r"^Or I am.*?\n\n")
         )
 
     # Projects
