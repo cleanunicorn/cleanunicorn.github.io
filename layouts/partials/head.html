@@ -50,11 +50,9 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
-{{ if (isset $.Site.Params "twitter") }}
-  {{ if (isset $.Site.Params.Twitter "site") }}
-    <meta name="twitter:site" content="{{ $.Site.Params.Twitter.site }}" />
-  {{ end }}
-    <meta name="twitter:creator" content="{{ if .IsHome }}{{ $.Site.Params.Twitter.creator }}{{ else if isset .Params "authortwitter" }}{{ .Params.authorTwitter }}{{ else }}{{ .Params.Author }}{{ end }}" />
+{{ with $.Site.Params.twitter }}
+  {{ with .site }}<meta name="twitter:site" content="{{ . }}" />{{ end }}
+  <meta name="twitter:creator" content="{{ if $.IsHome }}{{ .creator }}{{ else if isset $.Params "authortwitter" }}{{ $.Params.authorTwitter }}{{ else }}{{ $.Params.Author }}{{ end }}" />
 {{ end }}
 <meta name="twitter:title" content="{{ $title }}" />
 <meta name="twitter:description" content="{{ $desc }}" />
