@@ -102,10 +102,11 @@ def main() -> None:
         "Audited Uniswap · Aave · Filecoin · Polygon",
         "ConsenSys Diligence · Eden Block · DEF CON",
     ]
-    f_proof = load_font("regular", 24)
-    for line in proof_lines:
-        f_proof = min(f_proof, fit_font(draw, line, "regular", 24, avail),
-                      key=lambda f: f.size)
+    # Use the smallest size at which every proof line still fits the column.
+    f_proof = min(
+        (fit_font(draw, line, "regular", 24, avail) for line in proof_lines),
+        key=lambda f: f.size,
+    )
 
     # Text block
     draw.text((x, 150 - 44), "// cleanunicorn", font=f_eyebrow, fill=ACCENT)
