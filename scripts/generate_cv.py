@@ -34,6 +34,13 @@ def strip_frontmatter(text: str) -> str:
     return text[m.end():] if m else text
 
 
+def _close_ul(out: list[str], in_ul: bool) -> bool:
+    """Append a closing </ul> if a list is open; return the new in_ul state."""
+    if in_ul:
+        out.append("</ul>")
+    return False
+
+
 def md_to_html(md: str) -> str:
     """Minimal markdown-to-HTML converter (covers what we need)."""
     lines = md.split("\n")
@@ -45,25 +52,19 @@ def md_to_html(md: str) -> str:
 
         # skip empty lines
         if not stripped:
-            if in_ul:
-                out.append("</ul>")
-                in_ul = False
+            in_ul = _close_ul(out, in_ul)
             out.append("")
             continue
 
         # skip standalone block-level HTML wrappers (e.g. layout-only <div>s)
         if re.match(r"^</?(div|section|aside)\b[^>]*>$", stripped, re.IGNORECASE):
-            if in_ul:
-                out.append("</ul>")
-                in_ul = False
+            in_ul = _close_ul(out, in_ul)
             continue
 
         # headings
         hm = re.match(r"^(#{1,6})\s+(.*)", stripped)
         if hm:
-            if in_ul:
-                out.append("</ul>")
-                in_ul = False
+            in_ul = _close_ul(out, in_ul)
             level = len(hm.group(1))
             content = inline_md(hm.group(2))
             out.append(f"<h{level}>{content}</h{level}>")
@@ -71,9 +72,7 @@ def md_to_html(md: str) -> str:
 
         # horizontal rule
         if re.match(r"^---+\s*$", stripped):
-            if in_ul:
-                out.append("</ul>")
-                in_ul = False
+            in_ul = _close_ul(out, in_ul)
             continue  # skip hrs in CV
 
         # unordered list (- or *)
@@ -86,13 +85,10 @@ def md_to_html(md: str) -> str:
             continue
 
         # paragraph
-        if in_ul:
-            out.append("</ul>")
-            in_ul = False
+        in_ul = _close_ul(out, in_ul)
         out.append(f"<p>{inline_md(stripped)}</p>")
 
-    if in_ul:
-        out.append("</ul>")
+    _close_ul(out, in_ul)
 
     return "\n".join(out)
 
