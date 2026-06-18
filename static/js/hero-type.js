@@ -9,7 +9,7 @@
   var CHAR_JITTER_MS = 34;  // random extra delay, for an irregular human cadence
   var START_DELAY_MS = 300; // pause before typing so the prompt registers first
 
-  var el = document.querySelector(".hero__roles[data-typewriter]");
+  var el = document.querySelector("[data-typewriter]");
   if (!el) return;
 
   var reduce = window.matchMedia &&
