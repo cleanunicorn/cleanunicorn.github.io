@@ -1,3 +1,0 @@
-/* Final override layer (loaded last by head.html). The visual system lives in
-   assets/css/z-*.css; this file is reserved for the rare rule that must win
-   over everything else. Kept minimal on purpose. */

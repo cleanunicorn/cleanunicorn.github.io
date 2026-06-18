@@ -1,5 +1,0 @@
-/* Palette and base overrides now live in the design-system layer
-   (assets/css/z-base.css), which the asset pipeline loads after the theme.
-   This file is intentionally minimal — kept only so the <link> in head.html
-   resolves. Do not reintroduce palette tokens here; they belong in z-base.css
-   so there is a single source of truth. */

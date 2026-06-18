@@ -1,36 +1,67 @@
 {{ define "main" }}
   {{ $home := $.Site.Data.home }}
 
-  <section class="hero">
-    <div class="hero__intro">
-      <p class="hero__eyebrow">
-        <span class="hero__prompt" aria-hidden="true">~$ whoami</span>
-        <span class="hero__roles" data-typewriter>{{ $.Site.Params.Subtitle }}</span><span class="hero__cursor" aria-hidden="true"></span>
-      </p>
-      <h1 class="hero__headline">{{ $home.headline | default $.Site.Title }}</h1>
-      {{ with $home.subheadline }}
-        <p class="hero__sub">{{ . }}</p>
-      {{ end }}
-      {{ with $home.actions }}
-        <div class="hero__actions">
-          {{ range . }}
-            <a class="btn{{ if .primary }} btn--primary{{ end }}" href="{{ .url }}">{{ .label }}{{ if .primary }} <span aria-hidden="true">→</span>{{ end }}</a>
-          {{ end }}
-        </div>
-      {{ end }}
-    </div>
+  {{/* Per-network brand colours for the channel rows. The featured (calendar)
+       row tints from --accent in CSS, so it needs no entry here. */}}
+  {{ $brands := dict "telegram" "#2aabee" "x" "#e7e9ea" "github" "#e6edf3" "linkedin" "#3b96d8" }}
 
-    {{ with $home.photo }}
-      <aside class="hero__card">
-        <img class="hero__photo" src="{{ . | absURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="200" height="200" loading="eager" fetchpriority="high">
-        <p class="hero__id">
-          <span class="hero__name">{{ $home.name | default $.Site.Title }}{{ with $home.nickname }} <span class="hero__alias">“{{ . }}”</span>{{ end }}</span>
-          {{ with $home.location }}<span class="hero__meta">{{ . }}</span>{{ end }}
-          {{ with $home.status }}<span class="hero__avail"><span class="hero__dot" aria-hidden="true"></span>{{ . }}</span>{{ end }}
-        </p>
-      </aside>
-    {{ end }}
+  {{/* ---- POSTER HERO: iOS-18 "Contact Poster" for the web ----------------- */}}
+  <section class="poster" aria-label="Daniel Luca — contact">
+    <div class="poster__frame">
+      {{ with $home.photo }}
+        <img class="poster__photo" src="{{ . | relURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="400" height="400" loading="eager" fetchpriority="high">
+      {{ end }}
+      <div class="poster__wash" aria-hidden="true"></div>
+      <div class="poster__scrim" aria-hidden="true"></div>
+
+      <p class="poster__eyebrow">
+        <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
+        <span class="poster__roles" data-typewriter>{{ $.Site.Params.Subtitle }}</span><span class="poster__cursor" aria-hidden="true"></span>
+      </p>
+
+      <div class="poster__id">
+        <h1 class="poster__name">{{ $home.name | default $.Site.Title }}</h1>
+        {{ with $home.nickname }}<span class="poster__alias">“{{ . }}”</span>{{ end }}
+        {{ with $home.connect.tagline }}<p class="poster__tagline">{{ . }}</p>{{ end }}
+      </div>
+    </div>
   </section>
+
+  {{/* ---- BOARD PANEL: bordered, columnar channel table -------------------- */}}
+  {{ with $home.connect }}
+    <section class="board" aria-labelledby="connect-head">
+      <h2 class="board__head-label" id="connect-head">{{ .label }}</h2>
+      {{ with .note }}<p class="board__note board__note--lead">{{ . }}</p>{{ end }}
+
+      <div class="board__panel">
+        <div class="board__head" aria-hidden="true">
+          <span class="board__col board__col--ch">Channel</span>
+          <span class="board__col board__col--handle">Handle</span>
+          <span class="board__col board__col--act"></span>
+        </div>
+
+        <ul class="board__list">
+          {{ range .links }}
+            {{ $brand := index $brands .net }}
+            {{ $ext := hasPrefix .url "http" }}
+            <li class="board__item">
+              <a class="board__row{{ if .featured }} board__row--featured{{ end }}"
+                 {{- if and (not .featured) $brand }} style="{{ printf "--brand: %s;" $brand | safeCSS }}"{{ end }}
+                 href="{{ .url }}"{{ if $ext }} target="_blank" rel="me noopener"{{ end }}>
+                <span class="board__col board__col--ch">
+                  <span class="board__icon{{ if .featured }} board__icon--accent{{ end }}" aria-hidden="true">{{ partial "brand-icon.html" .net }}</span>
+                  <span class="board__chname">{{ .label }}</span>
+                </span>
+                <span class="board__col board__col--handle">{{ with .sub }}<span class="board__handle">{{ . }}</span>{{ end }}</span>
+                <span class="board__col board__col--act"><span class="{{ if .featured }}board__cta{{ else }}board__connect{{ end }}">{{ if .featured }}Reserve{{ else }}Connect{{ end }} <span aria-hidden="true">→</span></span></span>
+                {{ if $ext }}<span class="sr-only"> (opens in new tab)</span>{{ end }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+    </section>
+  {{ end }}
 
   {{ with $home.proof }}
     <section class="proof" aria-label="Track record">
@@ -111,5 +142,5 @@
     </div>
   </section>
 
-  <script src="{{ "js/hero-type.js" | absURL }}" defer></script>
+  <script src="{{ "js/hero-type.js" | relURL }}" defer></script>
 {{ end }}

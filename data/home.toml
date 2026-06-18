@@ -1,27 +1,13 @@
 # Homepage hero + landing content.
 # Edit freely — consumed by layouts/index.html. No template changes needed.
 
-headline = "I help blockchain & AI founders ship systems that survive adversarial conditions."
-subheadline = "I audit the code, run the technical diligence, and back the teams building trust-minimized infrastructure — in the space since 2017."
-
-# Short identity line shown beside the portrait.
+# Short identity shown in the poster hero.
 name = "Daniel Luca"
 nickname = "CleanUnicorn"
-location = "Bucharest, Romania"
 
 # Portrait shown in the hero. Lives in static/images/.
-photo = "/images/me.png"
+photo = "/images/daniel-luca.jpg"
 photoAlt = "Daniel Luca"
-
-# Primary hero calls to action. The first is emphasised.
-[[actions]]
-label = "Request an audit"
-url = "https://www.linkedin.com/in/luca-daniel-5227267/"
-primary = true
-
-[[actions]]
-label = "Read the writing"
-url = "/posts/"
 
 # Credibility strip — framed honestly: protocols audited, firms advised, where
 # the work has been featured. Edit freely.
@@ -63,20 +49,58 @@ url = "/about/#projects"
 
 # Audience-routed calls to action. `primary = true` highlights the main one.
 [[cta]]
-title = "Need a security review?"
-text = "Smart-contract audits and adversarial code review for protocols that can't afford to be wrong."
-label = "Request an audit"
-url = "https://www.linkedin.com/in/luca-daniel-5227267/"
-primary = true
-
-[[cta]]
 title = "Raising or building?"
 text = "Research-driven technical diligence and hands-on support via Eden Block."
 label = "Get in touch"
 url = "https://x.com/cleanunicorn"
+primary = true
 
 [[cta]]
 title = "Want to follow my work?"
 text = "Essays on security, EVM internals and applied AI — plus talks and podcasts."
 label = "Read the writing"
 url = "/posts/"
+
+# -----------------------------------------------------------------------------
+# Connect — personal quick links, front and centre on the homepage. Each entry
+# is rendered in the visual style of its network (icons live in
+# layouts/partials/brand-icon.html; styling in assets/css/z-connect.css).
+# `featured = true` promotes the booking row to the primary call to action.
+# The booking link points at a Cal.com 30-minute scheduling page.
+# `tagline` feeds the poster hero; `note` introduces the board.
+# -----------------------------------------------------------------------------
+[connect]
+label = "Let's connect"
+note = "Every way to reach me — pick whatever you already live in."
+tagline = "Blockchain security researcher, investor & builder — securing Ethereum since 2017."
+
+[[connect.links]]
+net = "calendar"
+label = "Book a meeting"
+sub = "cal.com · 30 min"
+url = "https://cal.com/daniel-luca-cleanunicorn/30min"
+featured = true
+
+[[connect.links]]
+net = "telegram"
+label = "Telegram"
+sub = "@cleanunicorn"
+url = "https://t.me/cleanunicorn"
+
+[[connect.links]]
+net = "x"
+label = "X / Twitter"
+sub = "@cleanunicorn"
+url = "https://x.com/cleanunicorn"
+
+[[connect.links]]
+net = "github"
+label = "GitHub"
+sub = "cleanunicorn"
+url = "https://github.com/cleanunicorn"
+
+[[connect.links]]
+net = "linkedin"
+label = "LinkedIn"
+sub = "Daniel Luca"
+url = "https://www.linkedin.com/in/luca-daniel-5227267/"

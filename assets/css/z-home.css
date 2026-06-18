@@ -1,26 +1,7 @@
 /* =============================================================================
-   z-home.css — Homepage: hero, proof, stats, offer cards, latest writing
+   z-home.css — Homepage: proof, stats, offer cards, latest writing
+   (The poster + board hero lives in z-connect.css for this variant.)
    ========================================================================== */
-
-/* ---- Buttons (shared component) ------------------------------------------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5ch;
-  padding: 0.6rem 1.1rem;
-  border: 1px solid var(--accent-line);
-  color: var(--accent);
-  background: transparent;
-  text-decoration: none;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: background var(--dur) var(--ease),
-              border-color var(--dur) var(--ease),
-              color var(--dur) var(--ease);
-}
-.btn:hover { background: var(--accent-wash); border-color: var(--accent); color: var(--accent-bright); }
-.btn--primary { background: var(--accent); color: var(--background); border-color: var(--accent); font-weight: 600; }
-.btn--primary:hover { background: var(--accent-bright); border-color: var(--accent-bright); color: var(--background); }
 
 /* ---- Section headings ----------------------------------------------------- */
 .section-head { margin: 0 0 var(--sp-5); }
@@ -32,92 +13,6 @@
 }
 .section-head h2, h2.section-head { margin: 0; }
 .section-head__more { font-size: var(--fs-small); white-space: nowrap; text-decoration: none; }
-
-/* ---- Hero ----------------------------------------------------------------- */
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: var(--sp-7);
-  margin: var(--sp-5) 0 var(--sp-8);
-}
-
-.hero__intro { animation: fade-up var(--dur-slow) var(--ease) both; }
-
-.hero__eyebrow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 0 0 var(--sp-4);
-  font-size: var(--fs-small);
-  letter-spacing: 0.02em;
-  color: var(--accent);
-}
-.hero__prompt { margin-right: 0.8ch; color: var(--text-faint); }
-.hero__roles { display: inline-block; }
-.hero__cursor {
-  display: inline-block;
-  width: 1.1ch;
-  height: 1.2em;
-  margin-left: 0.2ch;
-  vertical-align: -0.22em;
-  background: var(--accent);
-  animation: blink 1.1s steps(1) infinite;
-}
-
-.hero__headline {
-  margin: 0 0 var(--sp-4);
-  font-size: var(--fs-display);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  max-width: 20ch;
-}
-
-.hero__sub {
-  margin: 0;
-  max-width: 54ch;
-  font-size: 1.05rem;
-  line-height: 1.65;
-  color: var(--text-muted);
-}
-
-.hero__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-6); }
-
-/* Portrait card */
-.hero__card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  animation: fade-up var(--dur-slow) var(--ease) 80ms both;
-}
-.hero__photo {
-  display: block;
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border: 1px solid var(--accent-line);
-  border-radius: var(--radius);
-  padding: 0;
-}
-.hero__id { display: flex; flex-direction: column; gap: 0.15rem; margin: 0; font-size: var(--fs-small); }
-.hero__name { font-weight: 600; color: var(--text); }
-.hero__alias { font-weight: 500; color: var(--accent); }
-.hero__meta { color: var(--text-muted); }
-.hero__avail {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5ch;
-  margin-top: 0.2rem;
-  color: var(--text-muted);
-  font-size: var(--fs-micro);
-  letter-spacing: 0.02em;
-}
-.hero__dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-wash);
-}
 
 /* ---- Proof strip ---------------------------------------------------------- */
 .proof {
@@ -201,7 +96,8 @@
 .offer .section-head { margin-bottom: var(--sp-7); }
 .offer__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Adapts to the number of cards (2 or 3) without leaving an empty column. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: var(--sp-4);
 }
 .offer__card {
@@ -231,18 +127,6 @@
 @media (max-width: 768px) {
   .offer__grid { grid-template-columns: 1fr; }
   .stats { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 640px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: var(--sp-5);
-    margin-top: var(--sp-3);
-  }
-  .hero__card { flex-direction: row; align-items: center; gap: var(--sp-4); order: -1; }
-  .hero__photo { width: 128px; height: 128px; }
-  .hero__sub { font-size: 1rem; }
-  .hero__actions .btn { flex: 1 1 auto; justify-content: center; }
 }
 
 @media (max-width: 420px) {
