@@ -42,11 +42,11 @@
 
         <ul class="board__list">
           {{ range .links }}
-            {{ $brand := index $brands .net | default "#3fd68a" }}
+            {{ $brand := index $brands .net }}
             {{ $ext := hasPrefix .url "http" }}
             <li class="board__item">
               <a class="board__row{{ if .featured }} board__row--featured{{ end }}"
-                 {{- if not .featured }} style="{{ printf "--brand: %s;" $brand | safeCSS }}"{{ end }}
+                 {{- if and (not .featured) $brand }} style="{{ printf "--brand: %s;" $brand | safeCSS }}"{{ end }}
                  href="{{ .url }}"{{ if $ext }} target="_blank" rel="me noopener"{{ end }}>
                 <span class="board__col board__col--ch">
                   <span class="board__icon{{ if .featured }} board__icon--accent{{ end }}" aria-hidden="true">{{ partial "brand-icon.html" .net }}</span>
