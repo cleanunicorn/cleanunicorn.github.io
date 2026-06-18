@@ -201,7 +201,8 @@
 .offer .section-head { margin-bottom: var(--sp-7); }
 .offer__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Adapts to the number of cards (2 or 3) without leaving an empty column. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: var(--sp-4);
 }
 .offer__card {
