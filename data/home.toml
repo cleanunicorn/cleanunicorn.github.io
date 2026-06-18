@@ -80,3 +80,45 @@ title = "Want to follow my work?"
 text = "Essays on security, EVM internals and applied AI — plus talks and podcasts."
 label = "Read the writing"
 url = "/posts/"
+
+# -----------------------------------------------------------------------------
+# Connect — personal quick links, front and centre on the homepage. Each entry
+# is rendered in the visual style of its network (icons live in
+# layouts/partials/brand-icon.html; styling in assets/css/z-connect.css).
+# `featured = true` promotes the booking row to the primary call to action.
+# The booking link points at a Cal.com 30-minute scheduling page.
+# -----------------------------------------------------------------------------
+[connect]
+label = "Let's connect"
+note = "Every way to reach me — pick whatever you already live in."
+
+[[connect.links]]
+net = "calendar"
+label = "Book a meeting"
+sub = "Grab a slot on my calendar"
+url = "https://cal.com/daniel-luca-cleanunicorn/30min"
+featured = true
+
+[[connect.links]]
+net = "telegram"
+label = "Telegram"
+sub = "@cleanunicorn"
+url = "https://t.me/cleanunicorn"
+
+[[connect.links]]
+net = "x"
+label = "X / Twitter"
+sub = "@cleanunicorn"
+url = "https://x.com/cleanunicorn"
+
+[[connect.links]]
+net = "github"
+label = "GitHub"
+sub = "cleanunicorn"
+url = "https://github.com/cleanunicorn"
+
+[[connect.links]]
+net = "linkedin"
+label = "LinkedIn"
+sub = "Daniel Luca"
+url = "https://www.linkedin.com/in/luca-daniel-5227267/"
