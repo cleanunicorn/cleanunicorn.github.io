@@ -28,7 +28,8 @@ SKILLS_PATH = ROOT / "data" / "skills.toml"
 # ---------------------------------------------------------------------------
 
 def strip_frontmatter(text: str) -> str:
-    """Remove TOML (+++) frontmatter from markdown."""
+    """Strip Hugo TOML frontmatter (the leading `+++ … +++` block). Does not
+    handle `+++` appearing inside the body."""
     m = re.match(r"^\+\+\+.*?\+\+\+\s*", text, re.DOTALL)
     return text[m.end():] if m else text
 
