@@ -88,19 +88,24 @@
   z-index: 3;
   top: var(--sp-4);
   left: var(--sp-5);
-  right: var(--sp-5);
+  right: auto;
+  max-width: calc(100% - 2 * var(--sp-5));
+  width: fit-content;
   margin: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  padding: 0.3rem 0.65rem;
   font-size: var(--fs-small);
   letter-spacing: 0.02em;
   color: var(--accent-bright);
-  /* Per-glyph halo keeps the eyebrow legible over bright photo regions without
-     darkening a band across the top of the image. */
-  text-shadow:
-    0 1px 2px var(--background),
-    0 0 10px color-mix(in srgb, var(--background) 85%, transparent);
+  /* A localized translucent backing (a small terminal chip) keeps the eyebrow
+     AA-legible over any region of the photo without darkening a band across the
+     top of the image — which previously read as a gap before the portrait. */
+  background: color-mix(in srgb, var(--background) 52%, transparent);
+  backdrop-filter: blur(3px);
+  border-radius: var(--radius);
+  text-shadow: 0 1px 2px var(--background);
 }
 .poster__prompt { margin-right: 0.8ch; color: color-mix(in srgb, var(--text) 70%, transparent); }
 .poster__roles { display: inline-block; }
@@ -180,6 +185,10 @@
 
 /* ---- The board panel ------------------------------------------------------ */
 .board__panel {
+  /* Icon size + channel-column gap, shared so the mobile handle indent that
+     aligns under the channel name (see .board__col--handle) stays in sync. */
+  --board-icon-size: 22px;
+  --board-ch-gap: 0.9ch;
   border: 1px solid var(--hairline-strong);
   border-radius: var(--radius);
   background: var(--surface-1);
@@ -235,7 +244,7 @@
 .board__col--ch {
   display: flex;
   align-items: center;
-  gap: 0.9ch;
+  gap: var(--board-ch-gap);
   min-width: 0;
 }
 .board__icon {
@@ -243,7 +252,7 @@
   flex: none;
   color: var(--brand, var(--accent));
 }
-.board__icon svg { width: 22px; height: 22px; display: block; }
+.board__icon svg { width: var(--board-icon-size); height: var(--board-icon-size); display: block; }
 .board__icon--accent { color: var(--accent); }
 
 .board__chname {
@@ -357,7 +366,7 @@
     aspect-ratio: 3 / 4;
     min-height: 0;
   }
-  .poster__eyebrow { top: var(--sp-3); left: var(--sp-4); right: var(--sp-4); }
+  .poster__eyebrow { top: var(--sp-3); left: var(--sp-4); right: auto; max-width: calc(100% - 2 * var(--sp-4)); }
   .poster__id { left: var(--sp-4); right: var(--sp-4); bottom: var(--sp-4); }
   .poster__name { font-size: clamp(2.4rem, 9vw, 3.4rem); }
   .poster__tagline { font-size: 0.95rem; }
@@ -375,7 +384,7 @@
     min-height: 44px;
   }
   .board__col--ch     { grid-area: ch; }
-  .board__col--handle { grid-area: handle; padding-left: calc(22px + 0.9ch); }
+  .board__col--handle { grid-area: handle; padding-left: calc(var(--board-icon-size) + var(--board-ch-gap)); }
   .board__col--act    { grid-area: act; align-self: center; }
 
   /* Hide the handle cell entirely when empty so the row doesn't gain dead space */
