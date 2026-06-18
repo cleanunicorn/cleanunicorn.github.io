@@ -1,27 +1,13 @@
 # Homepage hero + landing content.
 # Edit freely — consumed by layouts/index.html. No template changes needed.
 
-headline = "I help blockchain & AI founders ship systems that survive adversarial conditions."
-subheadline = "I audit the code, run the technical diligence, and back the teams building trust-minimized infrastructure — in the space since 2017."
-
-# Short identity line shown beside the portrait.
+# Short identity shown in the poster hero.
 name = "Daniel Luca"
 nickname = "CleanUnicorn"
-location = "Bucharest, Romania"
 
 # Portrait shown in the hero. Lives in static/images/.
 photo = "/images/daniel-luca.jpg"
 photoAlt = "Daniel Luca"
-
-# Primary hero calls to action. The first is emphasised.
-[[actions]]
-label = "Request an audit"
-url = "https://www.linkedin.com/in/luca-daniel-5227267/"
-primary = true
-
-[[actions]]
-label = "Read the writing"
-url = "/posts/"
 
 # Credibility strip — framed honestly: protocols audited, firms advised, where
 # the work has been featured. Edit freely.
