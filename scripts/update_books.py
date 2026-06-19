@@ -56,6 +56,9 @@ USER_AGENT = "Mozilla/5.0 (compatible; cleanunicorn-cv/1.0; +https://cleanunicor
 # ---------------------------------------------------------------------------
 
 class Book:
+    """A ranked book entry: title, author, your rating, community average and a
+    read/added timestamp used for de-duplication and tie-breaking."""
+
     __slots__ = ("title", "author", "rating", "average", "when")
 
     def __init__(self, title: str, author: str = "", rating: int = 0,
