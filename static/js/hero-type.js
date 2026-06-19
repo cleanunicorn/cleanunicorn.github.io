@@ -17,6 +17,10 @@
   if (reduce) return;
 
   var full = el.textContent;
+  // The answer may contain markup (e.g. a linked org name). Typing happens as
+  // plain text; once it completes we restore the original HTML so any link
+  // becomes live again.
+  var fullHTML = el.innerHTML;
 
   // Reserve the rendered height before clearing so the block doesn't collapse
   // vertically as it types (avoids layout shift / a jumping headline). Height,
@@ -29,11 +33,14 @@
 
   var i = 0;
   function tick() {
-    el.textContent = full.slice(0, i);
     if (i < full.length) {
+      el.textContent = full.slice(0, i);
       i += 1;
       // Slightly irregular cadence reads more like real typing.
       setTimeout(tick, CHAR_DELAY_MS + Math.random() * CHAR_JITTER_MS);
+    } else {
+      // Done — swap the plain text back for the original markup.
+      el.innerHTML = fullHTML;
     }
   }
 

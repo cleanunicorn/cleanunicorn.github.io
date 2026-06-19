@@ -124,6 +124,13 @@
    reading like a real `whoami` command followed by its output. */
 .poster__prompt { flex-basis: 100%; color: color-mix(in srgb, var(--text) 70%, transparent); }
 .poster__answer { display: inline-block; }
+.poster__answer-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.2em;
+}
+.poster__answer-link:hover { text-decoration-color: currentColor; }
 .poster__cursor {
   display: inline-block;
   width: 1.1ch;

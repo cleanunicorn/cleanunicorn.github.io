@@ -19,7 +19,13 @@
       <div class="poster__inner">
         <p class="poster__eyebrow">
           <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
-          <span class="poster__answer" data-typewriter>{{ $home.whoami | default "cleanunicorn" }}</span><span class="poster__cursor" aria-hidden="true"></span>
+          {{ $answer := $home.whoami | default "cleanunicorn" }}
+          {{ if and $home.whoamiLink $home.whoamiURL }}
+            {{ $attrs := cond (hasPrefix $home.whoamiURL "http") ` target="_blank" rel="noopener"` "" }}
+            {{ $link := printf `<a class="poster__answer-link" href="%s"%s>$1</a>` $home.whoamiURL $attrs }}
+            {{ $answer = replaceRE (printf `(%s)` $home.whoamiLink) $link $answer }}
+          {{ end }}
+          <span class="poster__answer" data-typewriter>{{ $answer | safeHTML }}</span><span class="poster__cursor" aria-hidden="true"></span>
         </p>
 
         <div class="poster__id">
