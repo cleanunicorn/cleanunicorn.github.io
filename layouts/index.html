@@ -19,7 +19,7 @@
       <div class="poster__inner">
         <p class="poster__eyebrow">
           <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
-          <span class="poster__answer" data-typewriter>cleanunicorn</span><span class="poster__cursor" aria-hidden="true"></span>
+          <span class="poster__answer" data-typewriter>{{ $home.whoami | default "cleanunicorn" }}</span><span class="poster__cursor" aria-hidden="true"></span>
         </p>
 
         <div class="poster__id">

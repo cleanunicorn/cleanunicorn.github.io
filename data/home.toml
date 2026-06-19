@@ -4,6 +4,8 @@
 # Short identity shown in the poster hero.
 name = "Daniel Luca"
 nickname = "CleanUnicorn"
+# Printed as the output of `~$ whoami` in the hero terminal eyebrow.
+whoami = "Technical Partner @ Eden Block"
 
 # Portrait shown in the hero. Lives in static/images/.
 photo = "/images/daniel-luca.jpg"
