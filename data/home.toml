@@ -72,7 +72,7 @@ url = "/posts/"
 [connect]
 label = "Let's connect"
 note = "Every way to reach me — pick whatever you already live in."
-tagline = "Blockchain security researcher, investor & builder — securing Ethereum since 2017."
+tagline = "Securing Ethereum since 2017."
 
 [[connect.links]]
 net = "calendar"
