@@ -3,10 +3,12 @@ title = "Connect"
 draft = false
 slug = "contact"
 class = "page-contact"
-lede = "I'm always happy to talk to people building serious things in blockchain, security and AI. The fastest way to reach me is a DM on X or a message on LinkedIn."
+lede = "I'm always happy to talk to people building serious things in blockchain, security and AI. Pick whatever channel you already live in — or just book time directly."
 description = "Get in touch with Daniel Luca — smart-contract audits, technical diligence, investment, speaking and collaboration."
 showFullContent = true
 +++
+
+{{< connect-board >}}
 
 ## I'd love to hear from you if…
 
@@ -25,9 +27,6 @@ I enjoy talking about EVM internals, exploits, and applied AI. See some [past ta
 
 → Reach out on [X / Twitter](https://x.com/cleanunicorn).
 
-## Find me
+---
 
-- [X / Twitter](https://x.com/cleanunicorn)
-- [LinkedIn](https://www.linkedin.com/in/luca-daniel-5227267/)
-- [GitHub](https://github.com/cleanunicorn)
-- [Download CV (PDF)](/cv.pdf)
+Prefer something more formal? [Download my CV (PDF)](/cv.pdf).

@@ -61,16 +61,18 @@
 
   var COMMANDS = {
     help: function () {
+      // Keep every line ≤ ~34ch so nothing wraps inside the chip on phones.
       return [
         "available commands:",
-        "  about      who I am           → /about/",
-        "  work       what I've done     → /work/",
-        "  posts      what I write       → /posts/",
-        "  contact    how to reach me    → /contact/",
-        "  book       grab 30 min        → cal.com",
+        "  about      who I am",
+        "  work       what I've done",
+        "  posts      what I write",
+        "  contact    how to reach me",
+        "  book       grab 30 min on cal.com",
         "  cv         open the CV (pdf)",
-        "  ls · cat · pwd · whoami · clear · exit",
-        "this is a security researcher's site — assume hidden surface.",
+        "  ls · cat · pwd · clear · exit",
+        "this is a security researcher's",
+        "site — assume hidden surface.",
       ];
     },
     whoami: function () {

@@ -332,6 +332,14 @@
 .board__item { margin: 0; }
 .board__item:first-child .board__row { border-top: 0; }
 
+/* ---- Embedded board (/contact/, via the connect-board shortcode) ----------
+   Inside page content the prose defaults from z-base.css (66ch measure on
+   .post-content ul, list-item margins on .content li) outrank the base board
+   selectors; neutralise them so the panel renders exactly as on the homepage. */
+.post-content .board__list { max-width: none; margin: 0; }
+.content .board__item { margin: 0; }
+.board--embed { margin-bottom: var(--sp-7); }
+
 /* Brand-tinted hover for the standard channel rows */
 .board__row:hover {
   background: color-mix(in srgb, var(--brand) 10%, transparent);

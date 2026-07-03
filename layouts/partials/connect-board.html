@@ -1,0 +1,36 @@
+{{/* Connect board panel — the bordered, columnar channel table
+     (Channel · Handle · action) driven by data/home.toml [connect].
+     Context (.) is the connect dict. Shared by the homepage board section
+     and the /contact/ page (via the connect-board shortcode). */}}
+
+{{/* Per-network brand colours for the channel rows. The featured (calendar)
+     row tints from --accent in CSS, so it needs no entry here. */}}
+{{ $brands := dict "telegram" "#2aabee" "x" "#e7e9ea" "github" "#e6edf3" "linkedin" "#3b96d8" }}
+
+<div class="board__panel">
+  <div class="board__head" aria-hidden="true">
+    <span class="board__col board__col--ch">Channel</span>
+    <span class="board__col board__col--handle">Handle</span>
+    <span class="board__col board__col--act"></span>
+  </div>
+
+  <ul class="board__list">
+    {{ range .links }}
+      {{ $brand := index $brands .net }}
+      {{ $ext := hasPrefix .url "http" }}
+      <li class="board__item">
+        <a class="board__row{{ if .featured }} board__row--featured{{ end }}"
+           {{- if and (not .featured) $brand }} style="{{ printf "--brand: %s;" $brand | safeCSS }}"{{ end }}
+           href="{{ .url }}"{{ if $ext }} target="_blank" rel="me noopener"{{ end }}>
+          <span class="board__col board__col--ch">
+            <span class="board__icon{{ if .featured }} board__icon--accent{{ end }}" aria-hidden="true">{{ partial "brand-icon.html" .net }}</span>
+            <span class="board__chname">{{ .label }}</span>
+          </span>
+          <span class="board__col board__col--handle">{{ with .sub }}<span class="board__handle">{{ . }}</span>{{ end }}</span>
+          <span class="board__col board__col--act"><span class="{{ if .featured }}board__cta{{ else }}board__connect{{ end }}">{{ if .featured }}Reserve{{ else }}Connect{{ end }} <span aria-hidden="true">→</span></span></span>
+          {{ if $ext }}<span class="sr-only"> (opens in new tab)</span>{{ end }}
+        </a>
+      </li>
+    {{ end }}
+  </ul>
+</div>
