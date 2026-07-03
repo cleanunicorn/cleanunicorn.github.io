@@ -27,8 +27,22 @@ items = [
   "Eden Block",
   "Gensyn",
   "DEF CON 27",
-  "Code Is Law (2025)",
 ]
+
+# Documentary spotlight — the single most distinctive credential gets its own
+# band instead of hiding as a proof-strip item. Remove the block to hide it.
+[featured]
+label = "Featured in"
+title = "Code Is Law (2025)"
+text = "A feature documentary about the DAO hack, the Indexed Finance heist and crypto's \"code is law\" ethos — I'm one of the people telling the story."
+
+[[featured.links]]
+label = "See it on IMDb"
+url = "https://www.imdb.com/title/tt35931420/"
+
+[[featured.links]]
+label = "The story, on a podcast"
+url = "https://www.youtube.com/watch?v=CTUhbYXopys"
 
 # "By the numbers" credibility band. Edit freely — values are intentionally
 # conservative and defensible. Set to an empty list to hide the band.

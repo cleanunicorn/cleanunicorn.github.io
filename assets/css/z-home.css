@@ -91,6 +91,53 @@
 .stats__item--link:hover, .stats__item--link:focus-visible { background: var(--accent-wash); }
 .stats__item--link:hover .stats__label, .stats__item--link:focus-visible .stats__label { color: var(--accent); }
 
+/* ---- Documentary spotlight ------------------------------------------------ */
+/* One-off band for the single most distinctive credential. Visual language
+   borrowed from the featured board row: accent wash + 3px inset accent bar. */
+.spotlight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4) var(--sp-6);
+  margin: 0 0 var(--sp-8);
+  padding: var(--sp-5) var(--sp-6);
+  border: 1px solid var(--accent-line);
+  background: var(--accent-wash);
+  box-shadow: inset 3px 0 0 0 var(--accent);
+}
+.spotlight__body { flex: 1 1 24rem; min-width: 0; }
+.spotlight__label {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.spotlight__title { margin: var(--sp-1) 0 0; font-size: var(--fs-h2); }
+.spotlight__text {
+  margin: var(--sp-2) 0 0;
+  max-width: 54ch;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.spotlight__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+.spotlight__link {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.spotlight__link:hover { color: var(--accent-bright); text-decoration: underline; }
+.spotlight__link span { transition: transform var(--dur) var(--ease); display: inline-block; }
+.spotlight__link:hover span { transform: translateX(3px); }
+
 /* ---- Offer cards ---------------------------------------------------------- */
 .offer { margin: 0 0 var(--sp-8); }
 .offer .section-head { margin-bottom: var(--sp-7); }

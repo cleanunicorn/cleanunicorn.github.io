@@ -105,6 +105,27 @@
     </section>
   {{ end }}
 
+  {{ with $home.featured }}
+    <section class="spotlight" aria-labelledby="spotlight-title">
+      <div class="spotlight__body">
+        <span class="spotlight__label">{{ .label | default "Featured in" }}</span>
+        <h2 class="spotlight__title" id="spotlight-title">{{ .title }}</h2>
+        {{ with .text }}<p class="spotlight__text">{{ . }}</p>{{ end }}
+      </div>
+      {{ with .links }}
+        <div class="spotlight__actions">
+          {{ range . }}
+            {{ $ext := hasPrefix .url "http" }}
+            <a class="spotlight__link" href="{{ .url }}"{{ if $ext }} target="_blank" rel="noopener"{{ end }}>
+              {{- .label }} <span aria-hidden="true">→</span>
+              {{- if $ext }}<span class="sr-only"> (opens in new tab)</span>{{ end -}}
+            </a>
+          {{ end }}
+        </div>
+      {{ end }}
+    </section>
+  {{ end }}
+
   {{ with $home.cta }}
     <section class="offer" aria-label="Ways to work together">
       <h2 class="section-head">How I can help</h2>
