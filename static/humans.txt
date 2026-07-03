@@ -1,0 +1,17 @@
+/* TEAM */
+  Owner: Daniel Luca (CleanUnicorn)
+  Role: Security researcher, investor, builder
+  Location: Bucharest, Romania
+  X: @cleanunicorn
+  GitHub: cleanunicorn
+
+/* SITE */
+  Stack: Hugo + a heavily customised terminal theme
+  Type: monospace, emerald on warm near-black
+  Hosting: GitHub Pages
+  Assistance: parts of this site were pair-built with LLMs,
+  every line reviewed by a human who audits code for a living
+
+/* NOTES */
+  The prompt on the homepage accepts input.
+  security.txt lives in /.well-known/, as it should.
