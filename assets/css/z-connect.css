@@ -186,6 +186,78 @@
 }
 
 /* ===========================================================================
+   HERO TERMINAL — the `~$ whoami` chip accepts real input (terminal.js)
+   ----------------------------------------------------------------------------
+   JS-inserted, so none of this renders without the script. The chip grows a
+   scrollback log and a prompt row; width opens up once the terminal exists so
+   command output has room, and the log is capped so it never swallows the
+   portrait or pushes the identity block off-frame.
+   ======================================================================== */
+
+.poster__eyebrow--term { cursor: text; }
+
+/* The chip keeps its fit-content footprint until the terminal is actually in
+   use (focused, or holding output) — then it opens into a real column so
+   command output has room. */
+.poster__eyebrow--active,
+.poster__eyebrow--open {
+  width: min(100%, 44rem);
+}
+
+.term { flex-basis: 100%; }
+
+.term__out {
+  max-height: min(38vh, 17rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.term__line {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--text-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.term__line--cmd { color: var(--accent-bright); }
+.term__line--err { color: var(--danger); }
+
+/* Prompt row: `~$` + a chrome-less input that inherits the chip's type. */
+.term__form {
+  display: flex;
+  align-items: baseline;
+  gap: 1ch;
+}
+.term__ps1 { color: color-mix(in srgb, var(--text) 70%, transparent); }
+.term__in {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent-bright);
+  font: inherit;
+  letter-spacing: inherit;
+  caret-color: var(--accent-bright);
+}
+.term__in::placeholder {
+  color: var(--text-faint);
+  opacity: 1;
+  font-style: italic;
+}
+.term__in:focus { outline: none; } /* the chip itself signals focus */
+.poster__eyebrow--active {
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--background) 72%, transparent);
+}
+
+/* Tighter cap on small screens so the on-screen keyboard + log leave the
+   name legible. */
+@media (max-width: 640px) {
+  .term__out { max-height: 22vh; }
+}
+
+/* ===========================================================================
    BOARD PANEL — "and here's how to reach me"
    ======================================================================== */
 .board {
@@ -259,6 +331,14 @@
 .board__list { list-style: none; margin: 0; padding: 0; }
 .board__item { margin: 0; }
 .board__item:first-child .board__row { border-top: 0; }
+
+/* ---- Embedded board (/contact/, via the connect-board shortcode) ----------
+   Inside page content the prose defaults from z-base.css (66ch measure on
+   .post-content ul, list-item margins on .content li) outrank the base board
+   selectors; neutralise them so the panel renders exactly as on the homepage. */
+.post-content .board__list { max-width: none; margin: 0; }
+.content .board__item { margin: 0; }
+.board--embed { margin-bottom: var(--sp-7); }
 
 /* Brand-tinted hover for the standard channel rows */
 .board__row:hover {

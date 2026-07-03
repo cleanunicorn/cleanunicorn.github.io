@@ -1,10 +1,6 @@
 {{ define "main" }}
   {{ $home := $.Site.Data.home }}
 
-  {{/* Per-network brand colours for the channel rows. The featured (calendar)
-       row tints from --accent in CSS, so it needs no entry here. */}}
-  {{ $brands := dict "telegram" "#2aabee" "x" "#e7e9ea" "github" "#e6edf3" "linkedin" "#3b96d8" }}
-
   {{/* ---- POSTER HERO: iOS-18 "Contact Poster" for the web ----------------- */}}
   <section class="poster" aria-label="Daniel Luca — contact">
     <div class="poster__frame">
@@ -17,7 +13,9 @@
       {{/* The frame bleeds full-width; this inner column stays pinned to the
            53rem content grid so the name aligns with the header and board. */}}
       <div class="poster__inner">
-        <p class="poster__eyebrow">
+        {{/* A <div>, not a <p>: terminal.js appends the interactive prompt
+             (block elements) inside this chip. */}}
+        <div class="poster__eyebrow">
           <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
           {{ $answer := $home.whoami | default "cleanunicorn" }}
           {{ if and $home.whoamiLink $home.whoamiURL }}
@@ -26,7 +24,7 @@
             {{ $answer = replaceRE (printf `(%s)` $home.whoamiLink) $link $answer }}
           {{ end }}
           <span class="poster__answer" data-typewriter>{{ $answer | safeHTML }}</span><span class="poster__cursor" aria-hidden="true"></span>
-        </p>
+        </div>
 
         <div class="poster__id">
           <h1 class="poster__name">{{ $home.name | default $.Site.Title }}</h1>
@@ -44,33 +42,7 @@
       <h2 class="board__head-label" id="connect-head">{{ .label }}</h2>
       {{ with .note }}<p class="board__note board__note--lead">{{ . }}</p>{{ end }}
 
-      <div class="board__panel">
-        <div class="board__head" aria-hidden="true">
-          <span class="board__col board__col--ch">Channel</span>
-          <span class="board__col board__col--handle">Handle</span>
-          <span class="board__col board__col--act"></span>
-        </div>
-
-        <ul class="board__list">
-          {{ range .links }}
-            {{ $brand := index $brands .net }}
-            {{ $ext := hasPrefix .url "http" }}
-            <li class="board__item">
-              <a class="board__row{{ if .featured }} board__row--featured{{ end }}"
-                 {{- if and (not .featured) $brand }} style="{{ printf "--brand: %s;" $brand | safeCSS }}"{{ end }}
-                 href="{{ .url }}"{{ if $ext }} target="_blank" rel="me noopener"{{ end }}>
-                <span class="board__col board__col--ch">
-                  <span class="board__icon{{ if .featured }} board__icon--accent{{ end }}" aria-hidden="true">{{ partial "brand-icon.html" .net }}</span>
-                  <span class="board__chname">{{ .label }}</span>
-                </span>
-                <span class="board__col board__col--handle">{{ with .sub }}<span class="board__handle">{{ . }}</span>{{ end }}</span>
-                <span class="board__col board__col--act"><span class="{{ if .featured }}board__cta{{ else }}board__connect{{ end }}">{{ if .featured }}Reserve{{ else }}Connect{{ end }} <span aria-hidden="true">→</span></span></span>
-                {{ if $ext }}<span class="sr-only"> (opens in new tab)</span>{{ end }}
-              </a>
-            </li>
-          {{ end }}
-        </ul>
-      </div>
+      {{ partial "connect-board.html" . }}
     </section>
   {{ end }}
 
@@ -154,4 +126,5 @@
   </section>
 
   <script src="{{ "js/hero-type.js" | relURL }}" defer></script>
+  <script src="{{ "js/terminal.js" | relURL }}" defer></script>
 {{ end }}

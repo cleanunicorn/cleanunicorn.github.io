@@ -1,0 +1,7 @@
+{{/* Renders the homepage's connect board panel inside page content —
+     used on /contact/ so the channels look identical everywhere. */}}
+{{ with site.Data.home.connect }}
+  <section class="board board--embed" aria-label="{{ .label | default "Connect" }}">
+    {{ partial "connect-board.html" . }}
+  </section>
+{{ end }}

@@ -9,12 +9,21 @@
   var CHAR_JITTER_MS = 34;  // random extra delay, for an irregular human cadence
   var START_DELAY_MS = 300; // pause before typing so the prompt registers first
 
+  // Other scripts (the hero terminal) wait for the typewriter to finish
+  // before adding themselves to the prompt. Dispatched async so listeners in
+  // later deferred scripts are registered even when typing is skipped.
+  function done() {
+    setTimeout(function () {
+      document.dispatchEvent(new CustomEvent("hero-typed"));
+    }, 0);
+  }
+
   var el = document.querySelector("[data-typewriter]");
-  if (!el) return;
+  if (!el) return done();
 
   var reduce = window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduce) return;
+  if (reduce) return done();
 
   var full = el.textContent;
   // The answer may contain markup (e.g. a linked org name). Typing happens as
@@ -41,6 +50,7 @@
     } else {
       // Done — swap the plain text back for the original markup.
       el.innerHTML = fullHTML;
+      done();
     }
   }
 
