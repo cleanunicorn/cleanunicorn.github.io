@@ -1,0 +1,9 @@
+# security.txt (RFC 9116) — https://securitytxt.org
+# This is a static personal site, but its owner audits systems for a living.
+# If you found something anyway, that's genuinely impressive — tell me.
+
+Contact: https://x.com/cleanunicorn
+Contact: https://cleanunicorn.github.io/contact/
+Expires: 2027-07-01T00:00:00.000Z
+Preferred-Languages: en, ro
+Canonical: https://cleanunicorn.github.io/.well-known/security.txt
