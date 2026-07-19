@@ -1,0 +1,42 @@
+# CV-only settings. Everything else in the CV is generated from the site's
+# content files (content/about/_index.md, content/previous-work.md,
+# data/skills.toml) — this holds the few things the CV shows that the site
+# doesn't, plus how the work history is split across sections.
+
+location = "Bucharest, Romania"
+
+# The four tiles above the bio.
+[[stats]]
+value = "2017"
+label = "Securing Ethereum since"
+
+[[stats]]
+value = "8+"
+label = "Protocols audited"
+
+[[stats]]
+value = "10+"
+label = "Talks & podcasts"
+
+[[stats]]
+value = "15+"
+label = "Open-source projects"
+
+[experience]
+# Roles from previous-work.md rendered as compact one-liners under "// earlier"
+# instead of full entries. Matched against the role's organisation.
+earlier = ["Fitpass", "Lendia", "ElasticOrange", "Filebox"]
+
+# Roles moved out of Experience and into Education & Community.
+education = ["Blockchain Workshops"]
+
+# Shortens the lead-in above a role's bullet list into a run-in tag. Keys are
+# matched as substrings of the lead-in line in previous-work.md.
+[list_labels]
+"portfolio companies" = "portfolio"
+"selected audits" = "selected audits"
+
+# Free-text notes prepended to Education & Community, before the roles above.
+[[education_notes]]
+title = "Self-taught engineer"
+body = "depth built through open source, security research and shipping production systems since 2008."

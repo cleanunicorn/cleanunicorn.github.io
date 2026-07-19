@@ -1,18 +1,19 @@
-/* CV — matches the website's palette and type (warm background, single
-   emerald accent, Fira Code) so the resume reads as the same brand.
-   Screen styles are dark; @media print switches to a clean light sheet. */
+/* CV — the "refined terminal" brand rendered as a print sheet: Fira Code
+   throughout, a single emerald accent, sharp corners, hairline borders.
+   Unlike the site (dark), the CV is a white US Letter sheet on screen and in
+   print, so what you read is what you hand over. */
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg:      #1a170f;
-  --surface: #221d12;
-  --border:  rgba(236, 234, 229, 0.14);
-  --text:    #d7d4cc;
-  --bright:  #eceae5;
-  --muted:   rgba(236, 234, 229, 0.55);
-  --accent:  #3fd68a;
-  --accent-dim: rgba(63, 214, 138, 0.10);
+  --bg:         #ffffff;
+  --surface:    #f6f7f5;
+  --border:     #d9d9d4;
+  --text:       #1c1c1a;
+  --bright:     #000000;
+  --muted:      #5d5d57;
+  --accent:     #157a4d;
+  --accent-dim: color-mix(in srgb, var(--accent) 7%, #ffffff);
 }
 
 *, *::before, *::after {
@@ -23,194 +24,22 @@
 
 body {
   font-family: "Fira Code", Monaco, Consolas, "Ubuntu Mono", monospace;
-  font-size: 10.5pt;
-  line-height: 1.55;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--text);
-  background: var(--bg);
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 44px 48px;
+  background: var(--surface);
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Header ── */
-header {
-  margin-bottom: 30px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--accent);
-}
-
-header h1 {
-  font-size: 26pt;
-  font-weight: 600;
-  color: var(--bright);
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-}
-
-header h1::before {
-  content: "~$ ";
-  color: var(--accent);
-  font-weight: 400;
-}
-
-header .subtitle {
-  font-size: 10pt;
-  color: var(--accent);
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-header .contact {
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 18px;
-  font-size: 9pt;
-}
-
-header .contact a {
-  color: var(--muted);
-}
-
-header .contact a:hover {
-  color: var(--accent);
-}
-
-/* ── Sections ── */
-section {
-  margin-bottom: 24px;
-}
-
-section > h2 {
-  font-size: 10pt;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--accent);
-  padding: 5px 12px;
-  margin-bottom: 14px;
-  background: var(--accent-dim);
-  border-left: 3px solid var(--accent);
-}
-
-/* ── Summary ── */
-.bio {
-  background: var(--surface);
+/* The sheet: US Letter with 0.7in margins, centred on a grey desk. */
+.sheet {
+  max-width: 8.5in;
+  min-height: 11in;
+  margin: 24px auto;
+  padding: 0.7in;
+  background: var(--bg);
   border: 1px solid var(--border);
-  padding: 16px 20px;
-  margin-bottom: 26px;
 }
-
-.bio p { margin-bottom: 8px; }
-.bio p:last-child { margin-bottom: 0; }
-
-/* ── Work entries ── */
-.work h2 ~ h2 {
-  font-size: 12pt;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: normal;
-  color: var(--bright);
-  background: none;
-  border-left: 2px solid var(--accent);
-  padding: 0 0 0 12px;
-  margin-top: 18px;
-  margin-bottom: 2px;
-}
-
-/* The date line (a wholly-italic paragraph right under a role heading). */
-.work h2 + p > em {
-  display: inline-block;
-  font-style: normal;
-  font-size: 0.82em;
-  letter-spacing: 0.03em;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-.work p, .work ul {
-  margin-bottom: 4px;
-  padding-left: 14px;
-}
-
-.work > p, .work > ul {
-  border-left: 1px solid var(--border);
-  margin-left: 1px;
-}
-
-/* ── Skills ── */
-.skills .skill-group {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 8px;
-  align-items: baseline;
-  margin-bottom: 8px;
-}
-
-.skills .skill-category {
-  font-size: 8.5pt;
-  font-weight: 600;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding-top: 3px;
-}
-
-.skills .skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.skills .skill-tag {
-  display: inline-block;
-  font-size: 8.5pt;
-  padding: 2px 10px;
-  border: 1px solid var(--border);
-  color: var(--bright);
-  background: var(--surface);
-}
-
-/* ── Talks / Podcasts ── */
-.talks li,
-.podcasts li {
-  font-size: 9.5pt;
-  margin-bottom: 3px;
-}
-
-.talks li a,
-.podcasts li a {
-  color: var(--text);
-}
-
-.talks li a:hover,
-.podcasts li a:hover {
-  color: var(--accent);
-}
-
-/* ── Projects ── */
-.projects ul {
-  list-style: none;
-  padding-left: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 6px;
-}
-
-.projects li {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.projects li a { color: var(--accent); }
-
-/* ── Lists / typography ── */
-ul { padding-left: 18px; margin-bottom: 6px; }
-li { margin-bottom: 3px; }
-li::marker { color: var(--accent); }
 
 a {
   color: var(--accent);
@@ -220,55 +49,290 @@ a {
 a:hover { color: var(--bright); }
 
 strong { font-weight: 600; color: var(--bright); }
-p { margin-bottom: 4px; }
 
-code {
-  font-size: 0.9em;
-  background: var(--surface);
-  color: var(--accent);
-  padding: 1px 6px;
-  border: 1px solid var(--border);
+/* ── Header ── */
+header {
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 18px;
 }
 
-/* ── Footer ── */
-footer {
-  margin-top: 30px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-  text-align: center;
-  font-size: 7.5pt;
+header h1 {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--bright);
+  line-height: 1.15;
+}
+
+header h1::before {
+  content: "~$ ";
+  color: var(--accent);
+  font-weight: 400;
+}
+
+header .subtitle {
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+header .contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+header .contact a,
+header .contact span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: var(--muted);
 }
-footer a { color: var(--muted); }
 
-/* ── Print: clean light sheet, same emerald accent darkened for contrast ── */
+header .contact a:hover { color: var(--accent); }
+header .contact svg { flex: none; }
+
+/* ── Stat strip ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 20px;
+  break-inside: avoid;
+}
+
+.stats .stat {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+}
+
+.stats .stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.stats .stat-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 3px;
+}
+
+/* ── Bio ── */
+.bio {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin-top: 6px;
+  break-inside: avoid;
+}
+
+.bio p { margin-bottom: 8px; }
+.bio p:last-child { margin-bottom: 0; }
+
+/* ── Section headings ── */
+section > h2 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-left: 3px solid var(--accent);
+  padding: 5px 12px;
+  margin: 26px 0 14px;
+}
+
+/* ── Experience ── */
+.entry {
+  margin-top: 16px;
+  break-inside: avoid;
+}
+
+.entry .entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  border-left: 2px solid var(--accent);
+  padding-left: 12px;
+}
+
+.entry .entry-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--bright);
+}
+
+.entry .entry-org {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.entry .entry-dates {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.entry p {
+  font-size: 12.5px;
+  margin-top: 6px;
+  border-left: 1px solid var(--border);
+  padding-left: 13px;
+}
+
+/* The `portfolio:` / `selected audits:` run-in line under a role. */
+.entry .entry-list {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.entry .entry-list-label {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.entry .entry-list a { color: var(--muted); }
+.entry .entry-list a:hover { color: var(--accent); }
+
+/* ── Earlier roles ── */
+.earlier { margin-top: 18px; }
+
+.earlier .earlier-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.earlier .earlier-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 6px;
+  font-size: 12px;
+  break-inside: avoid;
+}
+
+.earlier .earlier-dates {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── Skills ── */
+.skill-group {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 8px;
+  break-inside: avoid;
+}
+
+.skill-category {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-top: 3px;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-tag {
+  font-size: 11px;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+/* ── Projects ── */
+.projects ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.projects li {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  break-inside: avoid;
+}
+
+.projects li a { font-weight: 600; }
+
+/* ── Talks / Podcasts ── */
+.media-entry {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  break-inside: avoid;
+}
+
+.media-entry .media-year {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.media-entry .media-venue {
+  font-weight: 600;
+  color: var(--bright);
+}
+
+.media-entry a { color: var(--text); }
+.media-entry a:hover { color: var(--accent); }
+
+/* ── Education & Community ── */
+.education p {
+  font-size: 12.5px;
+  margin-top: 10px;
+}
+
+/* ── Print: the sheet becomes the page ── */
 @media print {
-  :root {
-    --bg:      #ffffff;
-    --surface: #f6f7f5;
-    --border:  #d9d9d4;
-    --text:    #1c1c1a;
-    --bright:  #000000;
-    --muted:   #5d5d57;
-    --accent:  #157a4d;
-    --accent-dim: rgba(21, 122, 77, 0.07);
+  body { background: var(--bg); }
+
+  .sheet {
+    max-width: none;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
   }
 
-  body { padding: 0; font-size: 10pt; max-width: 100%; }
-  header { margin-bottom: 16px; }
-  section { margin-bottom: 14px; }
-
-  .bio { background: var(--surface); border-color: var(--border); }
-  .projects li { background: transparent; }
-  .skills .skill-tag { background: transparent; }
   a { color: var(--text); }
-  .work h2 + p > em { color: var(--muted); }
 
-  .work h2 ~ h2,
-  .work h2 + p,
-  li,
-  .projects li,
-  .skills .skill-group { page-break-inside: avoid; }
+  section > h2 { break-after: avoid; }
 
-  footer { display: none; }
+  p, li { orphans: 3; widows: 3; }
+}
+
+@page {
+  size: letter;
+  margin: 0.7in;
 }
