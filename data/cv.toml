@@ -5,23 +5,6 @@
 
 location = "Bucharest, Romania"
 
-# The four tiles above the bio.
-[[stats]]
-value = "2017"
-label = "Securing Ethereum since"
-
-[[stats]]
-value = "8+"
-label = "Protocols audited"
-
-[[stats]]
-value = "10+"
-label = "Talks & podcasts"
-
-[[stats]]
-value = "15+"
-label = "Open-source projects"
-
 [experience]
 # Roles from previous-work.md rendered as compact one-liners under "// earlier"
 # instead of full entries. Matched against the role's organisation.

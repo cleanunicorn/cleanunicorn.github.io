@@ -98,41 +98,12 @@ header .contact span {
 header .contact a:hover { color: var(--accent); }
 header .contact svg { flex: none; }
 
-/* ── Stat strip ── */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-top: 20px;
-  break-inside: avoid;
-}
-
-.stats .stat {
-  border: 1px solid var(--border);
-  padding: 10px 12px;
-}
-
-.stats .stat-value {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--accent);
-  line-height: 1.2;
-}
-
-.stats .stat-label {
-  font-size: 10px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin-top: 3px;
-}
-
 /* ── Bio ── */
 .bio {
   background: var(--surface);
   border: 1px solid var(--border);
   padding: 16px 20px;
-  margin-top: 6px;
+  margin-top: 20px;
   break-inside: avoid;
 }
 

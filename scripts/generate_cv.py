@@ -5,8 +5,8 @@ Reads markdown content from the Hugo site and produces a standalone,
 print-ready HTML file. No external dependencies beyond Python 3 stdlib.
 
 Content comes from the site (content/about/_index.md, content/previous-work.md,
-data/skills.toml); data/cv.toml holds the CV-only bits — the stat strip, the
-location, and how work history splits into Experience / earlier / Education.
+data/skills.toml); data/cv.toml holds the CV-only bits — the location and how
+work history splits into Experience / earlier / Education.
 
 Usage:
     python3 scripts/generate_cv.py                  # writes to public/cv.html
@@ -327,19 +327,6 @@ def split_media(entry: str, with_venue: bool) -> tuple[str, str, str]:
 # Section builders
 # ---------------------------------------------------------------------------
 
-def build_stats(stats: list[dict]) -> str:
-    if not stats:
-        return ""
-    tiles = "\n".join(
-        f'<div class="stat">'
-        f'<div class="stat-value">{html.escape(str(s.get("value", "")))}</div>'
-        f'<div class="stat-label">{html.escape(str(s.get("label", "")))}</div>'
-        f'</div>'
-        for s in stats
-    )
-    return f'<div class="stats">\n{tiles}\n</div>'
-
-
 def short_label(label: str, overrides: dict) -> str:
     """Shorten a list lead-in ("Worked closely with portfolio companies such
     as:") into a run-in tag ("portfolio:"). Lead-ins with no override are kept
@@ -534,7 +521,6 @@ def generate_html(output: Path) -> None:
         experience += "\n" + build_earlier(earlier_roles)
 
     sections = [
-        build_stats(cv_config.get("stats", [])),
         f'<section class="bio">\n{paragraphs_html(about["bio"])}\n</section>'
         if about["bio"] else "",
         section("work", "Experience", experience),
