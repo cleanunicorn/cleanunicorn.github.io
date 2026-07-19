@@ -76,8 +76,11 @@ My security research, productized: it monitors live Ethereum smart contracts and
 ### [drove](https://github.com/cleanunicorn/drove)
 Local LLM infrastructure in one tool — a llama.cpp server manager, chat interface, observability proxy and model manager.
 
-### [Rag-brain](https://github.com/cleanunicorn/rag-brain)
-Portable, private AI memory: a vector database and MCP server you can plug into any chatbot.
+### [Earheart](https://github.com/cleanunicorn/earheart)
+Private, hotkey-driven voice dictation for Windows, macOS and Linux — speech-to-text and LLM cleanup run in-process on your own machine, so nothing ever leaves it.
+
+### [Agents Library](https://github.com/cleanunicorn/agents-library)
+Stack-agnostic coding agents and review skills for Claude Code and Codex — each one makes a single focused change per run and opens a reviewable pull request.
 
 ### More projects
 
