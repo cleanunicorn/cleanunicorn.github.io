@@ -4,7 +4,8 @@
 This repository has no test suite; this is its one assertion-running check and
 the regression net behind the builder-first positioning. It fails when a
 protected field starts describing him as a partner or an investor before it
-describes him as someone who builds things.
+describes him as someone who builds things, and when static/llms.txt — the
+file agents read — drifts away from the pages it restates.
 
 Two deliberate choices, both load-bearing:
 
@@ -44,6 +45,9 @@ def assignment(key: str) -> re.Pattern:
 
 
 SUBTITLE_LINE = re.compile(r"^\s*subtitle\s*=", re.MULTILINE)
+HUMANS_ROLE = re.compile(r"^\s*Role:\s*(.+?)\s*$", re.MULTILINE)
+OG_SUB_TEXT = re.compile(r'^\s*sub_text\s*=\s*"(.*)"\s*$', re.MULTILINE)
+LLMS_SUMMARY = re.compile(r"^>\s*(.+?)\s*$", re.MULTILINE)
 STATS_TABLE = re.compile(r"^\s*\[\[stats\]\]\s*$", re.MULTILINE)
 FRONT_MATTER = re.compile(r"\A\+\+\+\s*\n(.*?)\n\+\+\+\s*\n", re.DOTALL)
 REGEX_METACHARACTERS = set(r".^$*+?()[]{}|\\")
@@ -56,6 +60,31 @@ FIXTURES = [
     ("builder · hacker · Technical Partner @ Eden Block", None),
     ("Investors are the audience", None),
     ("**Technical Partner** at Eden Block", "technical partner"),
+]
+
+
+# Rule 6 — static/llms.txt restates facts that live on the pages. Each row is
+# a token that must still be in both files: rename a project, drop a role or
+# change a start date on the Work page and the check fails naming the token,
+# instead of leaving an agent-facing file quietly claiming something the site
+# no longer says.
+MIRRORED = [
+    ("Earheart", "content/about/_index.md"),
+    ("Agents Library", "content/about/_index.md"),
+    ("drove", "content/about/_index.md"),
+    ("Karl", "content/about/_index.md"),
+    ("RL-Swarm", "content/about/_index.md"),
+    ("Eden Block", "content/previous-work.md"),
+    ("FiatDAO", "content/previous-work.md"),
+    ("Akira Tech", "content/previous-work.md"),
+    ("ConsenSys Diligence", "content/previous-work.md"),
+    ("Alethio", "content/previous-work.md"),
+    ("August 2026", "content/previous-work.md"),
+    ("November 2022", "content/previous-work.md"),
+    ("November 2021", "content/previous-work.md"),
+    ("October 2020", "content/previous-work.md"),
+    ("November 2018", "content/previous-work.md"),
+    ("February 2017", "content/previous-work.md"),
 ]
 
 
@@ -177,6 +206,49 @@ class Check:
                 f"contains regex metacharacters {''.join(bad)!r}; it is used as a pattern",
             )
 
+    def rule_secondary_surfaces(self) -> None:
+        """Rules 1 and 2 over the other single-line copies of the role line.
+
+        static/js/terminal.js and the body of content/contact.md say the same
+        thing in prose and in JavaScript string literals; reading those would
+        take a JS parser or a literal-text match that any legitimate rewording
+        would break. They are reviewed by hand instead.
+        """
+        humans = self.read("static/humans.txt")
+        if humans:
+            found = HUMANS_ROLE.findall(humans)
+            if len(found) != 1:
+                self.fail("static/humans.txt: Role", f"{len(found)} `Role:` lines, expected 1")
+            for value in found:
+                self.check_opening("static/humans.txt: Role", value)
+
+        # The committed static/og-image.png cannot be asserted on; the string
+        # it is generated from can.
+        card = self.read("scripts/generate_og_image.py")
+        if card:
+            found = OG_SUB_TEXT.findall(card)
+            if len(found) != 1:
+                self.fail("scripts/generate_og_image.py: sub_text", f"{len(found)} assignments, expected 1")
+            for value in found:
+                self.check_opening("scripts/generate_og_image.py: sub_text", value)
+
+    def rule_llms_mirror(self) -> None:
+        """Rules 1, 2 and 6 over the agent-readable surface."""
+        llms = self.read("static/llms.txt")
+        if not llms:
+            return
+        summary = LLMS_SUMMARY.search(llms)
+        if not summary:
+            self.fail("static/llms.txt", "has no `>` summary line")
+        else:
+            self.check_opening("static/llms.txt: summary", summary.group(1))
+        for token, source in MIRRORED:
+            if token not in llms:
+                self.fail("static/llms.txt", f'no longer mentions "{token}"')
+            text = self.read(source)
+            if text and token not in text:
+                self.fail(source, f'no longer mentions "{token}", which static/llms.txt states')
+
     def rule_four_stats(self) -> None:
         """Rule 5 — .stats is grid-template-columns: repeat(4, 1fr)."""
         home = self.read("data/home.toml")
@@ -197,6 +269,8 @@ class Check:
             self.rule_single_subtitle,
             self.rule_single_link,
             self.rule_four_stats,
+            self.rule_secondary_surfaces,
+            self.rule_llms_mirror,
         ]
         for rule in rules:
             rule()

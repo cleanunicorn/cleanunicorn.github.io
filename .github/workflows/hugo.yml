@@ -70,6 +70,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
+      - name: Check positioning
+        run: make check-positioning
       - name: Generate CV (HTML + PDF)
         run: make cv-pdf
       - name: Configure Git
