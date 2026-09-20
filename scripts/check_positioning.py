@@ -167,14 +167,20 @@ MIRRORED_PROJECTS = [
 ]
 
 MIRRORED_ROLES = [
-    # (organisation as llms.txt writes it, the Work heading, its date line,
-    #  the start date llms.txt states)
+    # (organisation as llms.txt writes it, what to match the Work heading by,
+    #  its date line, the start date llms.txt states)
+    #
+    # The second field pins the whole `## Title, Organisation` heading where
+    # llms.txt restates that title, so renaming the role fails. Where llms.txt
+    # states no title — it describes the role instead — the field is the
+    # heading's `, Organisation` tail: there is no title to mirror, and pinning
+    # one would mean retyping a job title this branch may not add.
     ("stealth startup", "## CTO, Stealth Startup", "*August 2026 \u2013 Present*", "August 2026"),
     ("Eden Block", "## Technical Partner, Eden Block", "*November 2022 \u2013 Present*", "November 2022"),
     ("FiatDAO", "## Co-Founder, FiatDAO", "*November 2021 \u00b7 Deployed April 2022*", "November 2021"),
     ("Akira Tech", "## Founder, Security Researcher, Akira Tech", "*October 2020 \u2013 Present*", "October 2020"),
     ("ConsenSys Diligence", "## Security Researcher, ConsenSys Diligence", "*November 2018 \u2013 August 2020*", "November 2018"),
-    ("Alethio", "## Developer, Alethio", "*February 2017 \u2013 November 2018 \u00b7 ConsenSys*", "February 2017"),
+    ("Alethio", ", Alethio", "*February 2017 \u2013 November 2018 \u00b7 ConsenSys*", "February 2017"),
 ]
 
 LLMS_ROLES_SECTION = re.compile(r"^## Roles\s*$(.*?)^## ", re.MULTILINE | re.DOTALL)
@@ -192,6 +198,13 @@ def opens_on_forbidden(value: str) -> str | None:
 def lines_of(text: str) -> list[str]:
     """The file's lines, stripped, so a fact can be pinned to a whole line."""
     return [line.strip() for line in text.split("\n")]
+
+
+def heading_matches(lines: list[str], pattern: str) -> bool:
+    """Whether a `## ` heading matches — the whole line, or its `, Org` tail."""
+    if pattern.startswith("## "):
+        return pattern in lines
+    return any(line.startswith("## ") and line.endswith(pattern) for line in lines)
 
 
 def is_blank(text: str) -> bool:
@@ -480,15 +493,25 @@ class Check:
         if not role_lines:
             self.fail(LLMS_TXT, "has no `## Roles` section")
         for org, heading, dates, start in MIRRORED_ROLES:
-            if heading not in work:
+            if not heading_matches(work, heading):
                 self.fail(WORK_MD, f"no longer has the role heading `{heading}`, which static/llms.txt states")
             if dates not in work:
                 self.fail(WORK_MD, f"no longer has the date line `{dates}` for `{heading}`")
             stated = [line for line in role_lines if org.lower() in line.lower()]
             if not stated:
                 self.fail(LLMS_TXT, f'its Roles section no longer states "{org}"')
-            elif not any(start in line for line in stated):
+                continue
+            if not any(start in line for line in stated):
                 self.fail(LLMS_TXT, f'states "{org}" without its start date "{start}"')
+            # The table may only pin a title that llms.txt itself states, so a
+            # row can never carry a job title this file has no business naming.
+            titled = not stated[0].lstrip("- ").lower().startswith(org.lower())
+            if titled != heading.startswith("## "):
+                self.fail(
+                    "check_positioning.py: MIRRORED_ROLES",
+                    f'the row for "{org}" pins {"a title" if not titled else "no title"} '
+                    f"while static/llms.txt states {'one' if titled else 'none'}",
+                )
 
     def rule_four_stats(self) -> None:
         """Rule 5 — .stats is grid-template-columns: repeat(4, 1fr)."""
