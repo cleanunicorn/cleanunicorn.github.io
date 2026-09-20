@@ -277,43 +277,62 @@ class Check:
     # -- rules ---------------------------------------------------------------
 
     def rule_fixtures(self) -> None:
-        """Rule 7 — the predicate and the value reader still do their jobs."""
+        """Rule 7 — every predicate this check leans on still does its job.
+
+        Each table below is a defect that once got through. They run on every
+        invocation rather than behind a flag, because a flag nobody passes is a
+        check nobody runs.
+        """
+        self.check_opening_fixtures()
+        self.check_blank_fixtures()
+        self.check_mirror_fixtures()
+        self.check_subtitle_scan_fixture()
+        self.check_toml_fixtures()
+
+    def self_check_failed(self, problem: str) -> None:
+        self.fail("check_positioning.py: self-check", problem)
+
+    def check_opening_fixtures(self) -> None:
+        """The opening rule still rejects a forbidden term, dressed however."""
         for value, expected in FIXTURES:
             actual = opens_on_forbidden(value)
             if actual != expected:
-                self.fail(
-                    "check_positioning.py: self-check",
-                    f'"{value}" → {actual!r}, expected {expected!r}',
-                )
+                self.self_check_failed(f'"{value}" → {actual!r}, expected {expected!r}')
+
+    def check_blank_fixtures(self) -> None:
+        """A file that holds nothing is still nothing to read, not nothing to check."""
         for text, expected_blank in BLANK_FIXTURES:
             if is_blank(text) != expected_blank:
-                self.fail(
-                    "check_positioning.py: self-check",
-                    f"{text!r} read as blank={not expected_blank}, expected {expected_blank}",
+                self.self_check_failed(
+                    f"{text!r} read as blank={not expected_blank}, expected {expected_blank}"
                 )
+
+    def check_mirror_fixtures(self) -> None:
+        """The mirror still refuses the near-misses a token search accepted."""
         for name, decoy, required_line in MIRROR_FIXTURES:
             if required_line.strip() in lines_of(decoy):
-                self.fail(
-                    "check_positioning.py: self-check",
-                    f"{name}: the mirror would still accept {decoy!r}",
-                )
+                self.self_check_failed(f"{name}: the mirror would still accept {decoy!r}")
+
+    def check_subtitle_scan_fixture(self) -> None:
+        """Rule 3 still counts the lines generate_cv.py counts, comments included."""
         document, expected_lines = SUBTITLE_SCAN_FIXTURE
         seen = len(SUBTITLE_LINE.findall(document))
         if seen != expected_lines:
-            self.fail(
-                "check_positioning.py: self-check",
-                f"a commented-out `subtitle =` line is counted {seen}x, expected {expected_lines}",
+            self.self_check_failed(
+                f"a commented-out `subtitle =` line is counted {seen}x, expected {expected_lines}"
             )
+
+    def check_toml_fixtures(self) -> None:
+        """Every TOML quoting form still yields the value Rule 1 then tests."""
         for name, document, expected in TOML_FIXTURES:
             try:
                 actual = toml_strings(tomllib.loads(document), "x")
             except tomllib.TOMLDecodeError as exc:
-                self.fail("check_positioning.py: self-check", f"{name} fixture: {exc}")
+                self.self_check_failed(f"{name} fixture: {exc}")
                 continue
             if actual != [expected]:
-                self.fail(
-                    "check_positioning.py: self-check",
-                    f"{name} value read as {actual!r}, expected {[expected]!r}",
+                self.self_check_failed(
+                    f"{name} value read as {actual!r}, expected {[expected]!r}"
                 )
 
     def rule_config_fields(self) -> None:
