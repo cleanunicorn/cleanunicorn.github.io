@@ -61,6 +61,14 @@ HUMANS_ROLE = re.compile(r"^\s*Role:\s*(.+?)\s*$", re.MULTILINE)
 # goes missing and the presence rule fires, which is what this file promises.
 OG_SUB_TEXT = re.compile(r'^\s*sub_text\s*=\s*"(?!")((?:[^"\\\n]|\\.)*)"\s*$', re.MULTILINE)
 LLMS_SUMMARY = re.compile(r"^>\s*(.+?)\s*$", re.MULTILINE)
+# The hero terminal's identity strings. Each is a one-line literal in a fixed
+# position: the console greeting after `cleanunicorn — `, and the first entry
+# of the about.md / work.md arrays that is not a markdown heading. A reworded
+# anchor makes the value go missing, which the presence rule reports, so the
+# guard never silently stops looking.
+TERMINAL_GREETING = re.compile(r'"%c~\$ whoami%c\\ncleanunicorn — ([^"]*?)\.?"')
+TERMINAL_ARRAY = '"%s": ['
+TERMINAL_STRING = re.compile(r'^\s*"([^"]*)",?\s*$', re.MULTILINE)
 FRONT_MATTER = re.compile(r"\A\+\+\+\s*\n(.*?)\n\+\+\+\s*\n", re.DOTALL)
 
 # Which TOML file holds which protected values.
@@ -347,12 +355,17 @@ class Check:
             )
 
     def rule_secondary_surfaces(self) -> None:
-        """Rules 1 and 2 over the other single-line copies of the role line.
+        """Rules 1 and 2 over the other copies of the role line.
 
-        static/js/terminal.js and the body of content/contact.md say the same
-        thing in prose and in JavaScript string literals; reading those would
-        take a JS parser or a literal-text match that any legitimate rewording
-        would break. They are reviewed by hand instead.
+        The terminal's three strings are one-line literals at fixed positions,
+        the same shape as the card script's sub_text, so they are read rather
+        than hand-reviewed — they were two of the four stale copies this branch
+        had to clean up by hand, which is the argument for watching them.
+
+        content/contact.md's body stays hand-reviewed: its opening is a
+        shortcode and a heading, and "the prose leads with what he builds" is a
+        judgement, not a field. Its front matter is covered by Rule 1 like every
+        other page's.
         """
         humans = self.read("static/humans.txt")
         if humans:
@@ -361,6 +374,25 @@ class Check:
                 self.fail("static/humans.txt: Role", f"{len(found)} `Role:` lines, expected 1")
             for value in found:
                 self.check_opening("static/humans.txt: Role", value)
+
+        terminal = self.read("static/js/terminal.js")
+        if terminal:
+            greeting = TERMINAL_GREETING.search(terminal)
+            if not greeting:
+                self.fail("static/js/terminal.js", "the `~$ whoami` greeting is no longer where this check looks")
+            else:
+                self.check_opening("static/js/terminal.js: whoami greeting", greeting.group(1))
+            for name in ("about.md", "work.md"):
+                start = terminal.find(TERMINAL_ARRAY % name)
+                end = terminal.find("],", start) if start != -1 else -1
+                if start == -1 or end == -1:
+                    self.fail("static/js/terminal.js", f'the virtual "{name}" array is no longer where this check looks')
+                    continue
+                said = [v for v in TERMINAL_STRING.findall(terminal[start:end]) if not v.startswith("#")]
+                if not said:
+                    self.fail("static/js/terminal.js", f'the virtual "{name}" says nothing')
+                    continue
+                self.check_opening(f"static/js/terminal.js: {name}", said[0])
 
         # The committed static/og-image.png cannot be asserted on; the string
         # it is generated from can.
