@@ -98,8 +98,10 @@ def main() -> None:
     sub_text = "Builder · Hacker · Security Researcher · Investor"
     f_sub = fit_font(draw, sub_text, "regular", 34, avail)
 
-    # Mirrors data/home.toml's proof strip: its label is "Built · Audited ·
-    # Featured" and its items are exactly the names below.
+    # Follows data/home.toml's proof strip — same verbs as its label ("Built ·
+    # Audited · Featured"), same names — but not a copy of it: the card has room
+    # for ten of its eleven items, so "DEF CON 27" is shortened and "Code Is Law
+    # (2025)" is left to the strip. Nothing here that is not in that list.
     proof_lines = [
         "Built Earheart · Agents Library · Gensyn RL-Swarm",
         "Audited Uniswap · Aave · Filecoin · Polygon",
