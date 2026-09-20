@@ -97,6 +97,17 @@ TOML_FIXTURES = [
 # nothing to check.
 BLANK_FIXTURES = [("", True), ("\n  \n", True), ('x = "builder"', False)]
 
+# Rule 6's own fixture - the ways a token-containment mirror passes on a
+# page that no longer says what llms.txt claims.
+MIRROR_FIXTURES = [
+    ("a renamed role heading", "## CEO, Akira Tech",
+     "## Founder, Security Researcher, Akira Tech"),
+    ("a date in prose, not on a date line", "Since August 2026 things changed.",
+     "*August 2026 – Present*"),
+    ("the word without the project", "and then he drove home",
+     "### [drove](https://github.com/cleanunicorn/drove)"),
+]
+
 # Rule 3's own fixture: the generator's line scan, and what Rule 3 must see.
 SUBTITLE_SCAN_FIXTURE = (
     '      subtitle = "Builder | Hacker"\n      # subtitle = "Investor | Builder"\n',
@@ -104,29 +115,35 @@ SUBTITLE_SCAN_FIXTURE = (
 )
 
 
-# Rule 6 — static/llms.txt restates facts that live on the pages. Each row is
-# a token that must still be in both files: rename a project, drop a role or
-# change a start date on the Work page and the check fails naming the token,
-# instead of leaving an agent-facing file quietly claiming something the site
-# no longer says.
-MIRRORED = [
-    ("Earheart", "content/about/_index.md"),
-    ("Agents Library", "content/about/_index.md"),
-    ("drove", "content/about/_index.md"),
-    ("Karl", "content/about/_index.md"),
-    ("RL-Swarm", "content/about/_index.md"),
-    ("Eden Block", "content/previous-work.md"),
-    ("FiatDAO", "content/previous-work.md"),
-    ("Akira Tech", "content/previous-work.md"),
-    ("ConsenSys Diligence", "content/previous-work.md"),
-    ("Alethio", "content/previous-work.md"),
-    ("August 2026", "content/previous-work.md"),
-    ("November 2022", "content/previous-work.md"),
-    ("November 2021", "content/previous-work.md"),
-    ("October 2020", "content/previous-work.md"),
-    ("November 2018", "content/previous-work.md"),
-    ("February 2017", "content/previous-work.md"),
+# Rule 6 — static/llms.txt restates, by hand, facts that live on the pages. A
+# token that merely occurs somewhere in both files proves nothing: "drove" is
+# also an ordinary English verb, and a role can be renamed while its
+# organisation and start date stay put. So each row pins the *line* the fact
+# lives on — the About page's card heading, the Work page's `## ` heading and
+# its italic date line, which is the shape parse_roles() reads.
+MIRRORED_PROJECTS = [
+    # (name in llms.txt, the About card heading that must still exist)
+    ("Earheart", "### [Earheart](https://github.com/cleanunicorn/earheart)"),
+    ("Agents Library", "### [Agents Library](https://github.com/cleanunicorn/agents-library)"),
+    ("drove", "### [drove](https://github.com/cleanunicorn/drove)"),
+    ("Karl", "### [Karl](https://github.com/cleanunicorn/karl)"),
+    ("RL-Swarm", "### [RL-Swarm Smart Contracts](https://github.com/gensyn-ai/rl-swarm-contracts)"),
 ]
+
+MIRRORED_ROLES = [
+    # (organisation as llms.txt writes it, the Work heading, its date line,
+    #  the start date llms.txt states)
+    ("stealth startup", "## CTO, Stealth Startup", "*August 2026 \u2013 Present*", "August 2026"),
+    ("Eden Block", "## Technical Partner, Eden Block", "*November 2022 \u2013 Present*", "November 2022"),
+    ("FiatDAO", "## Co-Founder, FiatDAO", "*November 2021 \u00b7 Deployed April 2022*", "November 2021"),
+    ("Akira Tech", "## Founder, Security Researcher, Akira Tech", "*October 2020 \u2013 Present*", "October 2020"),
+    ("ConsenSys Diligence", "## Security Researcher, ConsenSys Diligence", "*November 2018 \u2013 August 2020*", "November 2018"),
+    ("Alethio", "## Developer, Alethio", "*February 2017 \u2013 November 2018 \u00b7 ConsenSys*", "February 2017"),
+]
+
+WORK_MD = "content/previous-work.md"
+ABOUT_MD = "content/about/_index.md"
+LLMS_ROLES_SECTION = re.compile(r"^## Roles\s*$(.*?)^## ", re.MULTILINE | re.DOTALL)
 
 
 def opens_on_forbidden(value: str):
@@ -136,6 +153,11 @@ def opens_on_forbidden(value: str):
         if re.match(re.escape(term) + r"\b", stripped):
             return term
     return None
+
+
+def lines_of(text: str) -> list:
+    """The file's lines, stripped, so a fact can be pinned to a whole line."""
+    return [line.strip() for line in text.split("\n")]
 
 
 def is_blank(text: str) -> bool:
@@ -234,6 +256,12 @@ class Check:
                 self.fail(
                     "check_positioning.py: self-check",
                     f"{text!r} read as blank={not expected_blank}, expected {expected_blank}",
+                )
+        for name, decoy, required_line in MIRROR_FIXTURES:
+            if required_line.strip() in lines_of(decoy):
+                self.fail(
+                    "check_positioning.py: self-check",
+                    f"{name}: the mirror would still accept {decoy!r}",
                 )
         document, expected_lines = SUBTITLE_SCAN_FIXTURE
         seen = len(SUBTITLE_LINE.findall(document))
@@ -354,12 +382,29 @@ class Check:
             self.fail("static/llms.txt", "has no `>` summary line")
         else:
             self.check_opening("static/llms.txt: summary", summary.group(1))
-        for token, source in MIRRORED:
-            if token not in llms:
-                self.fail("static/llms.txt", f'no longer mentions "{token}"')
-            text = self.read(source)
-            if text and token not in text:
-                self.fail(source, f'no longer mentions "{token}", which static/llms.txt states')
+
+        about = lines_of(self.read(ABOUT_MD))
+        for name, heading in MIRRORED_PROJECTS:
+            if heading not in about:
+                self.fail(ABOUT_MD, f"no longer has the card `{heading}`, which static/llms.txt lists")
+            if heading.split("(", 1)[1].rstrip(")") not in llms:
+                self.fail("static/llms.txt", f'no longer links the project "{name}"')
+
+        work = lines_of(self.read(WORK_MD))
+        roles = LLMS_ROLES_SECTION.search(llms)
+        role_lines = lines_of(roles.group(1)) if roles else []
+        if not role_lines:
+            self.fail("static/llms.txt", "has no `## Roles` section")
+        for org, heading, dates, start in MIRRORED_ROLES:
+            if heading not in work:
+                self.fail(WORK_MD, f"no longer has the role heading `{heading}`, which static/llms.txt states")
+            if dates not in work:
+                self.fail(WORK_MD, f"no longer has the date line `{dates}` for `{heading}`")
+            stated = [l for l in role_lines if org.lower() in l.lower()]
+            if not stated:
+                self.fail("static/llms.txt", f'its Roles section no longer states "{org}"')
+            elif not any(start in l for l in stated):
+                self.fail("static/llms.txt", f'states "{org}" without its start date "{start}"')
 
     def rule_four_stats(self) -> None:
         """Rule 5 — .stats is grid-template-columns: repeat(4, 1fr)."""
