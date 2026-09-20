@@ -98,7 +98,10 @@ def main() -> None:
     sub_text = "Builder · Hacker · Security Researcher · Investor"
     f_sub = fit_font(draw, sub_text, "regular", 34, avail)
 
+    # Mirrors data/home.toml's proof strip: its label is "Built · Audited ·
+    # Featured" and its items are exactly the names below.
     proof_lines = [
+        "Built Earheart · Agents Library · Gensyn RL-Swarm",
         "Audited Uniswap · Aave · Filecoin · Polygon",
         "ConsenSys Diligence · Eden Block · DEF CON",
     ]
