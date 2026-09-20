@@ -1,12 +1,17 @@
 # Homepage hero + landing content.
 # Edit freely — consumed by layouts/index.html. No template changes needed.
+# `make check-positioning` reads this file too: see the notes on whoami and on
+# the stats band for the two things it will not let you change silently.
 
 # Short identity shown in the poster hero.
 name = "Daniel Luca"
 nickname = "CleanUnicorn"
 # Printed as the output of `~$ whoami` in the hero terminal eyebrow.
 whoami = "builder · hacker · Technical Partner @ Eden Block"
-# Optional: turns the matching phrase inside `whoami` into a link.
+# Optional: turns the matching phrase inside `whoami` into a link. The template
+# replaces every match and treats this as a regex, so the phrase must occur in
+# `whoami` exactly once and carry no regex metacharacter — enforced by
+# `make check-positioning`.
 whoamiLink = "builder"
 whoamiURL = "/about/#projects"
 
@@ -32,8 +37,9 @@ items = [
   "Code Is Law (2025)",
 ]
 
-# "By the numbers" credibility band. Edit freely — values are intentionally
-# conservative and defensible. Set to an empty list to hide the band.
+# "By the numbers" credibility band. Edit the values freely, but keep exactly
+# four entries: the band is a 4-column grid (assets/css/z-home.css:62) and
+# `make check-positioning` fails on any other count.
 [[stats]]
 value = "15+"
 label = "Open-source projects"
