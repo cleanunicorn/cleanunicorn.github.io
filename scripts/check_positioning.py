@@ -49,7 +49,11 @@ FORBIDDEN = ("technical partner", "investor")
 # the opening word is read.
 LEADING_MARKUP = re.compile(r"""^[\s>*_#\-\["'(]+""")
 
-SUBTITLE_LINE = re.compile(r"^\s*subtitle\s*=", re.MULTILINE)
+# generate_cv.py:174 tests `"subtitle =" in line` — an unanchored substring,
+# so a commented-out or prefixed line counts for it too. Rule 3 exists to
+# mirror that scan, so it matches what the generator matches, not what TOML
+# means.
+SUBTITLE_LINE = re.compile(r"^.*subtitle\s*=.*$", re.MULTILINE)
 HUMANS_ROLE = re.compile(r"^\s*Role:\s*(.+?)\s*$", re.MULTILINE)
 # `(?!")` rejects a triple-quote opener instead of capturing the middle
 # quote as the value, and the body cannot span lines — either way the value
@@ -84,6 +88,12 @@ TOML_FIXTURES = [
     ("triple-quoted", 'x = """\nInvestor | Builder\n"""', "Investor | Builder\n"),
     ("nested table", '[a.b]\nx = "builder"', "builder"),
 ]
+
+# Rule 3's own fixture: the generator's line scan, and what Rule 3 must see.
+SUBTITLE_SCAN_FIXTURE = (
+    '      subtitle = "Builder | Hacker"\n      # subtitle = "Investor | Builder"\n',
+    2,
+)
 
 
 # Rule 6 — static/llms.txt restates facts that live on the pages. Each row is
@@ -191,6 +201,13 @@ class Check:
                     "check_positioning.py: self-check",
                     f'"{value}" → {actual!r}, expected {expected!r}',
                 )
+        document, expected_lines = SUBTITLE_SCAN_FIXTURE
+        seen = len(SUBTITLE_LINE.findall(document))
+        if seen != expected_lines:
+            self.fail(
+                "check_positioning.py: self-check",
+                f"a commented-out `subtitle =` line is counted {seen}x, expected {expected_lines}",
+            )
         for name, document, expected in TOML_FIXTURES:
             try:
                 actual = toml_strings(tomllib.loads(document), "x")
@@ -236,11 +253,13 @@ class Check:
         config = self.read("hugo.toml")
         if not config:
             return
-        count = len(SUBTITLE_LINE.findall(config))
-        if count != 1:
+        matches = SUBTITLE_LINE.findall(config)
+        if len(matches) != 1:
             self.fail(
                 "hugo.toml: subtitle",
-                f"{count} `subtitle =` lines; generate_cv.py:171-175 silently uses the last one",
+                f"{len(matches)} lines contain `subtitle =` (including comments, which "
+                f"generate_cv.py:174 counts too); it silently uses the last one: "
+                f"{matches[-1].strip()!r}",
             )
 
     def rule_single_link(self) -> None:
