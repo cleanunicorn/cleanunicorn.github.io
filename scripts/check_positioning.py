@@ -45,9 +45,10 @@ except ModuleNotFoundError as exc:  # Python < 3.11
 # whole check picks it up.
 FORBIDDEN = ("technical partner", "investor")
 
-# Markdown and quoting a value may legitimately start with, stripped before
-# the opening word is read.
-LEADING_MARKUP = re.compile(r"""^[\s>*_#\-\["'(]+""")
+# Markdown, quoting and dashes a value may legitimately start with, stripped
+# before the opening word is read. The en and em dashes are in the class
+# because they are the ones this site's copy actually uses.
+LEADING_MARKUP = re.compile(r"""^[\s>*_#\-–—\["'(«“‘]+""")
 
 # generate_cv.py:174 tests `"subtitle =" in line` — an unanchored substring,
 # so a commented-out or prefixed line counts for it too. Rule 3 exists to
@@ -77,6 +78,9 @@ FIXTURES = [
     ("builder · hacker · Technical Partner @ Eden Block", None),
     ("Investors are the audience", None),
     ("**Technical Partner** at Eden Block", "technical partner"),
+    ("— Investor and builder", "investor"),
+    ("– Technical Partner @ Eden Block", "technical partner"),
+    ("“Investor first”, they said", "investor"),
 ]
 
 # Rule 7, second half — the TOML shapes a line regex used to miss. Each source
