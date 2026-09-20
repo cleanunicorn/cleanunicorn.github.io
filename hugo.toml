@@ -30,16 +30,16 @@ pagination.pagerSize = 5
     languageName = "English"
 
     [languages.en.params]
-      subtitle = "Security Researcher | Investor | Builder"
+      subtitle = "Builder | Hacker | Security Researcher | Investor"
       owner = "Daniel Luca"
       author = "Daniel Luca"
       menuMore = "Show more"
-      keywords = "Daniel Luca, CleanUnicorn, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, venture capital, decentralized AI"
+      keywords = "Daniel Luca, CleanUnicorn, builder, hacker, software engineer, open source, coding agents, AI agents, local LLM, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, decentralized AI, venture capital"
 
       # Schema.org Person metadata — consumed by partials/structured_data.html.
       alternateName = "CleanUnicorn"
-      jobTitle = "Security Researcher & Investor"
-      personDescription = "Ethereum security auditor, investor and builder working in blockchain since 2017; Technical Partner at Eden Block."
+      jobTitle = "Software Engineer & Security Researcher"
+      personDescription = "Builder and self-taught software engineer — open-source tools like Earheart and the Agents Library, plus Ethereum smart contracts and security research since 2017. Technical Partner at Eden Block, and CTO at a stealth startup."
       sameAs = [
         "https://x.com/cleanunicorn",
         "https://www.linkedin.com/in/luca-daniel-5227267/",
@@ -47,8 +47,9 @@ pagination.pagerSize = 5
         "https://www.imdb.com/title/tt35931420/",
       ]
       knowsAbout = [
+        "Software Engineering", "Open Source", "Coding Agents", "LLM Engineering",
         "Smart Contract Security", "Ethereum", "Solidity", "EVM Internals",
-        "DeFi", "Blockchain Security", "Venture Capital", "Decentralized AI",
+        "DeFi", "Blockchain Security", "Decentralized AI", "Venture Capital",
       ]
 
       [languages.en.params.twitter]
