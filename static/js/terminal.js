@@ -15,7 +15,7 @@
   /* ---- A greeting for the view-source crowd -------------------------------- */
   try {
     console.log(
-      "%c~$ whoami%c\ncleanunicorn — security researcher, investor, builder." +
+      "%c~$ whoami%c\ncleanunicorn — builder, hacker, security researcher, investor." +
         "\n\nThe prompt on the homepage accepts input. `help` is a good start;" +
         "\n`ls -a` rewards the curious.\n",
       "color:#3fd68a;font-weight:bold", ""
@@ -26,11 +26,12 @@
   var FILES = {
     "about.md": [
       "# Daniel Luca (CleanUnicorn)",
-      "Security researcher, investor, builder — Bucharest, Romania.",
+      "Builder, hacker, security researcher, investor — Bucharest, Romania.",
       "Auditing Ethereum since 2017: Uniswap, Aave, Filecoin, Polygon.",
       "Full story: /about/  (or just type: about)",
     ],
     "work.md": [
+      "CTO @ a stealth startup — since August 2026.",
       "Technical Partner @ Eden Block — research-driven diligence.",
       "Prev: ConsenSys Diligence, Akira Tech, FiatDAO.",
       "Details: /work/  (or just type: work)",

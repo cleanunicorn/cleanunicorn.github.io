@@ -1,6 +1,6 @@
 /* TEAM */
   Owner: Daniel Luca (CleanUnicorn)
-  Role: Security researcher, investor, builder
+  Role: Builder, hacker, security researcher, investor
   Location: Bucharest, Romania
   X: @cleanunicorn
   GitHub: cleanunicorn
