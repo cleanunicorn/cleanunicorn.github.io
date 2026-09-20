@@ -180,7 +180,7 @@ MIRRORED_ROLES = [
 LLMS_ROLES_SECTION = re.compile(r"^## Roles\s*$(.*?)^## ", re.MULTILINE | re.DOTALL)
 
 
-def opens_on_forbidden(value: str):
+def opens_on_forbidden(value: str) -> str | None:
     """The forbidden term a value opens on, or None."""
     stripped = LEADING_MARKUP.sub("", value).lower()
     for term in FORBIDDEN:
@@ -189,7 +189,7 @@ def opens_on_forbidden(value: str):
     return None
 
 
-def lines_of(text: str) -> list:
+def lines_of(text: str) -> list[str]:
     """The file's lines, stripped, so a fact can be pinned to a whole line."""
     return [line.strip() for line in text.split("\n")]
 
@@ -199,7 +199,7 @@ def is_blank(text: str) -> bool:
     return not text.strip()
 
 
-def toml_strings(data, key: str) -> list:
+def toml_strings(data, key: str) -> list[str]:
     """Every string stored under `key`, at any depth in a parsed TOML value."""
     found = []
     if isinstance(data, dict):
@@ -219,7 +219,7 @@ class Check:
         self.root = root
         self.violations: list[str] = []
         self.contents: dict[str, str] = {}
-        self.fields = 0
+        self.fields_checked = 0
 
     def fail(self, where: str, problem: str) -> None:
         self.violations.append(f"{where}: {problem}")
@@ -248,12 +248,12 @@ class Check:
         return text
 
     def check_opening(self, where: str, value: str) -> None:
-        self.fields += 1
+        self.fields_checked += 1
         term = opens_on_forbidden(value)
         if term:
             self.fail(where, f'"{value[:60]}" opens on "{term}"')
 
-    def parse_toml(self, rel: str, text: str = None):
+    def parse_toml(self, rel: str, text: str | None = None) -> dict | None:
         """A parsed TOML document, or None with a violation recorded."""
         if text is None:
             text = self.read(rel)
@@ -265,7 +265,7 @@ class Check:
             self.fail(rel, f"is not valid TOML ({exc})")
             return None
 
-    def values(self, rel: str, data, key: str, required: bool = True) -> list:
+    def values(self, rel: str, data, key: str, required: bool = True) -> list[str]:
         """Every non-empty string under `key`, with the presence rule applied."""
         found = [v.strip() for v in toml_strings(data, key)]
         if not found and required:
@@ -389,14 +389,14 @@ class Check:
         hits = whoami.count(link)
         if hits != 1:
             self.fail(
-                "data/home.toml: whoamiLink",
+                f"{HOME_TOML}: whoamiLink",
                 f'"{link}" occurs {hits}x in whoami; the hero would render {hits} links',
             )
-        bad = sorted(set(link) & REGEX_METACHARACTERS)
-        if bad:
+        stray = sorted(set(link) & REGEX_METACHARACTERS)
+        if stray:
             self.fail(
-                "data/home.toml: whoamiLink",
-                f"contains regex metacharacters {''.join(bad)!r}; it is used as a pattern",
+                f"{HOME_TOML}: whoamiLink",
+                f"contains regex metacharacters {''.join(stray)!r}; it is used as a pattern",
             )
 
     def rule_secondary_surfaces(self) -> None:
@@ -484,10 +484,10 @@ class Check:
                 self.fail(WORK_MD, f"no longer has the role heading `{heading}`, which static/llms.txt states")
             if dates not in work:
                 self.fail(WORK_MD, f"no longer has the date line `{dates}` for `{heading}`")
-            stated = [l for l in role_lines if org.lower() in l.lower()]
+            stated = [line for line in role_lines if org.lower() in line.lower()]
             if not stated:
                 self.fail(LLMS_TXT, f'its Roles section no longer states "{org}"')
-            elif not any(start in l for l in stated):
+            elif not any(start in line for line in stated):
                 self.fail(LLMS_TXT, f'states "{org}" without its start date "{start}"')
 
     def rule_four_stats(self) -> None:
@@ -520,7 +520,7 @@ class Check:
             for violation in self.violations:
                 print(f"  {violation}", file=sys.stderr)
             return 1
-        print(f"check_positioning: {self.fields} fields, {len(rules)} rules, 0 violations")
+        print(f"check_positioning: {self.fields_checked} fields, {len(rules)} rules, 0 violations")
         return 0
 
 
