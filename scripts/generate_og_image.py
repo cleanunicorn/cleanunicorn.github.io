@@ -95,7 +95,7 @@ def main() -> None:
 
     f_eyebrow = load_font("regular", 26)
     f_name = fit_font(draw, "DANIEL LUCA", "bold", 92, avail)
-    sub_text = "Security Researcher · Investor · Builder"
+    sub_text = "Builder · Hacker · Security Researcher · Investor"
     f_sub = fit_font(draw, sub_text, "regular", 34, avail)
 
     proof_lines = [
