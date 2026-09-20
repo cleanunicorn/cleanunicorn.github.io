@@ -93,6 +93,10 @@ TOML_FIXTURES = [
     ("nested table", '[a.b]\nx = "builder"', "builder"),
 ]
 
+# A file that still exists but holds nothing must count as a violation, not as
+# nothing to check.
+BLANK_FIXTURES = [("", True), ("\n  \n", True), ('x = "builder"', False)]
+
 # Rule 3's own fixture: the generator's line scan, and what Rule 3 must see.
 SUBTITLE_SCAN_FIXTURE = (
     '      subtitle = "Builder | Hacker"\n      # subtitle = "Investor | Builder"\n',
@@ -134,6 +138,11 @@ def opens_on_forbidden(value: str):
     return None
 
 
+def is_blank(text: str) -> bool:
+    """Whether a file's contents hold nothing for this check to read."""
+    return not text.strip()
+
+
 def toml_strings(data, key: str) -> list:
     """Every string stored under `key`, at any depth in a parsed TOML value."""
     found = []
@@ -153,19 +162,34 @@ class Check:
     def __init__(self, root: Path):
         self.root = root
         self.violations: list[str] = []
+        self.contents: dict[str, str] = {}
         self.fields = 0
 
     def fail(self, where: str, problem: str) -> None:
         self.violations.append(f"{where}: {problem}")
 
     def read(self, rel: str) -> str:
-        """File contents, or "" with a violation recorded."""
+        """File contents, or "" with a violation recorded.
+
+        An empty file is a violation too. Every rule below treats falsy text as
+        "nothing to check and nothing to say", so without this a checked file
+        truncated to zero bytes would disable its rules in silence — the one
+        way to lose a field that deleting the file does not give you.
+        """
+        if rel in self.contents:
+            return self.contents[rel]
         path = self.root / rel
         try:
-            return path.read_text(encoding="utf-8")
+            text = path.read_text(encoding="utf-8")
         except OSError as exc:
             self.fail(rel, f"cannot be read ({exc.strerror})")
-            return ""
+            text = ""
+        else:
+            if is_blank(text):
+                self.fail(rel, "is empty; it should hold the values this check reads")
+                text = ""
+        self.contents[rel] = text
+        return text
 
     def check_opening(self, where: str, value: str) -> None:
         self.fields += 1
@@ -204,6 +228,12 @@ class Check:
                 self.fail(
                     "check_positioning.py: self-check",
                     f'"{value}" → {actual!r}, expected {expected!r}',
+                )
+        for text, expected_blank in BLANK_FIXTURES:
+            if is_blank(text) != expected_blank:
+                self.fail(
+                    "check_positioning.py: self-check",
+                    f"{text!r} read as blank={not expected_blank}, expected {expected_blank}",
                 )
         document, expected_lines = SUBTITLE_SCAN_FIXTURE
         seen = len(SUBTITLE_LINE.findall(document))
