@@ -12,12 +12,14 @@ Two deliberate choices, both load-bearing:
 * It imports nothing from this directory. An import would write
   `scripts/__pycache__/*.pyc` into a tree whose .gitignore does not cover it,
   and this check has to keep working when the CV generator is broken.
-* It reads values with line regexes, the way `generate_cv.py`'s
-  `parse_config()` reads hugo.toml, rather than with a TOML parser. Rule 3
-  below is a property of the raw lines, and every field checked is a
-  single-line `key = "value"`. If one is ever reformatted, the presence rule
-  reports it as missing — the check fails loudly instead of passing on an
-  empty set of fields.
+* It reads TOML values with `tomllib`, so every form the format allows — a
+  single-quoted value, a triple-quoted block, a value spread over lines — is
+  read the way Hugo and the CV generator will read it. Line regexes were tried
+  first and failed open two ways: a single-quoted value dropped out of the
+  checked set entirely, and a triple-quoted block matched with the middle
+  quote as its value.
+* Rule 3 is the exception and stays a raw-line count, because it exists to
+  mirror `generate_cv.py:171-175`, which scans lines rather than parsing.
 
 Usage:
     python3 scripts/check_positioning.py [--root PATH]
@@ -31,6 +33,14 @@ import re
 import sys
 from pathlib import Path
 
+try:
+    import tomllib
+except ModuleNotFoundError as exc:  # Python < 3.11
+    raise SystemExit(
+        "check_positioning: needs Python 3.11+ for tomllib — refusing to run "
+        "rather than pass on values it cannot read"
+    ) from exc
+
 # A field may mention these; it may not open on one. Add a term here and the
 # whole check picks it up.
 FORBIDDEN = ("technical partner", "investor")
@@ -39,17 +49,20 @@ FORBIDDEN = ("technical partner", "investor")
 # the opening word is read.
 LEADING_MARKUP = re.compile(r"""^[\s>*_#\-\["'(]+""")
 
-# Single-line `key = "value"` assignments, the shape every checked field uses.
-def assignment(key: str) -> re.Pattern:
-    return re.compile(r'^\s*%s\s*=\s*"(.*)"\s*$' % re.escape(key), re.MULTILINE)
-
-
 SUBTITLE_LINE = re.compile(r"^\s*subtitle\s*=", re.MULTILINE)
 HUMANS_ROLE = re.compile(r"^\s*Role:\s*(.+?)\s*$", re.MULTILINE)
-OG_SUB_TEXT = re.compile(r'^\s*sub_text\s*=\s*"(.*)"\s*$', re.MULTILINE)
+# `(?!")` rejects a triple-quote opener instead of capturing the middle
+# quote as the value, and the body cannot span lines — either way the value
+# goes missing and the presence rule fires, which is what this file promises.
+OG_SUB_TEXT = re.compile(r'^\s*sub_text\s*=\s*"(?!")((?:[^"\\\n]|\\.)*)"\s*$', re.MULTILINE)
 LLMS_SUMMARY = re.compile(r"^>\s*(.+?)\s*$", re.MULTILINE)
-STATS_TABLE = re.compile(r"^\s*\[\[stats\]\]\s*$", re.MULTILINE)
 FRONT_MATTER = re.compile(r"\A\+\+\+\s*\n(.*?)\n\+\+\+\s*\n", re.DOTALL)
+
+# Which TOML file holds which protected values.
+CONFIG_FIELDS = (
+    ("data/home.toml", ("whoami",)),
+    ("hugo.toml", ("subtitle", "jobTitle", "personDescription")),
+)
 REGEX_METACHARACTERS = set(r".^$*+?()[]{}|\\")
 
 # Rule 7 — run on every invocation, through the same predicate the real fields
@@ -60,6 +73,16 @@ FIXTURES = [
     ("builder · hacker · Technical Partner @ Eden Block", None),
     ("Investors are the audience", None),
     ("**Technical Partner** at Eden Block", "technical partner"),
+]
+
+# Rule 7, second half — the TOML shapes a line regex used to miss. Each source
+# must still yield the value that Rule 1 then tests.
+TOML_FIXTURES = [
+    # (name, a TOML document, the value the reader must return for key "x")
+    ("single-quoted", "x = 'Investor and builder'", "Investor and builder"),
+    # TOML trims the newline that follows the opening delimiter.
+    ("triple-quoted", 'x = """\nInvestor | Builder\n"""', "Investor | Builder\n"),
+    ("nested table", '[a.b]\nx = "builder"', "builder"),
 ]
 
 
@@ -97,6 +120,21 @@ def opens_on_forbidden(value: str):
     return None
 
 
+def toml_strings(data, key: str) -> list:
+    """Every string stored under `key`, at any depth in a parsed TOML value."""
+    found = []
+    if isinstance(data, dict):
+        for k, v in data.items():
+            if k == key and isinstance(v, str):
+                found.append(v)
+            else:
+                found.extend(toml_strings(v, key))
+    elif isinstance(data, list):
+        for item in data:
+            found.extend(toml_strings(item, key))
+    return found
+
+
 class Check:
     def __init__(self, root: Path):
         self.root = root
@@ -121,23 +159,31 @@ class Check:
         if term:
             self.fail(where, f'"{value[:60]}" opens on "{term}"')
 
-    def one_value(self, rel: str, text: str, key: str) -> str:
-        """The single value of `key`, or "" with a violation recorded."""
-        found = assignment(key).findall(text)
-        if not found:
-            self.fail(f"{rel}: {key}", "missing, empty or no longer a single-line string")
-            return ""
-        if len(found) > 1:
-            self.fail(f"{rel}: {key}", f"assigned {len(found)} times — which one wins is not obvious")
-        value = found[0].strip()
-        if not value:
+    def parse_toml(self, rel: str, text: str = None):
+        """A parsed TOML document, or None with a violation recorded."""
+        if text is None:
+            text = self.read(rel)
+        if not text:
+            return None
+        try:
+            return tomllib.loads(text)
+        except tomllib.TOMLDecodeError as exc:
+            self.fail(rel, f"is not valid TOML ({exc})")
+            return None
+
+    def values(self, rel: str, data, key: str, required: bool = True) -> list:
+        """Every non-empty string under `key`, with the presence rule applied."""
+        found = [v.strip() for v in toml_strings(data, key)]
+        if not found and required:
+            self.fail(f"{rel}: {key}", "missing")
+        if any(not v for v in found):
             self.fail(f"{rel}: {key}", "is empty")
-        return value
+        return [v for v in found if v]
 
     # -- rules ---------------------------------------------------------------
 
     def rule_fixtures(self) -> None:
-        """Rule 7 — the predicate still rejects what it is here to reject."""
+        """Rule 7 — the predicate and the value reader still do their jobs."""
         for value, expected in FIXTURES:
             actual = opens_on_forbidden(value)
             if actual != expected:
@@ -145,17 +191,27 @@ class Check:
                     "check_positioning.py: self-check",
                     f'"{value}" → {actual!r}, expected {expected!r}',
                 )
+        for name, document, expected in TOML_FIXTURES:
+            try:
+                actual = toml_strings(tomllib.loads(document), "x")
+            except tomllib.TOMLDecodeError as exc:
+                self.fail("check_positioning.py: self-check", f"{name} fixture: {exc}")
+                continue
+            if actual != [expected]:
+                self.fail(
+                    "check_positioning.py: self-check",
+                    f"{name} value read as {actual!r}, expected {[expected]!r}",
+                )
 
     def rule_config_fields(self) -> None:
         """Rules 1 and 2 over the hero and the site metadata."""
-        home = self.read("data/home.toml")
-        if home:
-            self.check_opening("data/home.toml: whoami", self.one_value("data/home.toml", home, "whoami"))
-
-        config = self.read("hugo.toml")
-        if config:
-            for key in ("subtitle", "jobTitle", "personDescription"):
-                self.check_opening(f"hugo.toml: {key}", self.one_value("hugo.toml", config, key))
+        for rel, keys in CONFIG_FIELDS:
+            data = self.parse_toml(rel)
+            if data is None:
+                continue
+            for key in keys:
+                for value in self.values(rel, data, key):
+                    self.check_opening(f"{rel}: {key}", value)
 
     def rule_front_matter(self) -> None:
         """Rules 1 and 2 over every page's description and lede."""
@@ -168,9 +224,12 @@ class Check:
             if not block:
                 self.fail(rel, "has no TOML (+++) front matter — cannot be checked")
                 continue
+            data = self.parse_toml(rel, block.group(1))
+            if data is None:
+                continue
             for key in ("description", "lede"):
-                for value in assignment(key).findall(block.group(1)):
-                    self.check_opening(f"{rel}: {key}", value.strip())
+                for value in self.values(rel, data, key, required=False):
+                    self.check_opening(f"{rel}: {key}", value)
 
     def rule_single_subtitle(self) -> None:
         """Rule 3 — generate_cv.py takes the LAST `subtitle =` line it sees."""
@@ -186,11 +245,11 @@ class Check:
 
     def rule_single_link(self) -> None:
         """Rule 4 — layouts/index.html:24 replaces EVERY match of whoamiLink."""
-        home = self.read("data/home.toml")
-        if not home:
+        data = self.parse_toml("data/home.toml")
+        if data is None:
             return
-        whoami = self.one_value("data/home.toml", home, "whoami")
-        link = self.one_value("data/home.toml", home, "whoamiLink")
+        whoami = next(iter(self.values("data/home.toml", data, "whoami")), "")
+        link = next(iter(self.values("data/home.toml", data, "whoamiLink")), "")
         if not whoami or not link:
             return
         hits = whoami.count(link)
@@ -251,10 +310,10 @@ class Check:
 
     def rule_four_stats(self) -> None:
         """Rule 5 — .stats is grid-template-columns: repeat(4, 1fr)."""
-        home = self.read("data/home.toml")
-        if not home:
+        data = self.parse_toml("data/home.toml")
+        if data is None:
             return
-        count = len(STATS_TABLE.findall(home))
+        count = len(data.get("stats", []))
         if count != 4:
             self.fail(
                 "data/home.toml: [[stats]]",
