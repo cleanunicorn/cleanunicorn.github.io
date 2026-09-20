@@ -133,15 +133,36 @@ TOML_FIXTURES = [
 # nothing to check.
 BLANK_FIXTURES = [("", True), ("\n  \n", True), ('x = "builder"', False)]
 
-# Rule 6's own fixture - the ways a token-containment mirror passes on a
-# page that no longer says what llms.txt claims.
+# Rule 6's own fixtures — the ways a token-containment mirror passed on a page
+# that no longer said what llms.txt claims. Each runs through
+# mirror_violations() itself, with its own miniature tables and corpus, so
+# loosening the real rule makes these fail.
+_FIXTURE_PROJECTS = [("drove", "### [drove](https://example.test/drove)")]
+_FIXTURE_ROLES = [("Akira Tech", "## Founder, Akira Tech", "*October 2020 \u2013 Present*", "October 2020")]
+_FIXTURE_LLMS = (
+    "> Builder.\n\n## What he builds\n\n"
+    "- [drove](https://example.test/drove): local LLM infrastructure.\n\n"
+    "## Roles\n\n"
+    "- Founder, Akira Tech \u2014 October 2020 to present.\n\n## Pages\n"
+)
+_FIXTURE_ABOUT = "### [drove](https://example.test/drove)\nLocal LLM infrastructure.\n"
+_FIXTURE_WORK = "## Founder, Akira Tech\n\n*October 2020 \u2013 Present*\n\nFounded it.\n"
+
 MIRROR_FIXTURES = [
-    ("a renamed role heading", "## CEO, Akira Tech",
-     "## Founder, Security Researcher, Akira Tech"),
-    ("a date in prose, not on a date line", "Since August 2026 things changed.",
-     "*August 2026 – Present*"),
-    ("the word without the project", "and then he drove home",
-     "### [drove](https://github.com/cleanunicorn/drove)"),
+    # (name, llms.txt, About, Work, whether the mirror must report something)
+    ("the pages as they are", _FIXTURE_LLMS, _FIXTURE_ABOUT, _FIXTURE_WORK, False),
+    ("the word without the project", _FIXTURE_LLMS,
+     "and then he drove home\n", _FIXTURE_WORK, True),
+    ("a renamed role heading", _FIXTURE_LLMS, _FIXTURE_ABOUT,
+     "## CEO, Akira Tech\n\n*October 2020 \u2013 Present*\n", True),
+    ("a date in prose, not on a date line", _FIXTURE_LLMS, _FIXTURE_ABOUT,
+     "## Founder, Akira Tech\n\nSince October 2020 things changed.\n", True),
+    # The two that separate "is this line" from "is this text somewhere": a
+    # heading that still contains the pinned one is not the pinned one.
+    ("the card heading inside a longer line", _FIXTURE_LLMS,
+     "### [drove](https://example.test/drove) Legacy\nRetired.\n", _FIXTURE_WORK, True),
+    ("the role heading inside a longer line", _FIXTURE_LLMS, _FIXTURE_ABOUT,
+     "## Founder, Akira Tech (former)\n\n*October 2020 \u2013 Present*\n", True),
 ]
 
 # Rule 3's own fixture: the generator's line scan, and what Rule 3 must see.
@@ -202,6 +223,49 @@ def opens_on_forbidden(value: str) -> str | None:
 def lines_of(text: str) -> list[str]:
     """The file's lines, stripped, so a fact can be pinned to a whole line."""
     return [line.strip() for line in text.split("\n")]
+
+
+def mirror_violations(llms: str, about: str, work: str, projects, roles) -> list[tuple[str, str]]:
+    """Every way `llms.txt` and the pages it restates have drifted apart.
+
+    Pure, and takes its tables as arguments, so the fixtures below run this
+    exact function rather than a second copy of its expressions — a self-check
+    that re-types the rule it guards cannot fail when the rule regresses.
+    """
+    found = []
+    about_lines = lines_of(about)
+    for name, heading in projects:
+        if heading not in about_lines:
+            found.append((ABOUT_MD, f"no longer has the card `{heading}`, which {LLMS_TXT} lists"))
+        if heading.split("(", 1)[1].rstrip(")") not in llms:
+            found.append((LLMS_TXT, f'no longer links the project "{name}"'))
+
+    work_lines = lines_of(work)
+    section = LLMS_ROLES_SECTION.search(llms)
+    role_lines = lines_of(section.group(1)) if section else []
+    if not role_lines:
+        found.append((LLMS_TXT, "has no `## Roles` section"))
+    for org, heading, dates, start in roles:
+        if not heading_matches(work_lines, heading):
+            found.append((WORK_MD, f"no longer has the role heading `{heading}`, which {LLMS_TXT} states"))
+        if dates not in work:
+            found.append((WORK_MD, f"no longer has the date line `{dates}` for `{heading}`"))
+        stated = [line for line in role_lines if org.lower() in line.lower()]
+        if not stated:
+            found.append((LLMS_TXT, f'its Roles section no longer states "{org}"'))
+            continue
+        if not any(start in line for line in stated):
+            found.append((LLMS_TXT, f'states "{org}" without its start date "{start}"'))
+        # The table may only pin a title that llms.txt itself states, so a row
+        # can never carry a job title this file has no business naming.
+        titled = not stated[0].lstrip("- ").lower().startswith(org.lower())
+        if titled != heading.startswith("## "):
+            found.append((
+                "check_positioning.py: MIRRORED_ROLES",
+                f'the row for "{org}" pins {"a title" if not titled else "no title"} '
+                f"while {LLMS_TXT} states {'one' if titled else 'none'}",
+            ))
+    return found
 
 
 def subtitle_violation(matches: list[str]) -> str | None:
@@ -343,9 +407,13 @@ class Check:
 
     def check_mirror_fixtures(self) -> None:
         """The mirror still refuses the near-misses a token search accepted."""
-        for name, decoy, required_line in MIRROR_FIXTURES:
-            if required_line.strip() in lines_of(decoy):
-                self.self_check_failed(f"{name}: the mirror would still accept {decoy!r}")
+        for name, llms, about, work, expect_violation in MIRROR_FIXTURES:
+            reported = mirror_violations(llms, about, work, _FIXTURE_PROJECTS, _FIXTURE_ROLES)
+            if bool(reported) != expect_violation:
+                self.self_check_failed(
+                    f"{name}: the mirror reported {[p for _, p in reported]!r}, expected "
+                    f"{'a violation' if expect_violation else 'none'}"
+                )
 
     def check_subtitle_scan_fixtures(self) -> None:
         """Rule 3 still counts the lines generate_cv.py counts, and still reports."""
@@ -500,40 +568,11 @@ class Check:
         if not summary:
             self.fail(LLMS_TXT, "has no `>` summary line")
         else:
-            self.check_opening("static/llms.txt: summary", summary.group(1))
-
-        about = lines_of(self.read(ABOUT_MD))
-        for name, heading in MIRRORED_PROJECTS:
-            if heading not in about:
-                self.fail(ABOUT_MD, f"no longer has the card `{heading}`, which static/llms.txt lists")
-            if heading.split("(", 1)[1].rstrip(")") not in llms:
-                self.fail(LLMS_TXT, f'no longer links the project "{name}"')
-
-        work = lines_of(self.read(WORK_MD))
-        roles = LLMS_ROLES_SECTION.search(llms)
-        role_lines = lines_of(roles.group(1)) if roles else []
-        if not role_lines:
-            self.fail(LLMS_TXT, "has no `## Roles` section")
-        for org, heading, dates, start in MIRRORED_ROLES:
-            if not heading_matches(work, heading):
-                self.fail(WORK_MD, f"no longer has the role heading `{heading}`, which static/llms.txt states")
-            if dates not in work:
-                self.fail(WORK_MD, f"no longer has the date line `{dates}` for `{heading}`")
-            stated = [line for line in role_lines if org.lower() in line.lower()]
-            if not stated:
-                self.fail(LLMS_TXT, f'its Roles section no longer states "{org}"')
-                continue
-            if not any(start in line for line in stated):
-                self.fail(LLMS_TXT, f'states "{org}" without its start date "{start}"')
-            # The table may only pin a title that llms.txt itself states, so a
-            # row can never carry a job title this file has no business naming.
-            titled = not stated[0].lstrip("- ").lower().startswith(org.lower())
-            if titled != heading.startswith("## "):
-                self.fail(
-                    "check_positioning.py: MIRRORED_ROLES",
-                    f'the row for "{org}" pins {"a title" if not titled else "no title"} '
-                    f"while static/llms.txt states {'one' if titled else 'none'}",
-                )
+            self.check_opening(f"{LLMS_TXT}: summary", summary.group(1))
+        for where, problem in mirror_violations(
+            llms, self.read(ABOUT_MD), self.read(WORK_MD), MIRRORED_PROJECTS, MIRRORED_ROLES
+        ):
+            self.fail(where, problem)
 
     def rule_four_stats(self) -> None:
         """Rule 5 — .stats is grid-template-columns: repeat(4, 1fr)."""
