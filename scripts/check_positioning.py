@@ -145,10 +145,14 @@ MIRROR_FIXTURES = [
 ]
 
 # Rule 3's own fixture: the generator's line scan, and what Rule 3 must see.
-SUBTITLE_SCAN_FIXTURE = (
-    '      subtitle = "Builder | Hacker"\n      # subtitle = "Investor | Builder"\n',
-    2,
-)
+SUBTITLE_SCAN_FIXTURES = [
+    # (name, a hugo.toml fragment, how many lines Rule 3 must count,
+    #  whether that count is a violation)
+    ("a commented-out line below the live one",
+     '      subtitle = "Builder | Hacker"\n      # subtitle = "Investor | Builder"\n', 2, True),
+    ("the one live line", '      subtitle = "Builder | Hacker"\n', 1, False),
+    ("no subtitle at all", '      title = "Daniel Luca"\n', 0, True),
+]
 
 
 # Rule 6 — static/llms.txt restates, by hand, facts that live on the pages. A
@@ -198,6 +202,23 @@ def opens_on_forbidden(value: str) -> str | None:
 def lines_of(text: str) -> list[str]:
     """The file's lines, stripped, so a fact can be pinned to a whole line."""
     return [line.strip() for line in text.split("\n")]
+
+
+def subtitle_violation(matches: list[str]) -> str | None:
+    """Why this many `subtitle =` lines is wrong, or None when it is one.
+
+    Zero is as much a violation as two: generate_cv.py:171-176 starts with an
+    empty subtitle and writes an empty CV header rather than failing.
+    """
+    if len(matches) == 1:
+        return None
+    problem = (
+        f"{len(matches)} lines contain `subtitle =` (including comments, which "
+        f"generate_cv.py:174 counts too)"
+    )
+    if not matches:
+        return f"{problem}; the CV header would be blank"
+    return f"{problem}; it silently uses the last one: {matches[-1].strip()!r}"
 
 
 def heading_matches(lines: list[str], pattern: str) -> bool:
@@ -299,7 +320,7 @@ class Check:
         self.check_opening_fixtures()
         self.check_blank_fixtures()
         self.check_mirror_fixtures()
-        self.check_subtitle_scan_fixture()
+        self.check_subtitle_scan_fixtures()
         self.check_toml_fixtures()
 
     def self_check_failed(self, problem: str) -> None:
@@ -326,14 +347,20 @@ class Check:
             if required_line.strip() in lines_of(decoy):
                 self.self_check_failed(f"{name}: the mirror would still accept {decoy!r}")
 
-    def check_subtitle_scan_fixture(self) -> None:
-        """Rule 3 still counts the lines generate_cv.py counts, comments included."""
-        document, expected_lines = SUBTITLE_SCAN_FIXTURE
-        seen = len(SUBTITLE_LINE.findall(document))
-        if seen != expected_lines:
-            self.self_check_failed(
-                f"a commented-out `subtitle =` line is counted {seen}x, expected {expected_lines}"
-            )
+    def check_subtitle_scan_fixtures(self) -> None:
+        """Rule 3 still counts the lines generate_cv.py counts, and still reports."""
+        for name, document, expected_lines, expect_violation in SUBTITLE_SCAN_FIXTURES:
+            matches = SUBTITLE_LINE.findall(document)
+            if len(matches) != expected_lines:
+                self.self_check_failed(
+                    f"{name}: counted {len(matches)} `subtitle =` lines, expected {expected_lines}"
+                )
+            problem = subtitle_violation(matches)
+            if bool(problem) != expect_violation:
+                self.self_check_failed(
+                    f"{name}: reported {problem!r}, expected "
+                    f"{'a violation' if expect_violation else 'none'}"
+                )
 
     def check_toml_fixtures(self) -> None:
         """Every TOML quoting form still yields the value Rule 1 then tests."""
@@ -381,14 +408,9 @@ class Check:
         config = self.read(HUGO_TOML)
         if not config:
             return
-        matches = SUBTITLE_LINE.findall(config)
-        if len(matches) != 1:
-            self.fail(
-                "hugo.toml: subtitle",
-                f"{len(matches)} lines contain `subtitle =` (including comments, which "
-                f"generate_cv.py:174 counts too); it silently uses the last one: "
-                f"{matches[-1].strip()!r}",
-            )
+        problem = subtitle_violation(SUBTITLE_LINE.findall(config))
+        if problem:
+            self.fail(f"{HUGO_TOML}: subtitle", problem)
 
     def rule_single_link(self) -> None:
         """Rule 4 — layouts/index.html:24 replaces EVERY match of whoamiLink."""
