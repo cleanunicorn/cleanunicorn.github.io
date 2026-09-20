@@ -7,7 +7,7 @@ protected field starts describing him as a partner or an investor before it
 describes him as someone who builds things, and when static/llms.txt — the
 file agents read — drifts away from the pages it restates.
 
-Two deliberate choices, both load-bearing:
+Three deliberate choices, all load-bearing:
 
 * It imports nothing from this directory. An import would write
   `scripts/__pycache__/*.pyc` into a tree whose .gitignore does not cover it,
