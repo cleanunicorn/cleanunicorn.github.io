@@ -89,10 +89,20 @@ TERMINAL_ARRAY = '"%s": ['
 TERMINAL_STRING = re.compile(r'^\s*"([^"]*)",?\s*$', re.MULTILINE)
 FRONT_MATTER = re.compile(r"\A\+\+\+\s*\n(.*?)\n\+\+\+\s*\n", re.DOTALL)
 
+# Every file this check reads, named once.
+WORK_MD = "content/previous-work.md"
+ABOUT_MD = "content/about/_index.md"
+HOME_TOML = "data/home.toml"
+HUGO_TOML = "hugo.toml"
+LLMS_TXT = "static/llms.txt"
+HUMANS_TXT = "static/humans.txt"
+TERMINAL_JS = "static/js/terminal.js"
+OG_SCRIPT = "scripts/generate_og_image.py"
+
 # Which TOML file holds which protected values.
 CONFIG_FIELDS = (
-    ("data/home.toml", ("whoami",)),
-    ("hugo.toml", ("subtitle", "keywords", "jobTitle", "personDescription")),
+    (HOME_TOML, ("whoami",)),
+    (HUGO_TOML, ("subtitle", "keywords", "jobTitle", "personDescription")),
 )
 REGEX_METACHARACTERS = set(r".^$*+?()[]{}|\\")
 
@@ -167,8 +177,6 @@ MIRRORED_ROLES = [
     ("Alethio", "## Developer, Alethio", "*February 2017 \u2013 November 2018 \u00b7 ConsenSys*", "February 2017"),
 ]
 
-WORK_MD = "content/previous-work.md"
-ABOUT_MD = "content/about/_index.md"
 LLMS_ROLES_SECTION = re.compile(r"^## Roles\s*$(.*?)^## ", re.MULTILINE | re.DOTALL)
 
 
@@ -338,7 +346,7 @@ class Check:
 
     def rule_single_subtitle(self) -> None:
         """Rule 3 — generate_cv.py takes the LAST `subtitle =` line it sees."""
-        config = self.read("hugo.toml")
+        config = self.read(HUGO_TOML)
         if not config:
             return
         matches = SUBTITLE_LINE.findall(config)
@@ -352,11 +360,11 @@ class Check:
 
     def rule_single_link(self) -> None:
         """Rule 4 — layouts/index.html:24 replaces EVERY match of whoamiLink."""
-        data = self.parse_toml("data/home.toml")
+        data = self.parse_toml(HOME_TOML)
         if data is None:
             return
-        whoami = next(iter(self.values("data/home.toml", data, "whoami")), "")
-        link = next(iter(self.values("data/home.toml", data, "whoamiLink")), "")
+        whoami = next(iter(self.values(HOME_TOML, data, "whoami")), "")
+        link = next(iter(self.values(HOME_TOML, data, "whoamiLink")), "")
         if not whoami or not link:
             return
         hits = whoami.count(link)
@@ -385,51 +393,58 @@ class Check:
         judgement, not a field. Its front matter is covered by Rule 1 like every
         other page's.
         """
-        humans = self.read("static/humans.txt")
+        self.check_humans_role()
+        self.check_terminal_strings()
+        self.check_card_sub_text()
+
+    def check_only_match(self, pattern, text: str, where: str, noun: str) -> None:
+        """Check the one value `pattern` should find, and say so if it is not one."""
+        found = pattern.findall(text)
+        if len(found) != 1:
+            self.fail(where, f"{len(found)} {noun}, expected 1")
+        for value in found:
+            self.check_opening(where, value)
+
+    def check_humans_role(self) -> None:
+        humans = self.read(HUMANS_TXT)
         if humans:
-            found = HUMANS_ROLE.findall(humans)
-            if len(found) != 1:
-                self.fail("static/humans.txt: Role", f"{len(found)} `Role:` lines, expected 1")
-            for value in found:
-                self.check_opening("static/humans.txt: Role", value)
+            self.check_only_match(HUMANS_ROLE, humans, f"{HUMANS_TXT}: Role", "`Role:` lines")
 
-        terminal = self.read("static/js/terminal.js")
-        if terminal:
-            greeting = TERMINAL_GREETING.search(terminal)
-            if not greeting:
-                self.fail("static/js/terminal.js", "the `~$ whoami` greeting is no longer where this check looks")
-            else:
-                self.check_opening("static/js/terminal.js: whoami greeting", greeting.group(1))
-            for name in ("about.md", "work.md"):
-                start = terminal.find(TERMINAL_ARRAY % name)
-                end = terminal.find("],", start) if start != -1 else -1
-                if start == -1 or end == -1:
-                    self.fail("static/js/terminal.js", f'the virtual "{name}" array is no longer where this check looks')
-                    continue
-                said = [v for v in TERMINAL_STRING.findall(terminal[start:end]) if not v.startswith("#")]
-                if not said:
-                    self.fail("static/js/terminal.js", f'the virtual "{name}" says nothing')
-                    continue
-                self.check_opening(f"static/js/terminal.js: {name}", said[0])
-
-        # The committed static/og-image.png cannot be asserted on; the string
-        # it is generated from can.
-        card = self.read("scripts/generate_og_image.py")
+    def check_card_sub_text(self) -> None:
+        """The committed og-image.png cannot be asserted on; its source string can."""
+        card = self.read(OG_SCRIPT)
         if card:
-            found = OG_SUB_TEXT.findall(card)
-            if len(found) != 1:
-                self.fail("scripts/generate_og_image.py: sub_text", f"{len(found)} assignments, expected 1")
-            for value in found:
-                self.check_opening("scripts/generate_og_image.py: sub_text", value)
+            self.check_only_match(OG_SUB_TEXT, card, f"{OG_SCRIPT}: sub_text", "assignments")
+
+    def check_terminal_strings(self) -> None:
+        terminal = self.read(TERMINAL_JS)
+        if not terminal:
+            return
+        greeting = TERMINAL_GREETING.search(terminal)
+        if not greeting:
+            self.fail(TERMINAL_JS, "the `~$ whoami` greeting is no longer where this check looks")
+        else:
+            self.check_opening(f"{TERMINAL_JS}: whoami greeting", greeting.group(1))
+        for name in ("about.md", "work.md"):
+            start = terminal.find(TERMINAL_ARRAY % name)
+            end = terminal.find("],", start) if start != -1 else -1
+            if start == -1 or end == -1:
+                self.fail(TERMINAL_JS, f'the virtual "{name}" array is no longer where this check looks')
+                continue
+            said = [v for v in TERMINAL_STRING.findall(terminal[start:end]) if not v.startswith("#")]
+            if not said:
+                self.fail(TERMINAL_JS, f'the virtual "{name}" says nothing')
+                continue
+            self.check_opening(f"{TERMINAL_JS}: {name}", said[0])
 
     def rule_llms_mirror(self) -> None:
         """Rules 1, 2 and 6 over the agent-readable surface."""
-        llms = self.read("static/llms.txt")
+        llms = self.read(LLMS_TXT)
         if not llms:
             return
         summary = LLMS_SUMMARY.search(llms)
         if not summary:
-            self.fail("static/llms.txt", "has no `>` summary line")
+            self.fail(LLMS_TXT, "has no `>` summary line")
         else:
             self.check_opening("static/llms.txt: summary", summary.group(1))
 
@@ -438,13 +453,13 @@ class Check:
             if heading not in about:
                 self.fail(ABOUT_MD, f"no longer has the card `{heading}`, which static/llms.txt lists")
             if heading.split("(", 1)[1].rstrip(")") not in llms:
-                self.fail("static/llms.txt", f'no longer links the project "{name}"')
+                self.fail(LLMS_TXT, f'no longer links the project "{name}"')
 
         work = lines_of(self.read(WORK_MD))
         roles = LLMS_ROLES_SECTION.search(llms)
         role_lines = lines_of(roles.group(1)) if roles else []
         if not role_lines:
-            self.fail("static/llms.txt", "has no `## Roles` section")
+            self.fail(LLMS_TXT, "has no `## Roles` section")
         for org, heading, dates, start in MIRRORED_ROLES:
             if heading not in work:
                 self.fail(WORK_MD, f"no longer has the role heading `{heading}`, which static/llms.txt states")
@@ -452,13 +467,13 @@ class Check:
                 self.fail(WORK_MD, f"no longer has the date line `{dates}` for `{heading}`")
             stated = [l for l in role_lines if org.lower() in l.lower()]
             if not stated:
-                self.fail("static/llms.txt", f'its Roles section no longer states "{org}"')
+                self.fail(LLMS_TXT, f'its Roles section no longer states "{org}"')
             elif not any(start in l for l in stated):
-                self.fail("static/llms.txt", f'states "{org}" without its start date "{start}"')
+                self.fail(LLMS_TXT, f'states "{org}" without its start date "{start}"')
 
     def rule_four_stats(self) -> None:
         """Rule 5 — .stats is grid-template-columns: repeat(4, 1fr)."""
-        data = self.parse_toml("data/home.toml")
+        data = self.parse_toml(HOME_TOML)
         if data is None:
             return
         count = len(data.get("stats", []))
