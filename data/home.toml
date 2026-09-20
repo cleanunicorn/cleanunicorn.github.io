@@ -5,27 +5,29 @@
 name = "Daniel Luca"
 nickname = "CleanUnicorn"
 # Printed as the output of `~$ whoami` in the hero terminal eyebrow.
-whoami = "Technical Partner @ Eden Block"
+whoami = "builder · hacker · Technical Partner @ Eden Block"
 # Optional: turns the matching phrase inside `whoami` into a link.
-whoamiLink = "Eden Block"
-whoamiURL = "https://edenblock.com"
+whoamiLink = "builder"
+whoamiURL = "/about/#projects"
 
 # Portrait shown in the hero. Lives in static/images/.
 photo = "/images/daniel-luca.jpg"
 photoAlt = "Daniel Luca"
 
-# Credibility strip — framed honestly: protocols audited, firms advised, where
-# the work has been featured. Edit freely.
+# Credibility strip — framed honestly: what I've built, protocols audited, firms
+# advised, where the work has been featured. Edit freely.
 [proof]
-label = "Audited · Advised · Featured"
+label = "Built · Audited · Featured"
 items = [
+  "Earheart",
+  "Agents Library",
+  "Gensyn RL-Swarm",
   "Uniswap",
   "Aave",
   "Filecoin",
   "Polygon",
   "ConsenSys Diligence",
   "Eden Block",
-  "Gensyn",
   "DEF CON 27",
   "Code Is Law (2025)",
 ]
@@ -33,8 +35,13 @@ items = [
 # "By the numbers" credibility band. Edit freely — values are intentionally
 # conservative and defensible. Set to an empty list to hide the band.
 [[stats]]
-value = "2017"
-label = "Securing Ethereum"
+value = "15+"
+label = "Open-source projects"
+url = "/about/#projects"
+
+[[stats]]
+value = "2008"
+label = "Shipping software"
 url = "/work/"
 
 [[stats]]
@@ -47,17 +54,12 @@ value = "10+"
 label = "Talks & podcasts"
 url = "/about/#talks"
 
-[[stats]]
-value = "15+"
-label = "Open-source projects"
-url = "/about/#projects"
-
 # Audience-routed calls to action. `primary = true` highlights the main one.
 [[cta]]
-title = "Raising or building?"
-text = "Research-driven technical diligence and hands-on support via Eden Block."
-label = "Get in touch"
-url = "https://x.com/cleanunicorn"
+title = "Want to see what I build?"
+text = "Open-source tools I wanted to exist — private dictation, coding agents, local LLM infrastructure and the contracts behind them."
+label = "Browse the projects"
+url = "/about/#projects"
 primary = true
 
 [[cta]]
@@ -65,6 +67,12 @@ title = "Want to follow my work?"
 text = "Essays on security, EVM internals and applied AI — plus talks and podcasts."
 label = "Read the writing"
 url = "/posts/"
+
+[[cta]]
+title = "Raising or building?"
+text = "Research-driven technical diligence and hands-on support via Eden Block."
+label = "Get in touch"
+url = "https://x.com/cleanunicorn"
 
 # -----------------------------------------------------------------------------
 # Connect — personal quick links, front and centre on the homepage. Each entry
@@ -77,7 +85,7 @@ url = "/posts/"
 [connect]
 label = "Let's connect"
 note = "Every way to reach me — pick whatever you already live in."
-tagline = "Securing Ethereum since 2017."
+tagline = "Building and breaking software since 2008 — Ethereum since 2017."
 
 [[connect.links]]
 net = "calendar"
