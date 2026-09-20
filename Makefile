@@ -42,7 +42,7 @@ update-theme: ## Update theme submodule to latest
 submodules: ## Initialize and update all submodules
 	git submodule update --init --recursive
 
-check-positioning: ## Assert the identity copy still leads builder-first
+check-positioning: ## Assert the identity copy leads builder-first and llms.txt still matches the pages
 	python3 scripts/check_positioning.py
 
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)

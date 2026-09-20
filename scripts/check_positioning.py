@@ -21,6 +21,24 @@ Two deliberate choices, both load-bearing:
 * Rule 3 is the exception and stays a raw-line count, because it exists to
   mirror `generate_cv.py:171-175`, which scans lines rather than parsing.
 
+What it reads, so the next editor does not have to infer it:
+
+    data/home.toml            whoami, whoamiLink, the [[stats]] count
+    hugo.toml                 subtitle, keywords, jobTitle, personDescription
+    content/**/*.md           every front-matter description and lede
+    static/humans.txt         the Role line
+    static/js/terminal.js     the whoami greeting, about.md, work.md
+    scripts/generate_og_image.py   sub_text, the social card's role line
+    static/llms.txt           the summary line, and the facts it mirrors
+
+Deliberately NOT read, each for a reason that survives asking twice:
+
+    content/contact.md's body — prose; its front matter is read like any page's
+    hugo.toml knowsAbout      — a topic list, not a sentence with an opening
+    data/cv.toml              — the CV's own strings are derived from the pages
+    the About lede, the role bodies — prose, reviewed by a human
+    static/og-image.png       — a binary; sub_text above is its source
+
 Usage:
     python3 scripts/check_positioning.py [--root PATH]
 
@@ -74,7 +92,7 @@ FRONT_MATTER = re.compile(r"\A\+\+\+\s*\n(.*?)\n\+\+\+\s*\n", re.DOTALL)
 # Which TOML file holds which protected values.
 CONFIG_FIELDS = (
     ("data/home.toml", ("whoami",)),
-    ("hugo.toml", ("subtitle", "jobTitle", "personDescription")),
+    ("hugo.toml", ("subtitle", "keywords", "jobTitle", "personDescription")),
 )
 REGEX_METACHARACTERS = set(r".^$*+?()[]{}|\\")
 
