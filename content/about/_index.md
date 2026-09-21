@@ -10,7 +10,7 @@ Most of what I build is open source and starts as something I wanted to exist: [
 
 I care about open source, security, and getting the details right. I favour trust-minimized architectures and adversarial code review: systems that hold up under attack, not ones that ride a narrative.
 
-That is also what I get paid for: I audit Ethereum smart contracts, as **Technical Partner at [Eden Block](https://edenblock.com)** I run the technical evaluation behind early-stage investments, and since August 2026 I am also CTO at a stealth startup. Whether I'm writing a contract, breaking one or evaluating a seed round, **the lens is the same — open source, sound engineering and long-term fundamentals over hype.**
+That is also what I get paid for: I audit Ethereum smart contracts, as **Technical Partner at [Eden Block](https://edenblock.com)** I build and improve our internal processes — we are tech driven in this approach — and run the technical evaluation behind early-stage investments, and since August 2026 I am also CTO at a stealth startup. Whether I'm writing a contract, breaking one or evaluating a seed round, **the lens is the same — open source, sound engineering and long-term fundamentals over hype.**
 
 **[Download my CV (PDF)](/cv.pdf)** — or find me on [X / Twitter](https://x.com/cleanunicorn), [GitHub](https://github.com/cleanunicorn) and [LinkedIn](https://www.linkedin.com/in/luca-daniel-5227267/).
 

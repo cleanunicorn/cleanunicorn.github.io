@@ -21,7 +21,7 @@ pages it links to. Prose for humans starts at /about/.
 ## Roles
 
 - CTO, a stealth startup — August 2026 to present. The company has not announced itself; nothing further about it is public.
-- Technical Partner, Eden Block — November 2022 to present. Runs the technical evaluation behind early-stage investments.
+- Technical Partner, Eden Block — November 2022 to present. Builds and improves internal processes, and runs the technical evaluation behind early-stage investments.
 - Co-Founder, FiatDAO — November 2021, deployed April 2022. DeFi tools for fixed-income assets on Ethereum.
 - Founder and security researcher, Akira Tech — October 2020 to present.
 - Security researcher, ConsenSys Diligence — November 2018 to August 2020. Audits including Uniswap, Aave, Filecoin and Polygon.
