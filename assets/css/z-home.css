@@ -96,8 +96,11 @@
 .offer .section-head { margin-bottom: var(--sp-7); }
 .offer__grid {
   display: grid;
-  /* Adapts to the number of cards (2 or 3) without leaving an empty column. */
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  /* Adapts to the number of cards (2 or 3) without leaving an empty column.
+     The floor has to let three tracks fit the 49rem content column
+     (z-layout.css:9, 53rem less 2x2rem padding): 3x15 + 2x1rem of gap = 47rem.
+     At 16rem it was 50rem, one too wide, and the third card sat alone. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   gap: var(--sp-4);
 }
 .offer__card {
