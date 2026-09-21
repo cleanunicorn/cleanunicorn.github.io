@@ -1,0 +1,27 @@
+# The positioning guard, on pull requests.
+#
+# It lives in its own workflow rather than as a job in "Build and deploy",
+# which triggers only on a push to main: adding pull_request there would give
+# PR runs that workflow's `pages: write` and `id-token: write` permissions and
+# put them in its `pages` concurrency group, for a check that reads files.
+#
+# scripts/check_positioning.py is standard-library Python over repository
+# files, so this job needs none of the deploy job's toolchain — no Hugo, Go,
+# Node, Dart Sass or Chromium, and no theme submodule.
+name: Check positioning
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Check positioning
+        run: make check-positioning

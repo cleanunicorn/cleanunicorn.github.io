@@ -3,9 +3,17 @@ title = "Work"
 draft = false
 slug = "work"
 class = "page-work"
-lede = "From building Ethereum's early analytics pipeline to auditing the protocols millions rely on — and now backing the teams building what's next."
-description = "Daniel Luca's work history — Technical Partner at Eden Block, security researcher at ConsenSys Diligence (Uniswap, Aave, Filecoin, Polygon audits), founder of Akira Tech, and co-founder of multiple startups."
+lede = "Shipping since 2008 — file-sharing infrastructure, consumer and fintech products, Ethereum's early analytics pipeline, and the open-source tools I use every day — plus auditing the protocols millions rely on, and backing the teams building what's next."
+description = "Daniel Luca's work history — builder and security researcher: Ethereum smart-contract audits at ConsenSys Diligence (Uniswap, Aave, Filecoin, Polygon), founder of Akira Tech, co-founder of multiple startups, Technical Partner at Eden Block, and currently CTO at a stealth startup."
 +++
+
+## CTO, Stealth Startup
+
+*August 2026 – Present*
+
+A startup that has not announced itself yet — details once it launches.
+
+---
 
 ## Technical Partner, Eden Block
 
