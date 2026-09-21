@@ -34,7 +34,7 @@ pagination.pagerSize = 5
       owner = "Daniel Luca"
       author = "Daniel Luca"
       menuMore = "Show more"
-      keywords = "Daniel Luca, CleanUnicorn, builder, hacker, software engineer, open source, coding agents, AI agents, local LLM, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, decentralized AI, venture capital"
+      keywords = "Daniel Luca, CleanUnicorn, builder, hacker, software engineer, open source, developer tools, AI agents, local LLM, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, decentralized AI, venture capital"
 
       # Schema.org Person metadata — consumed by partials/structured_data.html.
       alternateName = "CleanUnicorn"
@@ -47,7 +47,7 @@ pagination.pagerSize = 5
         "https://www.imdb.com/title/tt35931420/",
       ]
       knowsAbout = [
-        "Software Engineering", "Open Source", "Coding Agents", "LLM Engineering",
+        "Software Engineering", "Open Source", "Developer Tooling", "LLM Engineering",
         "Smart Contract Security", "Ethereum", "Solidity", "EVM Internals",
         "DeFi", "Blockchain Security", "Decentralized AI", "Venture Capital",
       ]
