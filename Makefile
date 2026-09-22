@@ -63,8 +63,10 @@ cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
 	python3 scripts/generate_cv.py -o $(STATIC_DIR)/cv.html
 
 cv-pdf: cv ## Generate CV as PDF into static/ (served by Hugo at /cv.pdf)
-	@which chromium >/dev/null 2>&1 && CHROME=chromium || CHROME=google-chrome; \
-	$$CHROME --headless --disable-gpu --print-to-pdf=$(STATIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(STATIC_DIR)/cv.html 2>/dev/null; \
+	@CHROME=$$(command -v chromium || command -v google-chrome) || { echo "cv-pdf: need chromium or google-chrome on PATH" >&2; exit 1; }; \
+	rm -f $(STATIC_DIR)/cv.pdf; \
+	"$$CHROME" --headless --disable-gpu --print-to-pdf=$(STATIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(STATIC_DIR)/cv.html || exit 1; \
+	test -s $(STATIC_DIR)/cv.pdf || { echo "cv-pdf: $(STATIC_DIR)/cv.pdf was not produced" >&2; exit 1; }; \
 	echo "PDF written to $(STATIC_DIR)/cv.pdf"
 
 books: ## Refresh the About page Books list: top 10 from Goodreads + existing, by rating/popularity. ARGS="--top 12" etc.
