@@ -39,7 +39,7 @@ make new POST="My Post Title"   # create content/posts/my-post-title/index.md
 | `make test` | Runs the unit tests in `tests/` (the positioning guard's rules, the CV parser) |
 | `make build` | Runs `check-positioning`, then builds the site into `public/` |
 | `make cv` | Writes the CV as HTML to `static/cv.html`, generated from the About and Work pages |
-| `make cv-pdf` | Runs `make cv`, then prints `static/cv.pdf` with headless Chromium or Chrome |
+| `make cv-pdf` | Runs `make cv`, then prints `static/cv.pdf` with headless Chromium or Chrome (`CHROME=<path>` picks the browser) |
 | `make books` | Refreshes the About page's Books list from Goodreads |
 | `make og-image` | Regenerates `static/og-image.png`, the social share card (needs Pillow) |
 | `make update-theme` | Moves the theme submodule to its latest upstream commit |

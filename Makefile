@@ -5,6 +5,8 @@ THEME ?= themes/terminal
 PUBLIC_DIR ?= public
 STATIC_DIR ?= static
 POSTS_DIR ?= content/posts
+# Browser for cv-pdf; empty means the first of chromium, google-chrome on PATH.
+CHROME ?=
 
 .DEFAULT_GOAL := help
 
@@ -65,8 +67,9 @@ test: ## Run the unit tests in tests/ (the positioning guard's rules, the CV par
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
 	python3 scripts/generate_cv.py -o $(STATIC_DIR)/cv.html
 
-cv-pdf: cv ## Generate CV as PDF into static/ (served by Hugo at /cv.pdf)
-	@CHROME=$$(command -v chromium || command -v google-chrome) || { echo "cv-pdf: need chromium or google-chrome on PATH" >&2; exit 1; }; \
+cv-pdf: cv ## Generate CV as PDF into static/ (served by Hugo at /cv.pdf). CHROME=<path> picks the browser
+	@CHROME="$(CHROME)"; \
+	[ -n "$$CHROME" ] || CHROME=$$(command -v chromium || command -v google-chrome) || { echo "cv-pdf: need chromium or google-chrome on PATH" >&2; exit 1; }; \
 	rm -f $(STATIC_DIR)/cv.pdf; \
 	"$$CHROME" --headless --disable-gpu --print-to-pdf=$(STATIC_DIR)/cv.pdf --no-margins --no-pdf-header-footer $(STATIC_DIR)/cv.html || exit 1; \
 	test -s $(STATIC_DIR)/cv.pdf || { echo "cv-pdf: $(STATIC_DIR)/cv.pdf was not produced" >&2; exit 1; }; \
