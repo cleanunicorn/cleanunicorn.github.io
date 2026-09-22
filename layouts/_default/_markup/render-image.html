@@ -15,6 +15,10 @@
     {{- else if $raster -}}
       {{- $img = .Process "webp q80 Lanczos" -}}
     {{- end -}}
+    {{- if gt (len $img.Content) 307200 -}}
+      {{- $msg := printf "%s: image %q is %d bytes as served; post images must be at most 300 KB (GIF/SVG are not resized)" $.Page.File.Path $.Destination (len $img.Content) -}}
+      {{- if $.Page.Draft -}}{{- warnf "%s" $msg -}}{{- else -}}{{- errorf "%s" $msg -}}{{- end -}}
+    {{- end -}}
     {{- $src = $img.RelPermalink -}}
     {{- if and (eq $img.ResourceType "image") (ne $img.MediaType.SubType "svg") -}}
       {{- $w = $img.Width -}}{{- $h = $img.Height -}}
