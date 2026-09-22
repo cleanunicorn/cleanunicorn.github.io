@@ -68,12 +68,13 @@
 {{- /* article:* belongs to dated regular pages only; the homepage and list
    pages are og:type website. Times are RFC 3339 (ISO 8601). */ -}}
 {{ if and .IsPage (isset .Params "date") }}
+  {{- $rfc3339 := "2006-01-02T15:04:05Z07:00" }}
   {{ range .Params.categories }}
   <meta property="article:section" content="{{ . }}" />
   {{ end }}
-  <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" />
+  <meta property="article:published_time" content="{{ .Date.Format $rfc3339 }}" />
   {{ if .Lastmod.After .Date }}
-  <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}" />
+  <meta property="article:modified_time" content="{{ .Lastmod.Format $rfc3339 }}" />
   {{ end }}
 {{ end }}
 
