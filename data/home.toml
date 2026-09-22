@@ -22,6 +22,14 @@ whoamiURL = "/about/#projects"
 photo = "/images/daniel-luca.jpg"
 photoAlt = "Daniel Luca"
 
+# CV link at the right of the "How I can help" heading, above the cards. Kept out
+# of [[cta]] on purpose: the card grid is tuned for two or three cards
+# (assets/css/z-home.css:99), and a fourth would sit alone on its own row.
+# Top-level keys, so they must stay above the first [table]. Remove cvURL to
+# drop the link.
+cvURL = "/cv.pdf"
+cvLabel = "Download CV (PDF)"
+
 # Credibility strip — framed honestly: what I've built, protocols audited, firms
 # advised, where the work has been featured. Edit freely.
 [proof]

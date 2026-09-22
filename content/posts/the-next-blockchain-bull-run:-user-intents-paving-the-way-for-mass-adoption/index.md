@@ -180,7 +180,7 @@ The question of incentives also looms large in this space. While incentivization
 
 - [https://www.paradigm.xyz/2023/06/intents](https://www.paradigm.xyz/2023/06/intents)
 - [https://hackernoon.com/why-intent-centric-is-blockchains-next-big-thing](https://hackernoon.com/why-intent-centric-is-blockchains-next-big-thing)
-- [https://flagship.fyi/outposts/market-insights/navigating-intents-unveiling-a-user-centric-pathway-in-blockchain-transactions/](https://flagship.fyi/outposts/market-insights/navigating-intents-unveiling-a-user-centric-pathway-in-blockchain-transactions/)
+- [https://flagship.fyi/outposts/market-insights/navigating-intents-unveiling-a-user-centric-pathway-in-blockchain-transactions/](https://web.archive.org/web/20250804041216/https://flagship.fyi/outposts/market-insights/navigating-intents-unveiling-a-user-centric-pathway-in-blockchain-transactions/)
 - [https://medium.com/alliancedao/intents-are-just-7deaeb4336be](https://medium.com/alliancedao/intents-are-just-7deaeb4336be)
 - [https://eips.ethereum.org/EIPS/eip-7521](https://eips.ethereum.org/EIPS/eip-7521)
 - [https://www.eip4844.com/](https://www.eip4844.com/)

@@ -420,7 +420,7 @@ Thanks to Eden Block team members, and a special thanks to [Nelson](https://twit
 
 [https://medium.com/@genisis0x/eip-1153-enhancing-efficiency-with-transient-storage-opcodes-2d79d720e9a0](https://medium.com/@genisis0x/eip-1153-enhancing-efficiency-with-transient-storage-opcodes-2d79d720e9a0)
 
-[https://www.eip1153.com/](https://www.eip1153.com/)
+[https://www.eip1153.com/](https://web.archive.org/web/20250913010648/https://www.eip1153.com/)
 
 [https://blog.solichain.com/transient-storage-ethereums-game-changing-feature-787533254cc6](https://blog.solichain.com/transient-storage-ethereums-game-changing-feature-787533254cc6)
 

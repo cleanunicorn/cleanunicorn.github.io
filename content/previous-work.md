@@ -7,6 +7,8 @@ lede = "Shipping since 2008 — file-sharing infrastructure, consumer and fintec
 description = "Daniel Luca's work history — what a builder, hacker and extropian does for a living: Ethereum smart-contract audits at ConsenSys Diligence (Uniswap, Aave, Filecoin, Polygon), founder of Akira Tech, co-founder of multiple startups, Technical Partner at Eden Block, and currently CTO at a stealth startup."
 +++
 
+**[Download my CV (PDF)](/cv.pdf)**
+
 ## CTO, Stealth Startup
 
 *August 2026 – Present*
@@ -29,7 +31,7 @@ Worked closely with portfolio companies such as:
 - [Hypurrfi](https://app.hypurr.fi/)
 - [Novel Labs](https://www.novellabs.xyz/)
 - [Nym](https://nym.com/)
-- [Vega Protocol](https://vega.xyz/)
+- [Vega Protocol](https://web.archive.org/web/20230106143424/https://vega.xyz/)
 
 
 ---
@@ -38,7 +40,7 @@ Worked closely with portfolio companies such as:
 
 *November 2021 · Deployed April 2022*
 
-Co-founded and built [FiatDAO](https://fiatdao.com), a decentralized autonomous organization (DAO) focused on DeFi tools for fixed-income assets on Ethereum. Helped design and build the platform, letting users use their fixed-income positions as collateral to access liquidity and mint stablecoins. Worked on protocol development, governance, and smart contract security, partnering with a global team to launch and improve the product.
+Co-founded and built [FiatDAO](https://web.archive.org/web/20230203135338/https://fiatdao.com/), a decentralized autonomous organization (DAO) focused on DeFi tools for fixed-income assets on Ethereum. Helped design and build the platform, letting users use their fixed-income positions as collateral to access liquidity and mint stablecoins. Worked on protocol development, governance, and smart contract security, partnering with a global team to launch and improve the product.
 
 ---
 
@@ -54,13 +56,13 @@ Founded [Akira Tech](https://github.com/akiratechhq) as a specialized security s
 
 *November 2018 – August 2020*
 
-As part of [ConsenSys Diligence](https://diligence.consensys.net/) — a leading smart-contract audit and Ethereum security team — I delivered security audits and consulting for some of the most widely used protocols on Ethereum, and pursued security research and conference talks alongside the engagements.
+As part of [ConsenSys Diligence](https://diligence.security/) — a leading smart-contract audit and Ethereum security team — I delivered security audits and consulting for some of the most widely used protocols on Ethereum, and pursued security research and conference talks alongside the engagements.
 
 Selected audits:
 - [Uniswap](https://uniswap.org/) - popular DEX (decentralized exchange) platform written in Vyper
 - [Aave](https://aave.com/) - governance and token issuance
 - [Aragon](https://aragon.org/) - multiple apps reviewed
-- [OmiseGo](https://omg.network/) - plasma implementation
+- [OmiseGo](https://web.archive.org/web/20200612070604/https://omg.network/) - plasma implementation
 - [Matic/Polygon](https://polygon.technology/) - PoS blockchain (geth fork) and migration mechanism
 - [Filecoin](https://filecoin.io/) - decentralized storage network
 - [Shell Protocol](https://shellprotocol.io/) - stable coin DeFi
@@ -72,7 +74,7 @@ Selected audits:
 
 *February 2017 – November 2018 · ConsenSys*
 
-Alethio was a ConsenSys spoke building analytics for the Ethereum blockchain. I built most of the data pipeline that extracts on-chain data, applies an [ontology](https://ethon.consensys.net/) and imports it into multiple databases — the foundation powering Alethio's analytics products.
+Alethio was a ConsenSys spoke building analytics for the Ethereum blockchain. I built most of the data pipeline that extracts on-chain data, applies an [ontology](https://web.archive.org/web/20231202140732/https://ethon.consensys.net/) and imports it into multiple databases — the foundation powering Alethio's analytics products.
 
 
 ---

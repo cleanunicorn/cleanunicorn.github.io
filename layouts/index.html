@@ -81,7 +81,10 @@
 
   {{ with $home.cta }}
     <section class="offer" aria-label="Ways to work together">
-      <h2 class="section-head">How I can help</h2>
+      <div class="section-head section-head--row">
+        <h2>How I can help</h2>
+        {{ with $home.cvURL }}<a class="section-head__more" href="{{ . }}">{{ $home.cvLabel | default "Download CV (PDF)" }} <span aria-hidden="true">→</span></a>{{ end }}
+      </div>
       <div class="offer__grid">
         {{ range . }}
           <a class="offer__card{{ if .primary }} offer__card--primary{{ end }}" href="{{ .url }}">
