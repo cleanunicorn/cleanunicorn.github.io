@@ -30,10 +30,6 @@ try:
 except ModuleNotFoundError as exc:  # Python < 3.11
     raise SystemExit("check_build: needs Python 3.11+ for tomllib") from exc
 
-# Must match layouts/partials/profile-links.html.
-PROFILE_ORDER = ("x", "linkedin", "github")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
@@ -76,7 +72,7 @@ def main() -> int:
     # Profile links and location come from data.
     home = tomllib.loads((root / "data" / "home.toml").read_text())
     by_net = {link["net"]: link for link in home["connect"]["links"]}
-    profiles = [by_net[net] for net in PROFILE_ORDER]
+    profiles = [by_net[net] for net in home["connect"]["profiles"]]
     location = tomllib.loads((root / "data" / "cv.toml").read_text())["location"]
     page = (public / "index.html").read_text()
 

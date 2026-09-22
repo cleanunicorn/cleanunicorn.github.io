@@ -1,11 +1,10 @@
-{{- /* Profile links shared by the footer and the JSON-LD `sameAs`.
-   The URLs and labels live once, in data/home.toml `connect.links`; this
-   partial only fixes which networks count as profiles and their order
-   (x, linkedin, github), which differs from the connect board's order.
+{{- /* Profile links shared by the footer and the JSON-LD `sameAs`: the
+   data/home.toml `connect.links` entries named by `connect.profiles`, in that
+   order (which differs from the connect board's order).
    Returns a slice of connect.links entries. */ -}}
 {{- $links := site.Data.home.connect.links -}}
 {{- $out := slice -}}
-{{- range slice "x" "linkedin" "github" -}}
+{{- range site.Data.home.connect.profiles -}}
   {{- with index (where $links "net" .) 0 -}}
     {{- $out = $out | append . -}}
   {{- end -}}
