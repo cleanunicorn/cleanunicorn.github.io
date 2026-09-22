@@ -73,8 +73,8 @@ except ModuleNotFoundError as exc:  # Python < 3.11
 FORBIDDEN = ("technical partner", "investor")
 
 # Rule 9 — a meta description longer than this is cut off in search results.
-# head.html renders a page's front-matter description, or the hugo.toml subtitle
-# on the homepage and on pages that have none.
+# head.html renders the hugo.toml subtitle on the homepage, else the page's
+# front-matter description; its other fallbacks are in head.html.
 MAX_DESCRIPTION = 160
 
 # Rule 8 — the WHO surfaces (the hero `whoami`, the humans.txt Role line, the
