@@ -10,8 +10,8 @@ included as a git submodule in `themes/terminal`.
 - **Hugo extended**, at the version in [`.hugo-version`](.hugo-version). CI
   installs exactly that version. Nothing checks your local Hugo, so match it by
   hand to see what CI builds.
-- **Python 3.11+** for the scripts in `scripts/` and the tests. They use only
-  the standard library.
+- **Python 3.11+** for the scripts in `scripts/` and the tests. All of them
+  except `generate_og_image.py` (`make og-image`) use only the standard library.
 - **Chromium or Google Chrome** on `PATH` for `make cv-pdf`.
 - **Pillow**, only for `make og-image`: `pip install -r requirements.txt`.
 
