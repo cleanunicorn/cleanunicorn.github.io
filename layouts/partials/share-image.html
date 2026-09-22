@@ -29,12 +29,11 @@
 
 {{- if not (or $res $static) -}}
   {{- range findRESubmatch `!\[[^\]]*\]\(\s*<?([^)\s>]+)` .RawContent -}}
-    {{- if not $res -}}
-      {{- with (urls.Parse (index . 1)).Path -}}
-        {{- with $.Resources.GetMatch (strings.TrimPrefix "./" .) -}}
-          {{- if and (eq .ResourceType "image") (ne .MediaType.SubType "svg") -}}
-            {{- $res = . -}}
-          {{- end -}}
+    {{- with (urls.Parse (index . 1)).Path -}}
+      {{- with $.Resources.GetMatch (strings.TrimPrefix "./" .) -}}
+        {{- if and (eq .ResourceType "image") (ne .MediaType.SubType "svg") -}}
+          {{- $res = . -}}
+          {{- break -}}
         {{- end -}}
       {{- end -}}
     {{- end -}}
@@ -43,8 +42,9 @@
 
 {{- if not (or $res $static) -}}
   {{- range .Resources.ByType "image" -}}
-    {{- if and (not $res) (ne .MediaType.SubType "svg") -}}
+    {{- if ne .MediaType.SubType "svg" -}}
       {{- $res = . -}}
+      {{- break -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
