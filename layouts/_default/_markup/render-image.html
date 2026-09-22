@@ -1,0 +1,26 @@
+{{- /* Post images: serve a WebP copy (max 1600px wide, never upscaled) with its
+  dimensions and lazy loading. GIF/SVG pass through unchanged; a destination
+  that is not a page or global resource is emitted as-is. Resolution mirrors
+  Hugo's embedded image hook. */ -}}
+{{- $src := .Destination -}}
+{{- $w := 0 -}}{{- $h := 0 -}}
+{{- $u := urls.Parse .Destination -}}
+{{- if not $u.IsAbs -}}
+  {{- $path := strings.TrimPrefix "./" $u.Path -}}
+  {{- with or (.PageInner.Resources.Get $path) (resources.Get $path) -}}
+    {{- $img := . -}}
+    {{- if and (eq .ResourceType "image") (not (in (slice "gif" "svg") .MediaType.SubType)) -}}
+      {{- if gt .Width 1600 -}}
+        {{- $img = .Resize "1600x webp q80 Lanczos" -}}
+      {{- else -}}
+        {{- $img = .Process "webp q80 Lanczos" -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $src = $img.RelPermalink -}}
+    {{- if and (eq $img.ResourceType "image") (ne $img.MediaType.SubType "svg") -}}
+      {{- $w = $img.Width -}}{{- $h = $img.Height -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+<img src="{{ $src }}" alt="{{ .PlainText }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $w }} width="{{ $w }}" height="{{ $h }}"{{ end }} loading="lazy" decoding="async">
+{{- /* no trailing newline */ -}}
