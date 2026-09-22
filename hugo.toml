@@ -2,6 +2,8 @@ baseURL = 'https://cleanunicorn.github.io/'
 languageCode = 'en-us'
 theme = "terminal"
 pagination.pagerSize = 5
+# No post uses tags or categories; drop the empty taxonomy pages and feeds.
+disableKinds = ["taxonomy", "term"]
 
 [markup.goldmark.renderer]
   unsafe = true

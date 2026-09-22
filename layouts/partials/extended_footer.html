@@ -5,5 +5,8 @@
     <li><a href="{{ .url }}" target="_blank" rel="me noopener">{{ .label }}</a></li>
     {{- end }}
     <li><a href="{{ "contact/" | absLangURL }}">Contact</a></li>
+    {{- with site.Home.OutputFormats.Get "rss" }}
+    <li><a href="{{ .Permalink }}" type="application/rss+xml">RSS</a></li>
+    {{- end }}
   </ul>
 </div>

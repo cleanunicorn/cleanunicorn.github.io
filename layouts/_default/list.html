@@ -3,6 +3,9 @@
     <header class="page-head">
       <h1 class="page-title">{{ .Title }}</h1>
       {{ with .Params.lede }}<p class="page-lede">{{ . | markdownify }}</p>{{ end }}
+      {{- if eq .Section "posts" }}{{ with site.Home.OutputFormats.Get "rss" }}
+      <p class="page-feed"><a href="{{ .RelPermalink }}" type="application/rss+xml">Subscribe via RSS</a></p>
+      {{- end }}{{ end }}
     </header>
   {{ end }}
 

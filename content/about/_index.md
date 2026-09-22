@@ -1,6 +1,8 @@
 +++
 title = "About me"
 draft = false
+# HTML only: the section has no posts, so its RSS feed would be empty.
+outputs = ["html"]
 description = "Daniel Luca (CleanUnicorn) — builder, hacker and extropian. What he does: CTO at a stealth startup, Technical Partner at Eden Block, open-source tools, local AI and smart contracts, with Ethereum security research since 2017."
 +++
 
