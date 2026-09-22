@@ -11,8 +11,7 @@
 # The link check is offline: it follows links inside public/ and never the
 # network. Absolute links to this site (Hugo's permalinks use the baseURL) are
 # remapped onto public/, root-relative ones resolve against it, and anchors
-# are checked with --include-fragments. /santoku/ is a separate GitHub Pages
-# project site on the same host, so it is not in public/ and is excluded.
+# are checked with --include-fragments.
 name: Build and link-check
 on:
   pull_request:
@@ -66,7 +65,6 @@ jobs:
             --no-progress
             --root-dir '${{ github.workspace }}/public'
             --remap 'https://cleanunicorn\.github\.io/(.*) file://${{ github.workspace }}/public/$1'
-            --exclude '/public/santoku/'
             --index-files index.html
             'public/**/*.html'
           fail: true
