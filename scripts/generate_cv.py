@@ -507,6 +507,35 @@ def dead_anchors(doc: str) -> list[str]:
     ]
 
 
+# (input, expected) pairs for the two anchor helpers. They run on every
+# invocation, like check_positioning.py's fixtures: a flag nobody passes is a
+# check nobody runs.
+RESOLVE_FIXTURES = [
+    (("#projects", ABOUT_URL), f"{ABOUT_URL}#projects"),
+    (("#projects", ""), "#projects"),
+    (("https://example.com/#x", ABOUT_URL), "https://example.com/#x"),
+    (("/cv.pdf", WORK_URL), "/cv.pdf"),
+]
+DEAD_ANCHOR_FIXTURES = [
+    ('<a href="#projects">', ["#projects"]),
+    ('<h2 id="projects"></h2><a href="#projects">', []),
+    ('<a href="#">', ["#"]),
+    (f'<a href="{ABOUT_URL}#projects">', []),
+]
+
+
+def self_check() -> list[str]:
+    """Return a line per anchor-helper fixture that no longer holds."""
+    failures = []
+    for args, expected in RESOLVE_FIXTURES:
+        if (actual := resolve_href(*args)) != expected:
+            failures.append(f"resolve_href{args!r} -> {actual!r}, expected {expected!r}")
+    for doc, expected in DEAD_ANCHOR_FIXTURES:
+        if (actual := dead_anchors(doc)) != expected:
+            failures.append(f"dead_anchors({doc!r}) -> {actual!r}, expected {expected!r}")
+    return failures
+
+
 def section(class_name: str, heading: str, content: str) -> str:
     """Wrap content in a titled <section>, or return nothing if it is empty."""
     if not content:
@@ -520,6 +549,8 @@ def section(class_name: str, heading: str, content: str) -> str:
 
 def generate_html(output: Path) -> None:
     """Assemble and write the CV HTML file."""
+    if failures := self_check():
+        sys.exit("CV not written: self-check failed:\n  " + "\n  ".join(failures))
     config = parse_config()
     about = parse_about()
     roles = parse_roles()
