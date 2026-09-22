@@ -1,7 +1,8 @@
 {{- /* Post images: serve a WebP copy (max 1600px wide, never upscaled) with its
-  dimensions and lazy loading. GIF/SVG pass through unchanged; a destination
-  that is not a page or global resource is emitted as-is. Resolution mirrors
-  Hugo's embedded image hook. */ -}}
+  dimensions and lazy loading. GIF/SVG pass through unchanged. The build fails
+  on a served image over 300 KB or a page-relative path that is not a resource;
+  remote, data: and root-relative destinations are emitted as-is. Resolution
+  mirrors Hugo's embedded image hook. */ -}}
 {{- $src := .Destination -}}
 {{- $w := 0 -}}{{- $h := 0 -}}
 {{- $destURL := urls.Parse .Destination -}}
@@ -22,6 +23,10 @@
     {{- $src = $img.RelPermalink -}}
     {{- if and (eq $img.ResourceType "image") (ne $img.MediaType.SubType "svg") -}}
       {{- $w = $img.Width -}}{{- $h = $img.Height -}}
+    {{- end -}}
+  {{- else -}}
+    {{- if not (or $destURL.Host (strings.HasPrefix $destURL.Path "/")) -}}
+      {{- errorf "%s: image %q is not a resource of this page (check the file name)" .Page.File.Path .Destination -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
