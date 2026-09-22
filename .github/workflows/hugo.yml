@@ -59,7 +59,7 @@ jobs:
       # cache, and restore-keys still restores the previous one to build on.
       - name: Cache restore
         id: cache-restore
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}/hugo_cache
           key: hugo-${{ runner.os }}-${{ hashFiles('.hugo-version', 'hugo.toml', 'themes/terminal/**', 'content/**/*.png', 'content/**/*.jp*g', 'content/**/*.gif', 'content/**/*.webp', 'assets/**/*.png', 'assets/**/*.jp*g') }}
@@ -79,7 +79,7 @@ jobs:
       - name: Cache save
         id: cache-save
         if: steps.cache-restore.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ${{ runner.temp }}/hugo_cache
           key: ${{ steps.cache-restore.outputs.cache-primary-key }}
