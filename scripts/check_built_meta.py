@@ -35,6 +35,7 @@ import json
 import re
 import struct
 import sys
+from collections.abc import Callable
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -46,6 +47,9 @@ LOCALE = "en_US"
 RFC3339 = re.compile(r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(Z|[+-]\d\d:\d\d)$")
 POST_PAGE = re.compile(r"^posts/(?!page/)[^/]+/index\.html$")
 SITEMAP_LINE = re.compile(r"^Sitemap:\s*(\S+)\s*$", re.MULTILINE)
+
+# Maps an image URL to its file in the build, or None when it is not local.
+LocalFile = Callable[[str], Path | None]
 
 
 class HeadMeta(HTMLParser):
@@ -116,7 +120,7 @@ def jsonld_objects(documents: list):
             stack.extend(item)
 
 
-def og_image_violations(head, local_file) -> list[str]:
+def og_image_violations(head: HeadMeta, local_file: LocalFile | None) -> list[str]:
     """What is wrong with the page's og:image and its declared size."""
     og_image = head.first("og:image")
     if not og_image:
@@ -142,7 +146,7 @@ def og_image_violations(head, local_file) -> list[str]:
     return found
 
 
-def page_violations(rel: str, html: str, local_file=None) -> list[str]:
+def page_violations(rel: str, html: str, local_file: LocalFile | None = None) -> list[str]:
     """Every metadata defect in one rendered page.
 
     Pure apart from `local_file`, which maps an image URL to a file in the
@@ -194,7 +198,7 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
     return found
 
 
-def robots_violations(robots: str | None, has_file) -> list[str]:
+def robots_violations(robots: str | None, has_file: Callable[[str], bool]) -> list[str]:
     """What is wrong with robots.txt; `has_file` says whether a URL is in the build."""
     if robots is None:
         return ["robots.txt: missing"]
