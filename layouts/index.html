@@ -14,8 +14,10 @@
            53rem content grid so the name aligns with the header and board. */}}
       <div class="poster__inner">
         {{/* A <div>, not a <p>: terminal.js appends the interactive prompt
-             (block elements) inside this chip. */}}
-        <div class="poster__eyebrow">
+             (block elements) inside this chip. data-book-url hands terminal.js
+             the booking link from data/home.toml so the URL lives in one place. */}}
+        {{ $book := index (where $home.connect.links "net" "calendar") 0 -}}
+        <div class="poster__eyebrow"{{ with $book }} data-book-url="{{ .url }}"{{ end }}>
           <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
           {{ $answer := $home.whoami | default "cleanunicorn" }}
           {{ if and $home.whoamiLink $home.whoamiURL }}

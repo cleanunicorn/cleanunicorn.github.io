@@ -12,6 +12,12 @@
 {{- $author := $site.Params.author | default $site.Title -}}
 {{- $baseURL := $site.BaseURL | absURL -}}
 
+{{- /* sameAs: the profile links from data (partials/profile-links.html), then
+       any extra profiles from hugo.toml `sameAsExtra`. */ -}}
+{{- $sameAs := slice -}}
+{{- range partial "profile-links.html" . }}{{ $sameAs = $sameAs | append .url }}{{ end -}}
+{{- range $site.Params.sameAsExtra }}{{ $sameAs = $sameAs | append . }}{{ end -}}
+
 {{- /* Person object reused by Person/ProfilePage and as article author.
        Descriptive metadata lives in hugo.toml [languages.en.params]. */ -}}
 {{- $person := dict
@@ -23,7 +29,7 @@
   "jobTitle" $site.Params.jobTitle
   "description" $site.Params.personDescription
   "knowsAbout" $site.Params.knowsAbout
-  "sameAs" $site.Params.sameAs -}}
+  "sameAs" $sameAs -}}
 
 {{- /* WebSite — every page */ -}}
 {{- $website := dict

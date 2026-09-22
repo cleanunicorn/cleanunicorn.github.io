@@ -12,6 +12,9 @@
   var eyebrow = document.querySelector(".poster__eyebrow");
   if (!eyebrow) return;
 
+  /* Booking link, rendered from data/home.toml by layouts/index.html. */
+  var BOOK_URL = eyebrow.getAttribute("data-book-url");
+
   /* ---- A greeting for the view-source crowd -------------------------------- */
   try {
     console.log(
@@ -122,7 +125,8 @@
     contact: function () { go("/contact/"); return ["→ /contact/"]; },
     cv: function () { go("/cv.pdf", true); return ["opening cv.pdf…"]; },
     book: function () {
-      go("https://cal.com/daniel-luca-cleanunicorn/30min", true);
+      if (!BOOK_URL) return ["calendar unavailable — try `contact`."];
+      go(BOOK_URL, true);
       return ["opening the calendar — see you soon."];
     },
     sudo: function () {
