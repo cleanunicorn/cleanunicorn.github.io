@@ -16,6 +16,7 @@ Usage:
 import argparse
 import html
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,6 +29,10 @@ SKILLS_PATH = ROOT / "data" / "skills.toml"
 CV_CONFIG_PATH = ROOT / "data" / "cv.toml"
 
 SITE_URL = "https://cleanunicorn.github.io"
+# Pages the CV copies text from. An in-page anchor in that text ("#projects")
+# has no target inside the CV, so it is pointed back at its source page.
+ABOUT_URL = f"{SITE_URL}/about/"
+WORK_URL = f"{SITE_URL}/work/"
 
 # Feather-style stroke icons for the contact row, keyed by the link text we
 # expect from the About intro.
@@ -114,13 +119,26 @@ def strip_frontmatter(text: str) -> str:
     return text[m.end():] if m else text
 
 
-def inline_md(text: str) -> str:
-    """Convert inline markdown (bold, italic, links, code) to HTML."""
+def resolve_href(url: str, base_url: str = "") -> str:
+    """Point an in-page anchor at the page the text was copied from."""
+    return base_url + url if base_url and url.startswith("#") else url
+
+
+def inline_md(text: str, base_url: str = "") -> str:
+    """Convert inline markdown (bold, italic, links, code) to HTML.
+
+    `base_url` is the page the text comes from; `#anchor` links resolve
+    against it (see resolve_href).
+    """
     # escape HTML entities first (but preserve existing tags from processing)
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     # links [text](url)
-    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', text)
+    text = re.sub(
+        r"\[([^\]]+)\]\(([^)]+)\)",
+        lambda m: f'<a href="{resolve_href(m.group(2), base_url)}">{m.group(1)}</a>',
+        text,
+    )
 
     # bold **text**
     text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
@@ -137,13 +155,13 @@ def inline_md(text: str) -> str:
     return text
 
 
-def paragraphs_html(md: str, class_attr: str = "") -> str:
+def paragraphs_html(md: str, class_attr: str = "", base_url: str = "") -> str:
     """Render blank-line-separated markdown paragraphs as <p> elements."""
     cls = f' class="{class_attr}"' if class_attr else ""
     md = re.sub(r"^---+\s*$", "", md, flags=re.MULTILINE)  # horizontal rules
     blocks = [b.strip() for b in re.split(r"\n\s*\n", md) if b.strip()]
     return "\n".join(
-        f"<p{cls}>{inline_md(' '.join(b.split(chr(10))))}</p>" for b in blocks
+        f"<p{cls}>{inline_md(' '.join(b.split(chr(10))), base_url)}</p>" for b in blocks
     )
 
 
@@ -328,7 +346,7 @@ def split_media(entry: str, with_venue: bool) -> tuple[str, str, str]:
 
     title = html.escape(label)
     if url:
-        title = f'<a href="{html.escape(url)}">{title}</a>'
+        title = f'<a href="{html.escape(resolve_href(url, ABOUT_URL))}">{title}</a>'
     return year, html.escape(venue), title
 
 
@@ -348,24 +366,24 @@ def short_label(label: str, overrides: dict) -> str:
 
 def build_entry(role: dict, label_overrides: dict) -> str:
     org = (
-        f' <span class="entry-org">· {inline_md(role["org"])}</span>'
+        f' <span class="entry-org">· {inline_md(role["org"], WORK_URL)}</span>'
         if role["org"] else ""
     )
     parts = [
         '<div class="entry">',
         '<div class="entry-head">',
-        f'<div class="entry-title">{inline_md(role["title"])}{org}</div>',
+        f'<div class="entry-title">{inline_md(role["title"], WORK_URL)}{org}</div>',
         f'<div class="entry-dates">{html.escape(role["dates"])}</div>',
         '</div>',
     ]
     if role["desc"]:
-        parts.append(paragraphs_html(role["desc"]))
+        parts.append(paragraphs_html(role["desc"], base_url=WORK_URL))
     if role["list"]:
         tag = short_label(role["list_label"], label_overrides)
         label = (
             f'<span class="entry-list-label">{html.escape(tag)}:</span> ' if tag else ""
         )
-        items = " · ".join(inline_md(i) for i in role["list"])
+        items = " · ".join(inline_md(i, WORK_URL) for i in role["list"])
         parts.append(f'<p class="entry-list">{label}{items}</p>')
     parts.append("</div>")
     return "\n".join(parts)
@@ -392,14 +410,14 @@ def build_earlier(roles: list[dict]) -> str:
         return ""
     rows = []
     for r in roles:
-        org = f' · {inline_md(r["org"])}' if r["org"] else ""
+        org = f' · {inline_md(r["org"], WORK_URL)}' if r["org"] else ""
         # One line each: these roles predate the work the CV is really about,
         # so keep what he did and drop the sentence introducing the company.
         desc = role_summary(r["desc"].split("\n\n")[0] if r["desc"] else "", r["org"])
-        desc = f" — {inline_md(desc)}" if desc else ""
+        desc = f" — {inline_md(desc, WORK_URL)}" if desc else ""
         rows.append(
             f'<div class="earlier-entry">'
-            f'<div><strong>{inline_md(r["title"])}</strong>{org}{desc}</div>'
+            f'<div><strong>{inline_md(r["title"], WORK_URL)}</strong>{org}{desc}</div>'
             f'<div class="earlier-dates">{html.escape(r["dates"])}</div>'
             f'</div>'
         )
@@ -434,8 +452,8 @@ def build_projects(projects_md: str) -> str:
         name, url = m.group(1), m.group(2)
         desc = re.sub(r"\n---+\s*$", "", m.group(3)).strip().replace("\n", " ")
         entries.append(
-            f'<li><a href="{html.escape(url)}">{html.escape(name)}</a> &mdash; '
-            f"{inline_md(desc)}</li>"
+            f'<li><a href="{html.escape(resolve_href(url, ABOUT_URL))}">'
+            f'{html.escape(name)}</a> &mdash; {inline_md(desc, ABOUT_URL)}</li>'
         )
     return "<ul>\n" + "\n".join(entries) + "\n</ul>" if entries else ""
 
@@ -470,9 +488,23 @@ def build_education(notes: list[dict], roles: list[dict]) -> str:
         dates = f' <em>({html.escape(r["dates"])})</em>' if r["dates"] else ""
         desc = r["desc"].split("\n\n")[0] if r["desc"] else ""
         parts.append(
-            f'<p><strong>{inline_md(heading)}</strong>{dates} &mdash; {inline_md(desc)}</p>'
+            f'<p><strong>{inline_md(heading, WORK_URL)}</strong>{dates} &mdash; '
+            f'{inline_md(desc, WORK_URL)}</p>'
         )
     return "\n".join(parts)
+
+
+def dead_anchors(doc: str) -> list[str]:
+    """Return every `href="#…"` in `doc` whose target id `doc` does not contain.
+
+    A bare "#" counts as dead too (the relref fallback in inline_md emits one).
+    """
+    ids = set(re.findall(r'\bid="([^"]+)"', doc))
+    return [
+        f"#{target}"
+        for target in re.findall(r'href="#([^"]*)"', doc)
+        if not target or target not in ids
+    ]
 
 
 def section(class_name: str, heading: str, content: str) -> str:
@@ -530,7 +562,7 @@ def generate_html(output: Path) -> None:
         experience += "\n" + build_earlier(earlier_roles)
 
     sections = [
-        f'<section class="bio">\n{paragraphs_html(about["bio"])}\n</section>'
+        f'<section class="bio">\n{paragraphs_html(about["bio"], base_url=ABOUT_URL)}\n</section>'
         if about["bio"] else "",
         section("work", "Experience", experience),
         section("skills", "Skills", build_skills(parse_skills())),
@@ -569,6 +601,14 @@ def generate_html(output: Path) -> None:
 </body>
 </html>
 """
+
+    dead = dead_anchors(html_doc)
+    if dead:
+        sys.exit(
+            "CV not written: in-page links with no target in the CV: "
+            + ", ".join(sorted(set(dead)))
+            + " (resolve them against their source page; see resolve_href)"
+        )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html_doc)
