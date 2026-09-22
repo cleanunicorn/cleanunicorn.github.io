@@ -9,7 +9,7 @@ DATE := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help serve serve-drafts build build-drafts check-positioning check-build clean new update-theme submodules cv cv-pdf books
+.PHONY: help serve serve-drafts build build-drafts check-positioning check-alt-text check-build clean new update-theme submodules cv cv-pdf books
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -17,7 +17,7 @@ help: ## Show this help
 dev: ## Run server (drafts+future). For remote access set HOST=<lan-ip>, e.g. make dev HOST=192.168.1.50
 	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender --ignoreCache --gc --noHTTPCache $(if $(HOST),--baseURL http://$(HOST))
 
-build: check-positioning ## Build production site into $(PUBLIC_DIR), then check the output
+build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check the output
 	$(HUGO) --cleanDestinationDir
 	$(MAKE) --no-print-directory check-build
 
@@ -48,6 +48,13 @@ check-positioning: ## Assert the identity copy leads builder-first and llms.txt 
 
 check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data
 	python3 scripts/check_build.py --public $(PUBLIC_DIR)
+
+check-alt-text: ## Fail if a post image still has placeholder alt text ("Untitled", "image.png", "alt text", a raw filename)
+	@if grep -rnE '!\[(Untitled[^]]*|image[^]]*\.(png|jpe?g)|alt text|CleanShot[^]]*)\]\(' $(POSTS_DIR); then \
+		echo "check-alt-text: placeholder alt text found above; describe the image instead (or use ![] if decorative)"; \
+		exit 1; \
+	fi; \
+	echo "check-alt-text: no placeholder alt text"
 
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
 	python3 scripts/generate_cv.py -o $(STATIC_DIR)/cv.html

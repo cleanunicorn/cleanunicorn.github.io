@@ -72,6 +72,8 @@ jobs:
           sudo apt-get install -y chromium-browser
       - name: Check positioning
         run: make check-positioning
+      - name: Check image alt text
+        run: make check-alt-text
       - name: Generate CV (HTML + PDF)
         run: make cv-pdf
       - name: Configure Git
