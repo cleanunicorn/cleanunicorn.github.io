@@ -146,25 +146,25 @@ I am in the process of contacting the explorers that have this problem to help t
 **Explorers that handle it correctly:**
 
 - [Etherscan](https://etherscan.io/)
-- [EthStats](https://ethstats.io/)
+- [EthStats](https://web.archive.org/web/20211203104526/http://ethstats.io/)
 - [Amberdata](https://amberdata.io/) — Does not display any code, even after the second deploy.
 - [EtherChain](https://www.etherchain.org/)
-- [EthOrbit](https://explorer.ethorbit.com/)
+- [EthOrbit](https://web.archive.org/web/20190826001534/https://explorer.ethorbit.com/)
 
 **Explorers with this bug:**
 
 - [BlockChair](https://blockchair.com/ethereum)  
 2019–02–12: Discussed with the lead developer and outlined the issue. They fixed the issue really quickly in just a few hours.
 - [BlockScout](https://blockscout.com/eth/mainnet/)  
-2019–02–12: Contacted the people in charge and created [an issue on their GitHub](https://github.com/poanetwork/blockscout/issues/1438).  
+2019–02–12: Contacted the people in charge and created [an issue on their GitHub](https://web.archive.org/web/20191115210638/https://github.com/poanetwork/blockscout/issues/1438).  
 2019–02–14: There is a 300 DAI bounty to fix the bug.
 
 **Other block explorers that display too little information or do not display the contract code:**
 
 - [EthPlorer](https://ethplorer.io/)
 - [Bloxy](https://bloxy.info/)
-- [Trivial](https://trivial.co/)
-- [WatchEthereum](http://watchethereum.com/)
+- [Trivial](https://web.archive.org/web/20191210100157/https://trivial.co/)
+- [WatchEthereum](https://web.archive.org/web/20190522081028/http://watchethereum.com:80/)
 
 ---
 

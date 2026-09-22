@@ -293,7 +293,7 @@ Thanks to Eden Block and especially to the team members [Sergey](https://twitte
 
 ## Resources
 
-[https://blog.bagel.net/p/the-inference-interference](https://blog.bagel.net/p/the-inference-interference)
+[https://blog.bagel.net/p/the-inference-interference](https://web.archive.org/web/20250516213814/https://blog.bagel.net/p/the-inference-interference)
 
 [https://www.usenix.org/conference/usenixsecurity21/presentation/jia](https://www.usenix.org/conference/usenixsecurity21/presentation/jia)
 
