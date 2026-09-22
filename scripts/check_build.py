@@ -31,46 +31,41 @@ try:
 except ModuleNotFoundError as exc:  # Python < 3.11
     raise SystemExit("check_build: needs Python 3.11+ for tomllib") from exc
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
-    parser.add_argument("--public", type=Path, help="built site (default: ROOT/public)")
-    args = parser.parse_args()
-    root = args.root
-    public = args.public or root / "public"
+
+def check_feeds(public: Path) -> list[str]:
+    """The home feed is posts only, and no feed is empty."""
     failures = []
-
-    def fail(where: str, why: str) -> None:
-        failures.append(f"{where}: {why}")
-
-    if not (public / "index.html").is_file():
-        print(f"check_build: no built site at {public} — run hugo first", file=sys.stderr)
-        return 1
-
-    # Feeds: the home feed is posts only, and no feed is empty.
     home_feed = public / "index.xml"
     for feed in sorted(public.rglob("index.xml")):
         rel = feed.relative_to(public).as_posix()
         item_links = re.findall(r"<item>.*?<link>([^<]*)</link>", feed.read_text(), re.S)
         if not item_links:
-            fail(rel, "feed has no items")
+            failures.append(f"{rel}: feed has no items")
         if feed == home_feed:
             strays = [link for link in item_links if "/posts/" not in link]
             if strays:
-                fail(rel, f"non-post items in the home feed: {strays}")
+                failures.append(f"{rel}: non-post items in the home feed: {strays}")
     if not home_feed.is_file():
-        fail("index.xml", "home feed missing")
+        failures.append("index.xml: home feed missing")
+    return failures
 
-    # No taxonomy pages and no about feed, and the sitemap agrees.
+
+def check_removed_outputs(public: Path) -> list[str]:
+    """No taxonomy pages, no about feed, no cv.css, and the sitemap agrees."""
+    failures = []
     for rel in ("tags", "categories", "about/index.xml", "css/cv.css"):
         if (public / rel).exists():
-            fail(rel, "should not be in the built site")
+            failures.append(f"{rel}: should not be in the built site")
     sitemap = (public / "sitemap.xml").read_text()
     for kind in ("/tags/", "/categories/"):
         if kind in sitemap:
-            fail("sitemap.xml", f"lists {kind}")
+            failures.append(f"sitemap.xml: lists {kind}")
+    return failures
 
-    # Profile links and location come from data.
+
+def check_profile_data(root: Path, public: Path) -> list[str]:
+    """Footer links, footer location and JSON-LD sameAs come from data."""
+    failures = []
     home = tomllib.loads((root / "data" / "home.toml").read_text())
     by_net = {link["net"]: link for link in home["connect"]["links"]}
     profiles = [by_net[net] for net in home["connect"]["profiles"]]
@@ -82,9 +77,9 @@ def main() -> int:
     found = re.findall(r'<a href="?([^"\s>]+)"? target="?_blank"? rel="me noopener">([^<]*)</a>', footer)
     want = [(p["url"], p["label"]) for p in profiles]
     if found != want:
-        fail("index.html footer", f"profile links {found} != data {want}")
+        failures.append(f"index.html footer: profile links {found} != data {want}")
     if f"<span>{location}</span>" not in page:
-        fail("index.html footer", f"location {location!r} not rendered")
+        failures.append(f"index.html footer: location {location!r} not rendered")
 
     same_as = None
     for block in re.findall(r'<script type="?application/ld\+json"?>(.*?)</script>', page, re.S):
@@ -93,8 +88,22 @@ def main() -> int:
         same_as = person.get("sameAs", same_as)
     urls = [p["url"] for p in profiles]
     if not same_as or same_as[: len(urls)] != urls:
-        fail("index.html JSON-LD", f"sameAs {same_as} does not start with data {urls}")
+        failures.append(f"index.html JSON-LD: sameAs {same_as} does not start with data {urls}")
+    return failures
 
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
+    parser.add_argument("--public", type=Path, help="built site (default: ROOT/public)")
+    args = parser.parse_args()
+    public = args.public or args.root / "public"
+
+    if not (public / "index.html").is_file():
+        print(f"check_build: no built site at {public} — run hugo first", file=sys.stderr)
+        return 1
+
+    failures = check_feeds(public) + check_removed_outputs(public) + check_profile_data(args.root, public)
     for line in failures:
         print(f"check_build: {line}", file=sys.stderr)
     print(f"check_build: {len(failures)} failures")
