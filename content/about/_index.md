@@ -22,7 +22,7 @@ I care about open source, security, and getting the details right. I favour trus
 
 **Open-source projects** — tools people run: [Earheart](https://github.com/cleanunicorn/earheart) for private, on-device dictation, [Agents Library](https://github.com/cleanunicorn/agents-library) for coding agents that open reviewable pull requests, [drove](https://github.com/cleanunicorn/drove) for running local LLMs, [Karl](https://github.com/cleanunicorn/karl) for hunting live smart-contract exploits, and the [RL-Swarm contracts](https://github.com/gensyn-ai/rl-swarm-contracts) behind [Gensyn](https://www.gensyn.ai/)'s first public launch. The full list is [below](#projects).
 
-**Security research** — I audit Ethereum smart contracts through [Akira Tech](https://github.com/akiratechhq), and before that at [ConsenSys Diligence](https://diligence.consensys.net/) on Uniswap, Aave, Filecoin and Polygon.
+**Security research** — I audit Ethereum smart contracts through [Akira Tech](https://github.com/akiratechhq), and before that at [ConsenSys Diligence](https://diligence.security/) on Uniswap, Aave, Filecoin and Polygon.
 
 Whether I'm writing a contract, breaking one or evaluating a seed round, **the lens is the same — open source, sound engineering and long-term fundamentals over hype.**
 
@@ -33,7 +33,7 @@ Whether I'm writing a contract, breaking one or evaluating a seed round, **the l
 ## Highlights
 
 - **I build open-source tools people run** — [Earheart](https://github.com/cleanunicorn/earheart), [Agents Library](https://github.com/cleanunicorn/agents-library) and [drove](https://github.com/cleanunicorn/drove), plus the [RL-Swarm smart contracts](https://github.com/gensyn-ai/rl-swarm-contracts) behind [Gensyn](https://www.gensyn.ai/)'s first public launch.
-- **Audited some of Ethereum's most-used protocols** — including [Uniswap](https://uniswap.org/), [Aave](https://aave.com/), [Filecoin](https://filecoin.io/) and [Polygon](https://polygon.technology/) — at [ConsenSys Diligence](https://diligence.consensys.net/).
+- **Audited some of Ethereum's most-used protocols** — including [Uniswap](https://uniswap.org/), [Aave](https://aave.com/), [Filecoin](https://filecoin.io/) and [Polygon](https://polygon.technology/) — at [ConsenSys Diligence](https://diligence.security/).
 - **Spoke at [DEF CON 27](https://youtu.be/Qd9ubry-c_M), [EthCC](https://youtu.be/ZPoqwAbMWTE) and [ETHPrague](https://youtu.be/WUm34CV2s1I)** on exploits, honeypots and developer experience in Web3.
 - **Featured in [Code Is Law (2025)](https://www.imdb.com/title/tt35931420/)** — a feature documentary on the DAO hack, the Indexed Finance heist and the "code is law" philosophy in crypto.
 
@@ -65,7 +65,7 @@ The smart contracts powering [Gensyn](https://www.gensyn.ai/)'s [RL Swarm](https
 - [Multistream](https://github.com/cleanunicorn/multistream) — Node.js RTMP server that restreams OBS to Twitch, YouTube and Kick, with auto-record, transcription and clip detection.
 - [Ethereum Smart Contract Template](https://github.com/cleanunicorn/ethereum-smartcontract-template) — a Foundry-based dapp quick-start, inspired by [Georgios's template](https://github.com/gakonst/dapptools-template).
 - [Hitomi](https://github.com/cleanunicorn/hitomi) — an Ethereum web3 console for any node.
-- [Santoku](https://github.com/cleanunicorn/santoku) — decodes ABI-encoded hex strings into their original types. Try it [here](https://cleanunicorn.github.io/santoku/).
+- [Santoku](https://github.com/cleanunicorn/santoku) — decodes ABI-encoded hex strings into their original types.
 - [Mythos](https://github.com/cleanunicorn/mythos) — CLI client for the [MythX](https://mythx.io) API.
 - [Flaterra](https://github.com/cleanunicorn/flaterra) — flattens a Solidity file and its `imports` into one source for verification or analysis (Remix, MythX, Mythril).
 - [Midas](https://gitlab.com/cleanunicorn/eth-tipper) — a [Discord](https://discordapp.com) bot that acts as an Ethereum wallet and sends Ether between users.
@@ -98,7 +98,7 @@ Sometimes, I give talks about things that I find interesting.
 - [2019 DefCon 27 - The Ether Wars: Exploits, counter-exploits and honeypots on Ethereum](https://youtu.be/Qd9ubry-c_M)
   - [Slides](/presentations/defcon27/DEFCON-27-Bernhard-Mueller-The-Ether-Wars.pdf)
 - [BlockchainHackers IV - Mastering Ethereum CTFs](/presentations//blockchainhackers-iv/Mastering-Ethereum-CTFs.pdf)
-- [The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence](https://thebitcoinpodcast.com/the-bitcoin-podcast-283/)
+- [The Bitcoin Podcast: #283 Daniel Luca - ConsenSys Diligence](https://web.archive.org/web/20191224133408/https://thebitcoinpodcast.com/the-bitcoin-podcast-283/)
 - [Security Espresso Meetup 0x13 - Ethereum the Hacker's Paradise](https://youtu.be/c-5r4-5rxCA?t=5339)
 
 </div>
