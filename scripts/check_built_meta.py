@@ -244,6 +244,11 @@ PAGE_FIXTURES = [
      _GOOD_HEAD.format(type="website", extra="").replace("A page.", ""), "no meta description"),
     ("161-character description", "a/index.html",
      _GOOD_HEAD.format(type="website", extra="").replace("A page.", "x" * 161), "161 characters"),
+    ("no og:image", "a/index.html", _GOOD_HEAD.format(type="website", extra="").replace(
+        '<meta property=og:image content=https://x.test/a.png>', ""), "has no og:image"),
+    ("twitter:image differs", "a/index.html", _GOOD_HEAD.format(type="website", extra="").replace(
+        "twitter:image content=https://x.test/a.png", "twitter:image content=https://x.test/b.png"),
+     "twitter:image"),
     ("og:image is the site root", "a/index.html",
      _GOOD_HEAD.format(type="website", extra="").replace("x.test/a.png", "x.test/"), "site root"),
     ("wrong declared size", "a/index.html", _GOOD_HEAD.format(type="website", extra=(
@@ -255,6 +260,8 @@ PAGE_FIXTURES = [
     ("JSON-LD image differs", "a/index.html", _GOOD_HEAD.format(type="website", extra=(
         '<script type="application/ld+json">{"@type":"BlogPosting","image":"https://x.test/b.png"}'
         '</script>')), "differs from og:image"),
+    ("JSON-LD that does not parse", "a/index.html", _GOOD_HEAD.format(type="website", extra=(
+        '<script type="application/ld+json">{"@type":</script>')), "does not parse"),
     ("an alias redirect stub", "posts/page/1/index.html",
      '<meta http-equiv="refresh" content="0; url=/posts/">', None),
 ]
