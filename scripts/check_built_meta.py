@@ -103,14 +103,9 @@ def image_size(path: Path) -> tuple[int, int] | None:
     return None
 
 
-def jsonld_objects(blocks: list[str]):
-    """Every JSON object in the page's JSON-LD, nested ones included."""
-    stack = []
-    for block in blocks:
-        try:
-            stack.append(json.loads(block))
-        except ValueError:
-            yield {"@invalid": block[:60]}
+def jsonld_objects(documents: list):
+    """Every JSON object in the parsed JSON-LD documents, nested ones included."""
+    stack = list(documents)
     while stack:
         item = stack.pop()
         if isinstance(item, dict):
@@ -176,10 +171,13 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
                     if size and size != OG_SIZE:
                         found.append(f"og:image file is {size[0]}x{size[1]}, declared 1200x630")
 
-    for obj in jsonld_objects(head.jsonld):
-        if "@invalid" in obj:
-            found.append(f"JSON-LD does not parse: {obj['@invalid']!r}")
-            continue
+    documents = []
+    for block in head.jsonld:
+        try:
+            documents.append(json.loads(block))
+        except ValueError:
+            found.append(f"JSON-LD does not parse: {block[:60]!r}")
+    for obj in jsonld_objects(documents):
         if obj.get("keywords") == "":
             found.append(f'JSON-LD {obj.get("@type")} has "keywords":""')
         if obj.get("@type") == "BlogPosting" and og_image and obj.get("image") != og_image:
