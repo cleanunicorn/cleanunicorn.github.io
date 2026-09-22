@@ -9,7 +9,7 @@ DATE := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help serve serve-drafts build build-drafts check-positioning check-alt-text check-build clean new update-theme submodules cv cv-pdf books
+.PHONY: help serve serve-drafts build build-drafts check-positioning check-alt-text check-build check-built-meta clean new update-theme submodules cv cv-pdf books
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -17,9 +17,10 @@ help: ## Show this help
 dev: ## Run server (drafts+future). For remote access set HOST=<lan-ip>, e.g. make dev HOST=192.168.1.50
 	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender --ignoreCache --gc --noHTTPCache $(if $(HOST),--baseURL http://$(HOST))
 
-build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check the output
+build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check the output and its metadata
 	$(HUGO) --cleanDestinationDir
 	$(MAKE) --no-print-directory check-build
+	$(MAKE) --no-print-directory check-built-meta
 
 build-drafts: ## Build site including drafts and future posts
 	$(HUGO) -D -F
@@ -43,7 +44,7 @@ update-theme: ## Update theme submodule to latest
 submodules: ## Initialize and update all submodules
 	git submodule update --init --recursive
 
-check-positioning: ## Assert the identity copy leads builder-first and llms.txt still matches the pages
+check-positioning: ## Assert the identity copy leads builder-first, llms.txt still matches the pages, and descriptions fit in 160 characters
 	python3 scripts/check_positioning.py
 
 check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data
@@ -55,6 +56,9 @@ check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image
 		exit 1; \
 	fi; \
 	echo "check-alt-text: no placeholder alt text"
+
+check-built-meta: ## Assert the built site's search and social metadata (run after a build)
+	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
 
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
 	python3 scripts/generate_cv.py -o $(STATIC_DIR)/cv.html

@@ -22,7 +22,7 @@ OUTPUT = ROOT / "static" / "og-image.png"
 W, H = 1200, 630
 BG = (26, 23, 15)          # --background #1a170f
 FG = (236, 234, 229)       # --foreground #eceae5
-ACCENT = (238, 195, 94)    # --accent     #eec35e
+ACCENT = (63, 214, 138)    # --accent     #3fd68a
 MUTED = (160, 156, 146)
 
 FONT_CANDIDATES = {
@@ -75,7 +75,7 @@ def main() -> None:
     margin = 80
     x = margin + 20
 
-    # Portrait, circular with an amber ring, on the right
+    # Portrait, circular with an accent ring, on the right
     if PORTRAIT.exists():
         size = 300
         ring = 6

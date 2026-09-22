@@ -4,7 +4,7 @@ draft = false
 slug = "contact"
 class = "page-contact"
 lede = "I'm always happy to talk to people building serious things in software, security and AI — whether that's an open-source tool of mine you want to use, a system you want audited, or a round you're raising. Pick whatever channel you already live in — or just book time directly."
-description = "Get in touch with Daniel Luca — open-source tools and coding agents, smart-contract audits, technical diligence and early-stage investment, speaking and collaboration."
+description = "Get in touch with Daniel Luca — open-source tools and coding agents, smart-contract audits, technical diligence, investment, speaking and collaboration."
 showFullContent = true
 +++
 
