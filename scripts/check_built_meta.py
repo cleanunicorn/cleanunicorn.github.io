@@ -294,6 +294,10 @@ def main() -> int:
         path = urlparse(url).path.lstrip("/")
         return root / path if path else None
 
+    def in_build(url: str) -> bool:
+        path = local_file(url)
+        return path is not None and path.is_file()
+
     violations = fixture_violations()
     pages = 0
     for path in sorted(root.rglob("*.html")):
@@ -307,7 +311,7 @@ def main() -> int:
     robots = root / "robots.txt"
     violations += robots_violations(
         robots.read_text(encoding="utf-8") if robots.is_file() else None,
-        lambda url: bool(local_file(url)) and local_file(url).is_file(),
+        in_build,
     )
 
     if violations:
