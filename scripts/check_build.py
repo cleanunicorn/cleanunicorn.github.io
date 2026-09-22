@@ -50,11 +50,11 @@ def main() -> int:
     home_feed = public / "index.xml"
     for feed in sorted(public.rglob("index.xml")):
         rel = feed.relative_to(public).as_posix()
-        items = re.findall(r"<item>.*?<link>([^<]*)</link>", feed.read_text(), re.S)
-        if not items:
+        item_links = re.findall(r"<item>.*?<link>([^<]*)</link>", feed.read_text(), re.S)
+        if not item_links:
             fail(rel, "feed has no items")
         if feed == home_feed:
-            strays = [link for link in items if "/posts/" not in link]
+            strays = [link for link in item_links if "/posts/" not in link]
             if strays:
                 fail(rel, f"non-post items in the home feed: {strays}")
     if not home_feed.is_file():
