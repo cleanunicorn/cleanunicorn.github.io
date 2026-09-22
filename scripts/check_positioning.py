@@ -4,8 +4,11 @@
 This repository has no test suite; this is its one assertion-running check and
 the regression net behind the builder-first positioning. It fails when a
 protected field starts describing him as a partner or an investor before it
-describes him as someone who builds things, and when static/llms.txt — the
-file agents read — drifts away from the pages it restates.
+describes him as someone who builds things, when a WHO surface (the hero
+`whoami` and its copies) names a role or an employer at all — those belong on
+the WHAT surfaces: the hugo.toml subtitle, the Work page, the terminal's
+work.md — and when static/llms.txt — the file agents read — drifts away from
+the pages it restates.
 
 Three deliberate choices, all load-bearing:
 
@@ -63,6 +66,13 @@ except ModuleNotFoundError as exc:  # Python < 3.11
 # whole check picks it up.
 FORBIDDEN = ("technical partner", "investor")
 
+# Rule 8 — the WHO surfaces (the hero `whoami`, the humans.txt Role line, the
+# terminal greeting and its virtual about.md, the social card's sub_text) say
+# who he is: traits only. A role, a title or an employer belongs on the WHAT
+# surfaces (hugo.toml subtitle, the Work page, the terminal's work.md). These
+# may not appear anywhere in a who-line, not just at its opening.
+ROLE_WORDS = ("cto", "partner", "investor", "researcher", "engineer", "@")
+
 # Markdown, quoting and dashes a value may legitimately start with, stripped
 # before the opening word is read. The en and em dashes are in the class
 # because they are the ones this site's copy actually uses.
@@ -117,6 +127,16 @@ FIXTURES = [
     ("— Investor and builder", "investor"),
     ("– Technical Partner @ Eden Block", "technical partner"),
     ("“Investor first”, they said", "investor"),
+]
+
+# Rule 8's own fixtures — a who-line with a role anywhere in it must fail.
+WHO_FIXTURES = [
+    ("builder · hacker · extropian", None),
+    ("builder · hacker · Technical Partner @ Eden Block", "partner"),
+    ("Builder, hacker, security researcher, investor", "investor"),
+    ("builder · CTO", "cto"),
+    ("builder @ home", "@"),
+    ("Directors and partners", None),  # a word, not the word
 ]
 
 # Rule 7, second half — the TOML shapes a line regex used to miss. Each source
@@ -217,6 +237,16 @@ def opens_on_forbidden(value: str) -> str | None:
     for term in FORBIDDEN:
         if re.match(re.escape(term) + r"\b", stripped):
             return term
+    return None
+
+
+def names_a_role(value: str) -> str | None:
+    """The role word a who-line contains, anywhere, or None."""
+    lowered = value.lower()
+    for word in ROLE_WORDS:
+        pattern = re.escape(word) if word == "@" else r"\b" + re.escape(word) + r"\b"
+        if re.search(pattern, lowered):
+            return word
     return None
 
 
@@ -351,6 +381,13 @@ class Check:
         if term:
             self.fail(where, f'"{value[:60]}" opens on "{term}"')
 
+    def check_who(self, where: str, value: str) -> None:
+        """Rules 1 and 8 — a who-line leads builder-first and names no role."""
+        self.check_opening(where, value)
+        word = names_a_role(value)
+        if word:
+            self.fail(where, f'"{value[:60]}" names a role ("{word}"); roles belong on the what-line')
+
     def parse_toml(self, rel: str, text: str | None = None) -> dict | None:
         """A parsed TOML document, or None with a violation recorded."""
         if text is None:
@@ -386,6 +423,7 @@ class Check:
         self.check_mirror_fixtures()
         self.check_subtitle_scan_fixtures()
         self.check_toml_fixtures()
+        self.check_who_fixtures()
 
     def self_check_failed(self, problem: str) -> None:
         self.fail("check_positioning.py: self-check", problem)
@@ -396,6 +434,13 @@ class Check:
             actual = opens_on_forbidden(value)
             if actual != expected:
                 self.self_check_failed(f'"{value}" → {actual!r}, expected {expected!r}')
+
+    def check_who_fixtures(self) -> None:
+        """The who-line rule still spots a role wherever it sits."""
+        for value, expected in WHO_FIXTURES:
+            actual = names_a_role(value)
+            if actual != expected:
+                self.self_check_failed(f'who-line "{value}" → {actual!r}, expected {expected!r}')
 
     def check_blank_fixtures(self) -> None:
         """A file that holds nothing is still nothing to read, not nothing to check."""
@@ -451,7 +496,10 @@ class Check:
                 continue
             for key in keys:
                 for value in self.values(rel, data, key):
-                    self.check_opening(f"{rel}: {key}", value)
+                    if rel == HOME_TOML and key == "whoami":
+                        self.check_who(f"{rel}: {key}", value)
+                    else:
+                        self.check_opening(f"{rel}: {key}", value)
 
     def rule_front_matter(self) -> None:
         """Rules 1 and 2 over every page's description and lede."""
@@ -520,12 +568,12 @@ class Check:
         self.check_card_sub_text()
 
     def check_only_match(self, pattern, text: str, where: str, noun: str) -> None:
-        """Check the one value `pattern` should find, and say so if it is not one."""
+        """Check the one who-line `pattern` should find, and say so if it is not one."""
         found = pattern.findall(text)
         if len(found) != 1:
             self.fail(where, f"{len(found)} {noun}, expected 1")
         for value in found:
-            self.check_opening(where, value)
+            self.check_who(where, value)
 
     def check_humans_role(self) -> None:
         humans = self.read(HUMANS_TXT)
@@ -546,7 +594,7 @@ class Check:
         if not greeting:
             self.fail(TERMINAL_JS, "the `~$ whoami` greeting is no longer where this check looks")
         else:
-            self.check_opening(f"{TERMINAL_JS}: whoami greeting", greeting.group(1))
+            self.check_who(f"{TERMINAL_JS}: whoami greeting", greeting.group(1))
         for name in ("about.md", "work.md"):
             start = terminal.find(TERMINAL_ARRAY % name)
             end = terminal.find("],", start) if start != -1 else -1
@@ -557,7 +605,10 @@ class Check:
             if not said:
                 self.fail(TERMINAL_JS, f'the virtual "{name}" says nothing')
                 continue
-            self.check_opening(f"{TERMINAL_JS}: {name}", said[0])
+            if name == "about.md":
+                self.check_who(f"{TERMINAL_JS}: {name}", said[0])
+            else:
+                self.check_opening(f"{TERMINAL_JS}: {name}", said[0])
 
     def rule_llms_mirror(self) -> None:
         """Rules 1, 2 and 6 over the agent-readable surface."""

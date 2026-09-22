@@ -6,8 +6,11 @@
 # Short identity shown in the poster hero.
 name = "Daniel Luca"
 nickname = "CleanUnicorn"
-# Printed as the output of `~$ whoami` in the hero terminal eyebrow.
-whoami = "builder · hacker · Technical Partner @ Eden Block"
+# Printed as the output of `~$ whoami` in the hero terminal eyebrow. This is
+# WHO he is — traits only. WHAT he does (roles, employers) is the `subtitle`
+# in hugo.toml, rendered under the name; `make check-positioning` fails if a
+# role word or an employer leaks into this line.
+whoami = "builder · hacker · extropian"
 # Optional: turns the matching phrase inside `whoami` into a link. The template
 # replaces every match and treats this as a regex, so the phrase must occur in
 # `whoami` exactly once and carry no regex metacharacter — enforced by
