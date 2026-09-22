@@ -92,6 +92,8 @@ jobs:
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
             --cacheDir "${{ runner.temp }}/hugo_cache"
+      - name: Check build output
+        run: make check-build
       - name: List public directory (Debug)
         run: ls -R public/
       - name: Cache save
