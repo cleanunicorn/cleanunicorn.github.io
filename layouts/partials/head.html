@@ -1,6 +1,10 @@
 {{- $desc := "" -}}
 {{- if .IsHome }}{{ $desc = $.Site.Params.Subtitle }}{{ else if .Description }}{{ $desc = .Description | plainify }}{{ else }}{{ $desc = .Summary | plainify | truncate 157 }}{{ end -}}
-{{- /* List, taxonomy and 404 pages have no summary: use the site description. */ -}}
+{{- /* truncate 157 keeps a summary within the 160-character description limit
+   (MAX_DESCRIPTION in scripts/check_positioning.py and check_built_meta.py):
+   Hugo appends " …", so the result is at most 159. The built-site check fails
+   any page over 160.
+   List, taxonomy and 404 pages have no summary: use the site description. */ -}}
 {{- if not $desc }}{{ $desc = $.Site.Params.Subtitle }}{{ end -}}
 {{- $title := .Title -}}
 {{- if .IsHome }}{{ $title = $.Site.Title }}{{ end -}}
