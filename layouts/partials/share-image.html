@@ -14,25 +14,25 @@
     4. the site-wide og-image.png.
   A raster resource from 1-3 is cropped to 1200x630 with Hugo image processing.
 */ -}}
-{{- $result := dict "url" ("og-image.png" | absURL) "width" 1200 "height" 630 -}}
-{{- $res := false -}}
-{{- $static := false -}}
+{{- $share := dict "url" ("og-image.png" | absURL) "width" 1200 "height" 630 -}}
+{{- $image := false -}}
+{{- $coverIsPath := false -}}
 
 {{- with .Params.cover -}}
   {{- with $.Resources.GetMatch . -}}
-    {{- $res = . -}}
+    {{- $image = . -}}
   {{- else -}}
-    {{- $static = true -}}
-    {{- $result = dict "url" (. | absURL) -}}
+    {{- $coverIsPath = true -}}
+    {{- $share = dict "url" (. | absURL) -}}
   {{- end -}}
 {{- end -}}
 
-{{- if not (or $res $static) -}}
+{{- if not (or $image $coverIsPath) -}}
   {{- range findRESubmatch `!\[[^\]]*\]\(\s*<?([^)\s>]+)` .RawContent -}}
     {{- with (urls.Parse (index . 1)).Path -}}
       {{- with $.Resources.GetMatch (strings.TrimPrefix "./" .) -}}
         {{- if and (eq .ResourceType "image") (ne .MediaType.SubType "svg") -}}
-          {{- $res = . -}}
+          {{- $image = . -}}
           {{- break -}}
         {{- end -}}
       {{- end -}}
@@ -40,10 +40,10 @@
   {{- end -}}
 {{- end -}}
 
-{{- if not (or $res $static) -}}
+{{- if not (or $image $coverIsPath) -}}
   {{- range .Resources.ByType "image" -}}
     {{- if ne .MediaType.SubType "svg" -}}
-      {{- $res = . -}}
+      {{- $image = . -}}
       {{- break -}}
     {{- end -}}
   {{- end -}}
@@ -52,14 +52,14 @@
 {{- /* Only raster images can be processed. A cover that is an SVG (or any
    other non-raster resource) is used as given, with no dimensions, like a
    static-path cover; .Fill on it would fail the build. */ -}}
-{{- with $res -}}
+{{- with $image -}}
   {{- if and (eq .ResourceType "image") (ne .MediaType.SubType "svg") -}}
     {{- with .Fill "1200x630 Center" -}}
-      {{- $result = dict "url" .Permalink "width" .Width "height" .Height -}}
+      {{- $share = dict "url" .Permalink "width" .Width "height" .Height -}}
     {{- end -}}
   {{- else -}}
-    {{- $result = dict "url" .Permalink -}}
+    {{- $share = dict "url" .Permalink -}}
   {{- end -}}
 {{- end -}}
 
-{{- return $result -}}
+{{- return $share -}}
