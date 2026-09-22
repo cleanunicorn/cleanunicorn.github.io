@@ -49,8 +49,8 @@ check-positioning: ## Assert the identity copy leads builder-first and llms.txt 
 check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data
 	python3 scripts/check_build.py --public $(PUBLIC_DIR)
 
-check-alt-text: ## Fail if a post image still has placeholder alt text ("Untitled", "image.png", "alt text", a raw filename)
-	@if grep -rnE '!\[(Untitled[^]]*|image[^]]*\.(png|jpe?g)|alt text|CleanShot[^]]*)\]\(' $(POSTS_DIR); then \
+check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image 2", "alt text", or a filename)
+	@if grep -rniE '!\[((untitled|image|alt text)([ _-]?[0-9]+)?|[^]]*\.(png|jpe?g|gif|webp|svg))\]\(' content; then \
 		echo "check-alt-text: placeholder alt text found above; describe the image instead (or use ![] if decorative)"; \
 		exit 1; \
 	fi; \
