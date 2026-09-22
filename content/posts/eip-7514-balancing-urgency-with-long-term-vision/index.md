@@ -14,7 +14,7 @@ The proposed change aims to slow down the growth in the number of validators, pr
 
 Given that the current validator count is over 800,000, as [indicated by beaconcha.in](https://mainnet.beaconcha.in/validators), there's an urgent need to address this issue.
 
-![alt text](image.png)
+![beaconcha.in network history chart: staked ether and active validators rising steadily from 21 to 27 September, with 824,135 active validators](image.png)
 
 There are several ways to make these adjustments:
 - Enhance the validator client software to coordinate more than 2.1 million validators successfully.

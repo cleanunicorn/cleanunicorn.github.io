@@ -27,13 +27,13 @@ First, it’s important to understand what Shadow is and how it achieves **free 
 
 This effect is achieved by replaying Ethereum transactions on a shadow chain, using an enhanced version of the original smart contract code to allow for more complex calculations and detailed data output.
 
-![alt text](image.png)
+![Diagram: Ethereum transactions are replayed onto Shadow.xyz, where Uniswap runs with modified code](image.png)
 
 To accomplish this manually, one needs to take several steps. First, fork the mainnet. Next, change the source code of the smart contract you're watching. Then, include the calculation and extra events you want to produce. Finally, track the new events that are created. Shadow does most of this for you out of the box.
 
 The biggest innovation is the fact that we realized we could mirror a network, with the possibility of extending its features without making any hard fork to the rules of the mirrored system. This is what I call a Doppelganger Network. It’s almost like the original one but slightly different.
 
-![alt text](image-1.png)
+![Meme: a pink sneaker whose open mouth mimics J. Jonah Jameson laughing](image-1.png)
 
 Shadowing was something we were always able to do, although we probably didn’t realize we could also change the rules of our local representation. Changing the rules opens up possibilities to not just emit events but also add storage and attach additional computation. And because this is a private fork, we NEED to trust the entity running the fork. This is where the downsides start to show themselves.
 
@@ -41,7 +41,7 @@ Shadowing was something we were always able to do, although we probably didn’t
 
 We are conditioned to have a gag reflex when anyone mentions centralized technology, power, or companies; at the same time, we hold decentralized technology to a higher value by default.
 
-![alt text](image-2.png)
+![Left-exit meme: a car labelled “Shadow” swerves off the “Public technology” road toward the “Centralized” exit](image-2.png)
 
 However, in this case, running a centralized Doppelganger version of the Ethereum mainnet has considerable downsides. Let’s explore them one by one.
 
@@ -49,13 +49,13 @@ However, in this case, running a centralized Doppelganger version of the Ethereu
 
 There was a time when the development of front-end applications was rampant, preceding the era of single-page applications. Developers were experimenting with various frontend frameworks, yet a consensus on the "right" way to build web applications remained elusive. This landscape was transformed with frameworks like React, Angular, and Vue. Among these, Redux emerged as a game-changer, revolutionizing front-end app development by enforcing the concept of a single source of truth. Its main principle was that there needs to be a single top-level source of truth, and each component uses parts of that state without creating a local copy of the reality.
 
-![alt text](image-8.png)
+![Scroll of Truth meme: the scroll reads “everybody has their own version of reality” and the finder throws it away](image-8.png)
 
 If this sounds alien to you, think about Ethereum or Bitcoin. Ethereum and Bitcoin function not only as currencies but also as bastions of truth. People rely on them to indicate the amount of their digital assets, with every rule programmed to maintain the integrity of that truth.
 
 The introduction of Doppelganger Networks, which compute data and generate exclusive information, complicates this landscape. These forks create isolated truths accessible only to specific entities. When decisions are based on this privately generated data, a divergence emerges. Other parties lacking access to this data are compelled to replicate these computations independently, hoping to mirror the original calculations accurately to reach the same conclusions. The challenge lies in ensuring uniformity in these processes, as any deviation could lead to disparate values and, consequently, divergent decisions and interactions within the system.
 
-![alt text](image-4.png)
+![Superman and Homelander meme captioned “Same data, different outcome”](image-4.png)
 
 This scenario illustrates the dilemma of multiple sources of truth. Such a system is prone to discrepancies and inconsistencies that eventually drive different decisions, distorting the broader system's collective understanding and operation.
 
@@ -77,7 +77,7 @@ The centralized nature of a private fork, especially when managed by an external
 
 One could argue that we already depend a lot on centralized systems that could alter the data we digest. While it's true that most of these systems operate without malicious intent, it's crucial to revisit the foundational ethos of the blockchain revolution.
 
-![alt text](image-5.png)
+![Cat peeking out of a cardboard box, captioned “Trustworthy until proven malicious”](image-5.png)
 
 The drive towards blockchain technology was fueled by a desire to establish systems that are inherently transparent, decentralized, and immune to the risks of unilateral data manipulation – principles that are fundamentally challenged by the centralization inherent in private forks.
 
@@ -106,11 +106,11 @@ Shadow’s commitment to solving the complexities of on-chain analytics is evide
 
 However, events alone may only take a company's value so far. I am curious if Shadow's initial offering of free event logs will eventually lead to adding computation or storage. That prospect is truly exciting for me because it shows that more can be done with this approach. It also tickles my ego since I can say, “Called it.”
 
-![alt text](image-6.png)
+![Morpheus meme: “What if I told you that you can do more with Doppelganger Networks?”](image-6.png)
 
 Shadow’s current narrative presents event logs that can be made “free” with their technology, but in the article published when they became Entrepreneurs In Residence with Paradigm (dated Jun 22, 2023), they were discussing not just events but also computation and storage.
 
-![alt text](image-7.png)
+![Highlighted excerpt from Shadow’s article: using storage, emitting event logs and performing computations all cost gas that users ultimately pay](image-7.png)
 
 ## Conclusion
 

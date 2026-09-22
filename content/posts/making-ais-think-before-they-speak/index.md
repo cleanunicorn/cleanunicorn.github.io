@@ -63,7 +63,7 @@ The “killed backtracking” mindset can extend beyond algorithms and into the 
 
 One way to do this is by running multiple inferences. Instead of generating a single answer (what a lot of people actually do when using LLMs), we can prompt the LLM multiple times, effectively exploring different “reasoning paths”. Each run leverages stochasticity (randomly deterministic processes) introducing randomness to simulate diverse ways humans might approach a problem. 
 
-![CleanShot 2024-11-26 at 14.59.22@2x.png](CleanShot_2024-11-26_at_14.59.222x.png)
+![Figure from the self-consistency paper: instead of one greedy chain-of-thought answer, sample several reasoning paths and choose the most common answer](CleanShot_2024-11-26_at_14.59.222x.png)
 
 Performing different inferences ensures that the reasoning paths are decoupled and independent. An alternative would be to ask in one prompt to generate multiple solutions, this would influence latter answers to be influenced by previous ones.
 
@@ -89,13 +89,13 @@ These examples underscore an important lesson: planning and strategic thinking a
 
 It’s **debatable if we are reaching scaling limits** with AI models, some say we’re getting diminishing returns from larger and larger models, others experiment with different model architectures (such as [Predictive Coding Networks](https://arxiv.org/abs/2202.09467)) but we collectively agree that [Retrieval-Augmented Generation (RAG)](https://en.wikipedia.org/wiki/Retrieval-augmented_generation) offers a 1000x improvements to existing LLMs irregardless of their size.
 
-![image.png](image%203.png)
+![Flex Tape meme: a hand labelled “RAG” patches a leaking tank labelled “LLM not good enough”](image%203.png)
 
 If you’re not familiar with **Retrieval-Augmented Generation (RAG)** it brings external knowledge into the LLM’s processing. While LLMs have vast amounts of information embedded within their weights, adding relevant information from a prebuilt database can significantly improve their responses. This method ensures that the AI has access to the most pertinent information without relying entirely on its pre-trained knowledge base.
 
 RAG is akin to having a database with transcriptions of all of [Andrew Huberman](https://en.wikipedia.org/wiki/Andrew_Huberman)’s episodes and when you’re asking the model something about better sleep, it first goes into the database, extracts all relevant episodes, adds the info as context next to your question and asks the model to generate the best protocol for you to follow. You don’t even need a large or smart model for that; you only need one that can summarize well.
 
-![image.png](image%204.png)
+![Man at a podcast microphone making binoculars with his hands, captioned “Let me answer this for you”](image%204.png)
 
 Moreover, implementing decision trees or search algorithms allows the AI to simulate future possibilities and choose the best path forward, much like in chess. By considering multiple potential outcomes, the AI can make more informed decisions rather than reacting based on immediate input alone.
 
@@ -107,7 +107,7 @@ By **offloading some of the computational thinking back to specialized algorithm
 
 Significant work remains to be done beyond the initial outputs provided by trained models. While interfaces play a role in how we interact with AI, **post-processing** is incredibly important. By refining and evaluating AI outputs through additional computational steps, we can enhance accuracy and reliability.
 
-![image.png](image%205.png)
+![Cassette tape labelled “AI mix tape”](image%205.png)
 
 The key takeaway here is that innovation doesn’t always come from massive overhauls or advancements in training complex models. Sometimes, it’s about the clever tweaks and strategic adjustments we make in how we use these models, the “edges” of the system.
 
@@ -118,7 +118,7 @@ The key takeaway here is that innovation doesn’t always come from massive over
 - **Don't just rely on bigger models:**  It turns out that making AI models bigger and bigger isn't always the best way to make them smarter. Sometimes, clever tricks and better planning can give you a way bigger boost than just throwing more data at the problem.
 - **The “Killed Backtracking” trick:** By setting a time limit on backtracking algorithms (I like to call it “killed backtracking”), you can snag decent solutions within your time frame, even if they’re not perfect. This mindset works great with AI and LLMs too. Users are happy to wait a bit more for a far better solution. If your model is playing a game and you have 30 seconds to make each move, use all of the available time.
 
-![image.png](image%206.png)
+![Expanding-brain meme: no AI, blindly using AI, prompt engineering, enhancing AI with algorithms](image%206.png)
 
 ## **Conclusion**
 

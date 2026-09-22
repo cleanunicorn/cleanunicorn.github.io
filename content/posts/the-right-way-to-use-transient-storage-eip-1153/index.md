@@ -66,7 +66,7 @@ You can call a contract multiple times within the same Transaction, and it will 
 
 And you can see that this value is retained in **Transaction #1** across multiple calls.
 
-![Untitled](./Untitled-3.png)
+![Diagram: in Transaction #1 the contract gets setNumber(42) and getNumber() returns 42; in Transaction #2 getNumber() returns 0 because transient storage was cleared](./Untitled-3.png)
 
 But the value no longer exists in **Transaction #2** because the whole page is cleared at the end of each Transaction.
 

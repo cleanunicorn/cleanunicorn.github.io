@@ -67,7 +67,7 @@ In our case, we know exactly what model is used and we can specify each single p
 
 I know I’ll always get this apple if I use the same model with the same parameters. 
 
-![Untitled](Untitled%201.png)
+![AI-generated image of a translucent, iridescent apple on a mossy branch](Untitled%201.png)
 
 We can use this principle to test if each node is running the same model with the parameters we provided. This means that we can ask multiple node runners to generate the same output (whether it’s image or text), check the outputs for equality and see if any of them misbehave.
 
@@ -94,7 +94,7 @@ $$
 
 A different representation of a bijection is through a graph. We know that each output will generate a single unique output.
 
-![Untitled](Untitled%202.png)
+![Bijection diagram: each element 1–4 of set X maps to exactly one distinct element of set Y](Untitled%202.png)
 
 There is an argument that an AI model might act as an injection-non-surjection function. But this argument gets too philosophical for this article.
 
@@ -102,7 +102,7 @@ There is an argument that an AI model might act as an injection-non-surjection f
 
 The proposed way of authenticating the model is based on the statistical uniqueness approach described above. To make this happen, we consider the following approach, where the user sends the same input parameters to 2 different nodes and compares the generated output.
 
-![Untitled](Untitled%203.png)
+![Diagram: a user sends the same input to Node A and Node B](Untitled%203.png)
 
 Once the user receives and compares the outputs they find out if the queried nodes run the same model. Since, in this case we have only 2 queried nodes, it’s impossible to know what the trusted majority is, in case the answers differ. For this we would need to query a few more nodes. The minimum number of nodes that would help us identify a trusted majority is 3. But we can go even further and query a higher number of nodes for more statistical significance.
 
@@ -171,7 +171,7 @@ In our case, we fill this role ourselves.
 
 We introduce a new factor $z$ to represent the frequency with which we perform full checks (where we query all $n$ nodes).
 
-![Untitled](Untitled%204.png)
+![Diagram: a user always queries Node A and only sometimes queries Nodes B, C and D](Untitled%204.png)
 
 To derive the new formula, consider:
 
