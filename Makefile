@@ -43,7 +43,7 @@ update-theme: ## Update theme submodule to latest
 submodules: ## Initialize and update all submodules
 	git submodule update --init --recursive
 
-check-positioning: ## Assert the identity copy leads builder-first and llms.txt still matches the pages
+check-positioning: ## Assert the identity copy leads builder-first, llms.txt still matches the pages, and descriptions fit in 160 characters
 	python3 scripts/check_positioning.py
 
 check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data

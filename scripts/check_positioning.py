@@ -8,7 +8,9 @@ describes him as someone who builds things, when a WHO surface (the hero
 `whoami` and its copies) names a role or an employer at all — those belong on
 the WHAT surfaces: the hugo.toml subtitle, the Work page, the terminal's
 work.md — and when static/llms.txt — the file agents read — drifts away from
-the pages it restates.
+the pages it restates. It also holds every meta description — front-matter
+descriptions and the hugo.toml subtitle the homepage uses — to 160 characters,
+the length search engines show before truncating (Rule 9).
 
 Three deliberate choices, all load-bearing:
 
@@ -29,7 +31,9 @@ What it reads, so the next editor does not have to infer it:
 
     data/home.toml            whoami, whoamiLink, the [[stats]] count
     hugo.toml                 subtitle, keywords, jobTitle, personDescription
+                              (subtitle also for length, Rule 9)
     content/**/*.md           every front-matter description and lede
+                              (descriptions also for length, Rule 9)
     static/humans.txt         the Role line
     static/js/terminal.js     the whoami greeting, about.md, work.md
     scripts/generate_og_image.py   sub_text, the social card's role line
@@ -66,6 +70,11 @@ except ModuleNotFoundError as exc:  # Python < 3.11
 # A field may mention these; it may not open on one. Add a term here and the
 # whole check picks it up.
 FORBIDDEN = ("technical partner", "investor")
+
+# Rule 9 — a meta description longer than this is cut off in search results.
+# head.html renders a page's front-matter description, or the hugo.toml subtitle
+# on the homepage and on pages that have none.
+MAX_DESCRIPTION = 160
 
 # Rule 8 — the WHO surfaces (the hero `whoami`, the humans.txt Role line, the
 # terminal greeting and its virtual about.md, the social card's sub_text) say
@@ -138,6 +147,13 @@ WHO_FIXTURES = [
     ("builder · CTO", "cto"),
     ("builder @ home", "@"),
     ("Directors and partners", None),  # a word, not the word
+]
+
+# Rule 9's own fixtures — (value, whether it is too long).
+LENGTH_FIXTURES = [
+    ("x" * MAX_DESCRIPTION, False),
+    ("x" * (MAX_DESCRIPTION + 1), True),
+    ("—" * MAX_DESCRIPTION, False),  # characters, not UTF-8 bytes
 ]
 
 # Rule 7, second half — the TOML shapes a line regex used to miss. Each source
@@ -249,6 +265,11 @@ def names_a_role(value: str) -> str | None:
         if re.search(pattern, lowered):
             return word
     return None
+
+
+def too_long(value: str) -> bool:
+    """Whether a meta description would be truncated in search results."""
+    return len(value) > MAX_DESCRIPTION
 
 
 def lines_of(text: str) -> list[str]:
@@ -425,6 +446,7 @@ class Check:
         self.check_subtitle_scan_fixtures()
         self.check_toml_fixtures()
         self.check_who_fixtures()
+        self.check_length_fixtures()
 
     def self_check_failed(self, problem: str) -> None:
         self.fail("check_positioning.py: self-check", problem)
@@ -442,6 +464,19 @@ class Check:
             actual = names_a_role(value)
             if actual != expected:
                 self.self_check_failed(f'who-line "{value}" → {actual!r}, expected {expected!r}')
+
+    def check_length_fixtures(self) -> None:
+        """Rule 9 still draws the line at MAX_DESCRIPTION characters."""
+        for value, expected in LENGTH_FIXTURES:
+            if too_long(value) != expected:
+                self.self_check_failed(
+                    f"a {len(value)}-character description read as too_long={not expected}"
+                )
+
+    def check_length(self, where: str, value: str) -> None:
+        """Rule 9 — a meta description fits before search engines truncate it."""
+        if too_long(value):
+            self.fail(where, f"is {len(value)} characters; meta descriptions stop at {MAX_DESCRIPTION}")
 
     def check_blank_fixtures(self) -> None:
         """A file that holds nothing is still nothing to read, not nothing to check."""
@@ -501,9 +536,11 @@ class Check:
                         self.check_who(f"{rel}: {key}", value)
                     else:
                         self.check_opening(f"{rel}: {key}", value)
+                    if rel == HUGO_TOML and key == "subtitle":
+                        self.check_length(f"{rel}: {key}", value)
 
     def rule_front_matter(self) -> None:
-        """Rules 1 and 2 over every page's description and lede."""
+        """Rules 1, 2 and 9 over every page's description and lede."""
         for path in sorted((self.root / "content").rglob("*.md")):
             rel = path.relative_to(self.root).as_posix()
             text = self.read(rel)
@@ -519,6 +556,8 @@ class Check:
             for key in ("description", "lede"):
                 for value in self.values(rel, data, key, required=False):
                     self.check_opening(f"{rel}: {key}", value)
+                    if key == "description":
+                        self.check_length(f"{rel}: {key}", value)
 
     def rule_single_subtitle(self) -> None:
         """Rule 3 — generate_cv.py takes the LAST `subtitle =` line it sees."""
@@ -652,7 +691,7 @@ class Check:
         for rule in rules:
             rule()
         if self.violations:
-            print("check_positioning: the copy no longer leads builder-first", file=sys.stderr)
+            print("check_positioning: the copy no longer leads builder-first, or a description runs long", file=sys.stderr)
             for violation in self.violations:
                 print(f"  {violation}", file=sys.stderr)
             return 1
