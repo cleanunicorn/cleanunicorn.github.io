@@ -8,7 +8,7 @@ POSTS_DIR ?= content/posts
 
 .DEFAULT_GOAL := help
 
-.PHONY: help serve serve-drafts build build-drafts check-positioning check-alt-text check-build check-built-meta clean new update-theme submodules cv cv-pdf books
+.PHONY: help dev build build-drafts check-positioning check-alt-text check-build check-built-meta test clean new update-theme submodules cv cv-pdf books og-image
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -59,6 +59,9 @@ check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image
 check-built-meta: ## Assert the built site's search and social metadata (run after a build)
 	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
 
+test: ## Run the unit tests in tests/ (the positioning guard's rules, the CV parser)
+	python3 -m unittest discover -s tests -v
+
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
 	python3 scripts/generate_cv.py -o $(STATIC_DIR)/cv.html
 
@@ -71,3 +74,6 @@ cv-pdf: cv ## Generate CV as PDF into static/ (served by Hugo at /cv.pdf)
 
 books: ## Refresh the About page Books list: top 10 from Goodreads + existing, by rating/popularity. ARGS="--top 12" etc.
 	python3 scripts/update_books.py $(ARGS)
+
+og-image: ## Regenerate static/og-image.png, the social share card (needs Pillow: pip install -r requirements.txt)
+	python3 scripts/generate_og_image.py
