@@ -87,8 +87,8 @@ def main() -> int:
 
     same_as = None
     for block in re.findall(r'<script type="?application/ld\+json"?>(.*?)</script>', page, re.S):
-        data = json.loads(block)
-        person = data.get("author") or data.get("mainEntity") or {}
+        ld = json.loads(block)
+        person = ld.get("author") or ld.get("mainEntity") or {}
         same_as = person.get("sameAs", same_as)
     urls = [p["url"] for p in profiles]
     if not same_as or same_as[: len(urls)] != urls:
