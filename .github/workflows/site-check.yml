@@ -2,8 +2,9 @@
 #
 # "Build and deploy" runs only on a push to main, so a broken template or a
 # dead internal link or #anchor used to surface only after merging. This job
-# builds the site the way the deploy does, runs the deploy's build-output
-# check (make check-build), and fails on any of them. It is its own
+# builds the site the way the deploy does, runs the deploy's alt-text and
+# build-output checks (make check-alt-text, make check-build), and fails on
+# any of them. It is its own
 # workflow, with read-only permissions, for the reason positioning.yml gives:
 # a pull_request trigger on the deploy workflow would hand PR runs its
 # `pages: write` and `id-token: write` permissions.
@@ -39,6 +40,8 @@ jobs:
           rm "hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
           echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
           "${HOME}/.local/hugo/hugo" version
+      - name: Check image alt text
+        run: make check-alt-text
       # The runner image's google-chrome aborts in headless mode (no usable
       # sandbox), so install the same Chromium the deploy workflow prints with.
       - name: Install Chromium (for CV PDF generation)

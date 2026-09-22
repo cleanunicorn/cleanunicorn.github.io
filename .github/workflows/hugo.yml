@@ -54,12 +54,15 @@ jobs:
       - name: Configure Git
         run: |
           git config core.quotepath false
+      # The cache holds processed images too (hugo.toml [caches.images]), so the
+      # key covers the source images: a new or changed image saves a fresh
+      # cache, and restore-keys still restores the previous one to build on.
       - name: Cache restore
         id: cache-restore
         uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/hugo_cache
-          key: hugo-${{ runner.os }}-${{ hashFiles('.hugo-version', 'hugo.toml', 'themes/terminal/**') }}
+          key: hugo-${{ runner.os }}-${{ hashFiles('.hugo-version', 'hugo.toml', 'themes/terminal/**', 'content/**/*.png', 'content/**/*.jp*g', 'content/**/*.gif', 'content/**/*.webp', 'assets/**/*.png', 'assets/**/*.jp*g') }}
           restore-keys: |
             hugo-${{ runner.os }}-
       - name: Build the site
