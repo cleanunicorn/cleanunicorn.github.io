@@ -36,7 +36,7 @@ make new POST="My Post Title"   # create content/posts/my-post-title/index.md
 | Target | What it does |
 |---|---|
 | `make check-positioning` | Checks that the identity copy leads with what he builds and that `static/llms.txt` still matches the pages it restates |
-| `make test` | Runs the unit tests in `tests/` (the positioning guard's rules, the CV parser) |
+| `make test` | Runs the unit tests in `tests/` (the positioning guard's rules, the CV parser, cv-pdf's failure paths) |
 | `make build` | Runs `check-positioning`, then builds the site into `public/` |
 | `make cv` | Writes the CV as HTML to `static/cv.html`, generated from the About and Work pages |
 | `make cv-pdf` | Runs `make cv`, then prints `static/cv.pdf` with headless Chromium or Chrome (`CHROME=<path>` picks the browser) |
