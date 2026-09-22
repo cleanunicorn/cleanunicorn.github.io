@@ -2,6 +2,8 @@ baseURL = 'https://cleanunicorn.github.io/'
 languageCode = 'en-us'
 theme = "terminal"
 pagination.pagerSize = 5
+# No post uses tags or categories; drop the empty taxonomy pages and feeds.
+disableKinds = ["taxonomy", "term"]
 
 [markup.goldmark.renderer]
   unsafe = true
@@ -43,12 +45,9 @@ pagination.pagerSize = 5
       alternateName = "CleanUnicorn"
       jobTitle = "CTO & Technical Partner"
       personDescription = "Builder, hacker and extropian — open-source tools like Earheart and the Agents Library, plus Ethereum smart contracts and security research since 2017. CTO at a stealth startup and Technical Partner at Eden Block."
-      sameAs = [
-        "https://x.com/cleanunicorn",
-        "https://www.linkedin.com/in/luca-daniel-5227267/",
-        "https://github.com/cleanunicorn",
-        "https://www.imdb.com/title/tt35931420/",
-      ]
+      # Profiles beyond the X / LinkedIn / GitHub links, which come from
+      # data/home.toml `connect.links` via partials/profile-links.html.
+      sameAsExtra = ["https://www.imdb.com/title/tt35931420/"]
       knowsAbout = [
         "Software Engineering", "Open Source", "Developer Tooling", "LLM Engineering",
         "Smart Contract Security", "Ethereum", "Solidity", "EVM Internals",

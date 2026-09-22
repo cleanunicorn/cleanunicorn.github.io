@@ -95,6 +95,9 @@ url = "https://x.com/cleanunicorn"
 label = "Let's connect"
 note = "Every way to reach me — pick whatever you already live in."
 tagline = "Building and breaking software since 2008 — Ethereum since 2017."
+# Which links are profiles, in the order the footer and the JSON-LD sameAs use
+# (layouts/partials/profile-links.html). Each names a `net` below.
+profiles = ["x", "linkedin", "github"]
 
 [[connect.links]]
 net = "calendar"

@@ -1,0 +1,12 @@
+{{- /* Profile links shared by the footer and the JSON-LD `sameAs`: the
+   data/home.toml `connect.links` entries named by `connect.profiles`, in that
+   order (which differs from the connect board's order).
+   Returns a slice of connect.links entries. */ -}}
+{{- $links := site.Data.home.connect.links -}}
+{{- $out := slice -}}
+{{- range site.Data.home.connect.profiles -}}
+  {{- with index (where $links "net" .) 0 -}}
+    {{- $out = $out | append . -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

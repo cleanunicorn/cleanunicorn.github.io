@@ -40,14 +40,6 @@
   /* Semantic */
   --danger: #e06c75;            /* terminal red — errors, the DAO/heist motif  */
 
-  /* Back-compat aliases for tokens referenced by older z-*.css rules.         */
-  --c-text-soft:  var(--text-body);
-  --c-text-muted: var(--text-muted);
-  --c-text-faint: var(--text-faint);
-  --c-hairline:   var(--hairline);
-  --c-error:      var(--danger);
-  --muted:        var(--text-muted);
-
   /* ---- Type --------------------------------------------------------------- */
   --font-mono:
     "Fira Code", "JetBrains Mono", ui-monospace, "SFMono-Regular",
@@ -60,7 +52,6 @@
   --measure: 66ch;              /* prose line length — lands ~60–68 chars      */
 
   /* Modular type scale (fluid where it earns it). */
-  --fs-display: clamp(1.9rem, 1.18rem + 3.0vw, 2.9rem);
   --fs-h1:      clamp(1.55rem, 1.28rem + 1.1vw, 1.95rem);
   --fs-h2:      1.32rem;
   --fs-h3:      1.1rem;
@@ -69,7 +60,7 @@
 
   /* ---- Spacing (8px base) ------------------------------------------------- */
   --sp-1: 0.25rem;  --sp-2: 0.5rem;  --sp-3: 0.75rem; --sp-4: 1rem;
-  --sp-5: 1.5rem;   --sp-6: 2rem;    --sp-7: 3rem;    --sp-8: 4rem;  --sp-9: 6rem;
+  --sp-5: 1.5rem;   --sp-6: 2rem;    --sp-7: 3rem;    --sp-8: 4rem;
 
   /* ---- Form ---------------------------------------------------------------- */
   --radius: 0;                  /* sharp corners are part of the terminal look */

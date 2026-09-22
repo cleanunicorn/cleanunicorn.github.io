@@ -15,6 +15,11 @@
   line-height: 1.6;
   color: var(--text-muted);
 }
+.page-feed {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
 
 /* ---- Post list ------------------------------------------------------------ */
 .post { padding: var(--sp-6) 0; }

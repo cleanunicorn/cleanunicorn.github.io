@@ -23,7 +23,7 @@ CONTENT = ROOT / "content"
 ABOUT_MD = CONTENT / "about" / "_index.md"
 WORK_MD = CONTENT / "previous-work.md"
 CONFIG = ROOT / "hugo.toml"
-CSS_PATH = ROOT / "static" / "css" / "cv.css"
+CSS_PATH = ROOT / "scripts" / "cv.css"
 SKILLS_PATH = ROOT / "data" / "skills.toml"
 CV_CONFIG_PATH = ROOT / "data" / "cv.toml"
 
