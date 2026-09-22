@@ -32,7 +32,7 @@ new: ## Create a new post: make new POST="My Post Title"
 		echo "Usage: make new POST=\"My Post Title\""; \
 		exit 1; \
 	fi; \
-	slug=$$(echo "$(POST)" | tr ' ' '-' | tr '[:upper:]' '[:lower:]'); \
+	slug=$$(echo "$(POST)" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+//g'); \
 	$(HUGO) new posts/$${slug}/index.md; \
 	echo "Created $(POSTS_DIR)/$${slug}/index.md"
 
