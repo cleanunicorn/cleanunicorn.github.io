@@ -1,6 +1,7 @@
 /* TEAM */
   Owner: Daniel Luca (CleanUnicorn)
-  Role: Builder, hacker, security researcher, investor
+  Role: Builder, hacker, extropian
+  Does: CTO @ Stealth Startup, Technical Partner @ Eden Block
   Location: Bucharest, Romania
   X: @cleanunicorn
   GitHub: cleanunicorn

@@ -180,9 +180,18 @@ def parse_about() -> dict:
     """Parse about.md into structured sections."""
     body = strip_frontmatter(ABOUT_MD.read_text())
 
-    # Bio is everything before the first ## heading
-    bio_match = re.match(r"^(.*?)(?=^##\s)", body, re.MULTILINE | re.DOTALL)
-    bio = bio_match.group(1).strip() if bio_match else ""
+    # The bio is anything before the first ## heading plus the two intro
+    # sections the About page opens with: "Who I am" (traits) and "What I do"
+    # (roles). Older revisions kept the whole intro above the first heading,
+    # so the pre-heading text is still read.
+    bio_match = re.match(r"^(.*?)(?=^##\s|\Z)", body, re.MULTILINE | re.DOTALL)
+    bio = "\n\n".join(
+        part for part in (
+            bio_match.group(1).strip() if bio_match else "",
+            extract_section(body, "Who I am"),
+            extract_section(body, "What I do"),
+        ) if part
+    )
 
     # The intro carries a one-line "Download my CV — or find me on …" row.
     # Pull the social links out of it for the header, and drop the line from

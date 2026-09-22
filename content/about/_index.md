@@ -1,16 +1,28 @@
 +++
 title = "About me"
 draft = false
-description = "Daniel Luca (CleanUnicorn) — builder, hacker and self-taught software engineer: open-source tools, local AI and smart contracts, with Ethereum security research since 2017."
+description = "Daniel Luca (CleanUnicorn) — builder, hacker and extropian. What he does: CTO at a stealth startup, Technical Partner at Eden Block, open-source tools, local AI and smart contracts, with Ethereum security research since 2017."
 +++
 
-I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania — a **builder**, **hacker** and self-taught **software engineer**. I have been shipping software since 2008 and working on Ethereum since 2017.
+## Who I am
 
-Most of what I build is open source and starts as something I wanted to exist: [Earheart](https://github.com/cleanunicorn/earheart) for private, on-device dictation, [Agents Library](https://github.com/cleanunicorn/agents-library) for coding agents that open reviewable pull requests, [drove](https://github.com/cleanunicorn/drove) for running local LLMs, [Karl](https://github.com/cleanunicorn/karl) for hunting live smart-contract exploits, and the [RL-Swarm contracts](https://github.com/gensyn-ai/rl-swarm-contracts) behind [Gensyn](https://www.gensyn.ai/)'s first public launch.
+I am Daniel Luca (aka CleanUnicorn), based in Bucharest, Romania — a **builder**, a **hacker** and an **extropian**.
+
+**Builder** — I have been shipping software since 2008, and most of what I make is open source and starts as something I wanted to exist. **Hacker** — I take systems apart to see where they give, and I have been doing that on Ethereum since 2017. **Extropian** — I bet on progress: on technology, open systems and the people willing to build them, over pessimism and over hype.
 
 I care about open source, security, and getting the details right. I favour trust-minimized architectures and adversarial code review: systems that hold up under attack, not ones that ride a narrative.
 
-That is also what I get paid for: I audit Ethereum smart contracts, as **Technical Partner at [Eden Block](https://edenblock.com)** I build and improve our internal processes — we are tech driven in this approach — and run the technical evaluation behind early-stage investments, and since August 2026 I am also CTO at a stealth startup. Whether I'm writing a contract, breaking one or evaluating a seed round, **the lens is the same — open source, sound engineering and long-term fundamentals over hype.**
+## What I do
+
+**CTO at a stealth startup** — since August 2026. The company has not announced itself yet; details once it launches.
+
+**Technical Partner at [Eden Block](https://edenblock.com)** — I build and improve our internal processes — we are tech driven in this approach — and run the technical evaluation behind early-stage investments.
+
+**Open-source projects** — tools people run: [Earheart](https://github.com/cleanunicorn/earheart) for private, on-device dictation, [Agents Library](https://github.com/cleanunicorn/agents-library) for coding agents that open reviewable pull requests, [drove](https://github.com/cleanunicorn/drove) for running local LLMs, [Karl](https://github.com/cleanunicorn/karl) for hunting live smart-contract exploits, and the [RL-Swarm contracts](https://github.com/gensyn-ai/rl-swarm-contracts) behind [Gensyn](https://www.gensyn.ai/)'s first public launch. The full list is [below](#projects).
+
+**Security research** — I audit Ethereum smart contracts through [Akira Tech](https://github.com/akiratechhq), and before that at [ConsenSys Diligence](https://diligence.consensys.net/) on Uniswap, Aave, Filecoin and Polygon.
+
+Whether I'm writing a contract, breaking one or evaluating a seed round, **the lens is the same — open source, sound engineering and long-term fundamentals over hype.**
 
 **[Download my CV (PDF)](/cv.pdf)** — or find me on [X / Twitter](https://x.com/cleanunicorn), [GitHub](https://github.com/cleanunicorn) and [LinkedIn](https://www.linkedin.com/in/luca-daniel-5227267/).
 
