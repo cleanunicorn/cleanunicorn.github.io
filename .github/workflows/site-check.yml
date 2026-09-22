@@ -39,8 +39,14 @@ jobs:
           rm "hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
           echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
           "${HOME}/.local/hugo/hugo" version
+      # The runner image's google-chrome aborts in headless mode (no usable
+      # sandbox), so install the same Chromium the deploy workflow prints with.
+      - name: Install Chromium (for CV PDF generation)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
       # /cv.html and /cv.pdf are generated, not committed, and the pages link
-      # to them. The runner image's google-chrome prints the PDF.
+      # to them.
       - name: Generate CV (HTML + PDF)
         run: make cv-pdf
       - name: Build the site
