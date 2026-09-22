@@ -2,7 +2,8 @@
 #
 # "Build and deploy" runs only on a push to main, so a broken template or a
 # dead internal link or #anchor used to surface only after merging. This job
-# builds the site the way the deploy does and fails on either. It is its own
+# builds the site the way the deploy does, runs the deploy's build-output
+# check (make check-build), and fails on any of them. It is its own
 # workflow, with read-only permissions, for the reason positioning.yml gives:
 # a pull_request trigger on the deploy workflow would hand PR runs its
 # `pages: write` and `id-token: write` permissions.
@@ -51,6 +52,8 @@ jobs:
         run: make cv-pdf
       - name: Build the site
         run: hugo --minify
+      - name: Check build output
+        run: make check-build
       - name: Check internal links and anchors
         uses: lycheeverse/lychee-action@v2
         with:
