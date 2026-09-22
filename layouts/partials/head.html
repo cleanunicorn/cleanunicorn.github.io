@@ -1,5 +1,7 @@
 {{- $desc := "" -}}
-{{- if .IsHome }}{{ $desc = $.Site.Params.Subtitle }}{{ else if .Description }}{{ $desc = .Description | plainify }}{{ else }}{{ $desc = .Summary | plainify }}{{ end -}}
+{{- if .IsHome }}{{ $desc = $.Site.Params.Subtitle }}{{ else if .Description }}{{ $desc = .Description | plainify }}{{ else }}{{ $desc = .Summary | plainify | truncate 157 }}{{ end -}}
+{{- /* List, taxonomy and 404 pages have no summary: use the site description. */ -}}
+{{- if not $desc }}{{ $desc = $.Site.Params.Subtitle }}{{ end -}}
 {{- $title := .Title -}}
 {{- if .IsHome }}{{ $title = $.Site.Title }}{{ end -}}
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
