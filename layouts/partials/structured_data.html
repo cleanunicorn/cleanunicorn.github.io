@@ -63,8 +63,8 @@
     "description" (.Description | default (.Summary | plainify))
     "image" $img
     "author" $person
-    "publisher" $person
-    "keywords" (delimit (.Params.keywords | default (slice)) ", ") -}}
+    "publisher" $person -}}
+  {{- with .Params.keywords }}{{ $posting = merge $posting (dict "keywords" (delimit . ", ")) }}{{ end -}}
   {{- if not .Lastmod.IsZero }}{{ $posting = merge $posting (dict "dateModified" (.Lastmod.Format "2006-01-02")) }}{{ end -}}
   <script type="application/ld+json">{{ $posting | jsonify | safeJS }}</script>
 {{- end }}
