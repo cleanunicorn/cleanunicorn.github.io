@@ -32,9 +32,8 @@ Whether I'm writing a contract, breaking one or evaluating a seed round, **the l
 
 - **I build open-source tools people run** — [Earheart](https://github.com/cleanunicorn/earheart), [Agents Library](https://github.com/cleanunicorn/agents-library) and [drove](https://github.com/cleanunicorn/drove), plus the [RL-Swarm smart contracts](https://github.com/gensyn-ai/rl-swarm-contracts) behind [Gensyn](https://www.gensyn.ai/)'s first public launch.
 - **Audited some of Ethereum's most-used protocols** — including [Uniswap](https://uniswap.org/), [Aave](https://aave.com/), [Filecoin](https://filecoin.io/) and [Polygon](https://polygon.technology/) — at [ConsenSys Diligence](https://diligence.consensys.net/).
-- **Featured in [Code Is Law (2025)](https://www.imdb.com/title/tt35931420/)** — a feature documentary on the DAO hack, the Indexed Finance heist and the "code is law" philosophy in crypto.
 - **Spoke at [DEF CON 27](https://youtu.be/Qd9ubry-c_M), [EthCC](https://youtu.be/ZPoqwAbMWTE) and [ETHPrague](https://youtu.be/WUm34CV2s1I)** on exploits, honeypots and developer experience in Web3.
-- **Technical Partner at [Eden Block](https://edenblock.com)**, an early-stage venture firm backing blockchain, Web3 infrastructure and decentralized AI.
+- **Featured in [Code Is Law (2025)](https://www.imdb.com/title/tt35931420/)** — a feature documentary on the DAO hack, the Indexed Finance heist and the "code is law" philosophy in crypto.
 
 ---
 
