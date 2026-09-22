@@ -262,17 +262,20 @@ ROBOTS_FIXTURES = [
 ]
 
 
+def as_expected(got: list[str], expected: str | None) -> bool:
+    """No violations when none are expected, else one containing `expected`."""
+    return not got if expected is None else any(expected in v for v in got)
+
+
 def fixture_violations() -> list[str]:
     found = []
     for name, rel, head, expected in PAGE_FIXTURES:
         got = page_violations(rel, f"<html><head>{head}</head></html>")
-        ok = not got if expected is None else any(expected in v for v in got)
-        if not ok:
+        if not as_expected(got, expected):
             found.append(f"self-check: {name}: got {got!r}, expected {expected or 'none'!r}")
     for robots, expected in ROBOTS_FIXTURES:
         got = robots_violations(robots, lambda url: True)
-        ok = not got if expected is None else any(expected in v for v in got)
-        if not ok:
+        if not as_expected(got, expected):
             found.append(f"self-check: robots {robots!r}: got {got!r}, expected {expected or 'none'!r}")
     return found
 
