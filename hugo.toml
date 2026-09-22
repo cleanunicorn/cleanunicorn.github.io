@@ -26,7 +26,6 @@ enableGitInfo = true
 [params]
   contentTypeName = "about"
   showMenuItems = 4
-  fullWidthTheme = false
   centerTheme = true
   autoCover = true
   # Optional lede for the custom 404 page (layouts/404.html). Falls back to a
@@ -43,8 +42,6 @@ enableGitInfo = true
       # CV subtitle and as the homepage meta description. WHO he is lives in
       # data/home.toml `whoami`.
       subtitle = "CTO @ Stealth Startup | Technical Partner @ Eden Block | Open-source projects"
-      owner = "Daniel Luca"
-      author = "Daniel Luca"
       menuMore = "Show more"
       keywords = "Daniel Luca, CleanUnicorn, builder, hacker, extropian, software engineer, CTO, open source, developer tools, AI agents, local LLM, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, decentralized AI, venture capital"
 

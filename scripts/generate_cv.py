@@ -2,7 +2,7 @@
 """Generate a CV from the website content files.
 
 Reads markdown content from the Hugo site and produces a standalone,
-print-ready HTML file. No external dependencies beyond Python 3 stdlib.
+print-ready HTML file. Needs only the Python 3.11+ standard library.
 
 Content comes from the site (content/about/_index.md, content/previous-work.md,
 data/skills.toml); data/cv.toml holds the CV-only bits — the location and how
@@ -17,6 +17,7 @@ import argparse
 import html
 import re
 import sys
+import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -94,18 +95,10 @@ def icon_for(text: str, url: str) -> str:
 # ---------------------------------------------------------------------------
 
 def load_toml(path: Path) -> dict:
-    """Parse a TOML file, or return {} if it is missing or tomllib is absent."""
+    """Parse a TOML file, or return {} if it is missing."""
     if not path.exists():
         return {}
-    text = path.read_text()
-    try:
-        import tomllib
-    except ImportError:
-        try:
-            import tomli as tomllib  # type: ignore
-        except ImportError:
-            return {}
-    return tomllib.loads(text)
+    return tomllib.loads(path.read_text())
 
 
 # ---------------------------------------------------------------------------
@@ -182,16 +175,14 @@ def list_items(md: str) -> list[str]:
 # ---------------------------------------------------------------------------
 
 def parse_config() -> dict:
-    """Extract name and subtitle from hugo.toml."""
-    text = CONFIG.read_text()
-    name = ""
-    subtitle = ""
-    for line in text.split("\n"):
-        if "title =" in line and not name:
-            name = line.split("=", 1)[1].strip().strip('"')
-        if "subtitle =" in line:
-            subtitle = line.split("=", 1)[1].strip().strip('"')
-    return {"name": name, "subtitle": subtitle}
+    """Extract name and subtitle from hugo.toml.
+
+    A missing key raises rather than writing a blank CV header; a missing or
+    empty value is also caught earlier by check_positioning.py's config-fields
+    rule.
+    """
+    en = load_toml(CONFIG)["languages"]["en"]
+    return {"name": en["title"], "subtitle": en["params"]["subtitle"]}
 
 
 def parse_about() -> dict:
@@ -291,9 +282,7 @@ def parse_roles() -> list[dict]:
 
 def parse_skills() -> list[tuple[str, list[str]]]:
     """Parse data/skills.toml into ordered (category, items) pairs."""
-    data = load_toml(SKILLS_PATH) or _parse_skills_fallback(
-        SKILLS_PATH.read_text() if SKILLS_PATH.exists() else ""
-    )
+    data = load_toml(SKILLS_PATH)
 
     results: list[tuple[str, list[str]]] = []
     for key, val in data.items():
@@ -301,27 +290,6 @@ def parse_skills() -> list[tuple[str, list[str]]]:
             continue
         results.append((val.get("label", key.replace("_", " ")), val.get("items", [])))
     return results
-
-
-def _parse_skills_fallback(text: str) -> dict:
-    """Regex-based TOML parser for simple [Section] + items = [...] format."""
-    data: dict = {}
-    current: str | None = None
-    for line in text.split("\n"):
-        line = line.strip()
-        hm = re.match(r"^\[(\w+)\]", line)
-        if hm:
-            current = hm.group(1)
-            data[current] = {"items": []}
-            continue
-        if current and line.startswith("label"):
-            m = re.match(r'label\s*=\s*"([^"]*)"', line)
-            if m:
-                data[current]["label"] = m.group(1)
-        if current and '"' in line and "items" not in line and "label" not in line:
-            for m in re.finditer(r'"([^"]+)"', line):
-                data[current]["items"].append(m.group(1))
-    return data
 
 
 def split_media(entry: str, with_venue: bool) -> tuple[str, str, str]:

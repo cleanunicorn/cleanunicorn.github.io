@@ -20,3 +20,6 @@ hugo.linux
 # Generated CV (built by `make cv-pdf` before Hugo build)
 /static/cv.html
 /static/cv.pdf
+# Python bytecode and macOS Finder metadata
+__pycache__/
+.DS_Store
