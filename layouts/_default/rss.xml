@@ -1,6 +1,7 @@
 {{- /* Hugo's embedded rss.xml (v0.154.5, tpl/tplimpl/embedded/templates/rss.xml),
-   copied verbatim except for the posts-only filter below. Without it the home
-   feed lists every regular page, including site pages like Connect and Work. */ -}}
+   copied verbatim except for the posts-only filter on the home feed below.
+   Without it the home feed lists every regular page, including site pages
+   like Connect and Work. Section feeds keep their own pages. */ -}}
 {{- $authorEmail := "" }}
 {{- with site.Params.author }}
   {{- if reflect.IsMap . }}
@@ -29,7 +30,7 @@
 {{- else }}
 {{- $pages = $pctx.Pages }}
 {{- end }}
-{{- $pages = where $pages "Section" "posts" }}
+{{- if .IsHome }}{{ $pages = where $pages "Section" "posts" }}{{ end }}
 {{- $limit := .Site.Config.Services.RSS.Limit }}
 {{- if ge $limit 1 }}
 {{- $pages = $pages | first $limit }}
