@@ -9,12 +9,11 @@
   {{- $path := strings.TrimPrefix "./" $destURL.Path -}}
   {{- with or (.PageInner.Resources.Get $path) (resources.Get $path) -}}
     {{- $img := . -}}
-    {{- if and (eq .ResourceType "image") (not (in (slice "gif" "svg") .MediaType.SubType)) -}}
-      {{- if gt .Width 1600 -}}
-        {{- $img = .Resize "1600x webp q80 Lanczos" -}}
-      {{- else -}}
-        {{- $img = .Process "webp q80 Lanczos" -}}
-      {{- end -}}
+    {{- $raster := and (eq .ResourceType "image") (not (in (slice "gif" "svg") .MediaType.SubType)) -}}
+    {{- if and $raster (gt .Width 1600) -}}
+      {{- $img = .Resize "1600x webp q80 Lanczos" -}}
+    {{- else if $raster -}}
+      {{- $img = .Process "webp q80 Lanczos" -}}
     {{- end -}}
     {{- $src = $img.RelPermalink -}}
     {{- if and (eq $img.ResourceType "image") (ne $img.MediaType.SubType "svg") -}}
