@@ -8,9 +8,11 @@ silently, because Hugo builds green either way:
 * the home feed lists posts only (#50: layouts/_default/rss.xml)
 * no taxonomy pages, no about feed, none in sitemap.xml (#50: disableKinds,
   the about section's outputs)
+* the footer and the Posts header link the feed (#50)
 * cv.css is not published (#61: it lives in scripts/)
-* the footer's profile links and the JSON-LD sameAs match data/home.toml, and
-  the footer location matches data/cv.toml (#60)
+* the footer's profile links, the JSON-LD sameAs and the terminal's
+  data-book-url match data/home.toml, and the footer location matches
+  data/cv.toml (#60)
 
 It needs a clean build: a stale file from an older build fails it. `make build`
 passes hugo --cleanDestinationDir for that; after a bare `hugo`, run
@@ -63,8 +65,24 @@ def check_removed_outputs(public: Path) -> list[str]:
     return failures
 
 
+def check_feed_links(public: Path) -> list[str]:
+    """The home feed is linked from the footer and the Posts header."""
+    failures = []
+    # Patterns allow unquoted attributes: CI builds with --minify.
+    feed_link = r'<a href="?[^"\s>]*/index\.xml"? type="?application/rss\+xml"?>'
+    page = (public / "index.html").read_text()
+    footer = page[page.find("connect-footer__links"):]
+    if not re.search(feed_link + "RSS</a>", footer):
+        failures.append("index.html footer: no RSS feed link")
+    posts = (public / "posts" / "index.html").read_text()
+    if not re.search(r'class="?page-feed"?>' + feed_link, posts):
+        failures.append("posts/index.html: no page-feed RSS link in the header")
+    return failures
+
+
 def check_profile_data(root: Path, public: Path) -> list[str]:
-    """Footer links, footer location and JSON-LD sameAs come from data."""
+    """Footer links, footer location, JSON-LD sameAs and the terminal's booking
+    URL come from data."""
     failures = []
     home = tomllib.loads((root / "data" / "home.toml").read_text())
     by_net = {link["net"]: link for link in home["connect"]["links"]}
@@ -89,6 +107,10 @@ def check_profile_data(root: Path, public: Path) -> list[str]:
     urls = [p["url"] for p in profiles]
     if not same_as or same_as[: len(urls)] != urls:
         failures.append(f"index.html JSON-LD: sameAs {same_as} does not start with data {urls}")
+
+    book_url = by_net["calendar"]["url"]
+    if not re.search(r'class="?poster__eyebrow"? data-book-url="?' + re.escape(book_url) + r'[">\s]', page):
+        failures.append(f"index.html: poster__eyebrow has no data-book-url={book_url!r}")
     return failures
 
 
@@ -103,7 +125,12 @@ def main() -> int:
         print(f"check_build: no built site at {public} — run hugo first", file=sys.stderr)
         return 1
 
-    failures = check_feeds(public) + check_removed_outputs(public) + check_profile_data(args.root, public)
+    failures = (
+        check_feeds(public)
+        + check_feed_links(public)
+        + check_removed_outputs(public)
+        + check_profile_data(args.root, public)
+    )
     for line in failures:
         print(f"check_build: {line}", file=sys.stderr)
     print(f"check_build: {len(failures)} failures")
