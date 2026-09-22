@@ -48,7 +48,7 @@ POST_PAGE = re.compile(r"^posts/(?!page/)[^/]+/index\.html$")
 SITEMAP_LINE = re.compile(r"^Sitemap:\s*(\S+)\s*$", re.MULTILINE)
 
 
-class Head(HTMLParser):
+class HeadMeta(HTMLParser):
     """The meta tags and JSON-LD blocks of one page. Survives minified HTML."""
 
     def __init__(self):
@@ -59,14 +59,14 @@ class Head(HTMLParser):
         self._in_jsonld = False
 
     def handle_starttag(self, tag, attrs):
-        a = {k: (v or "") for k, v in attrs}
+        attributes = {k: (v or "") for k, v in attrs}
         if tag == "meta":
-            key = a.get("property") or a.get("name")
+            key = attributes.get("property") or attributes.get("name")
             if key:
-                self.meta.setdefault(key.lower(), []).append(a.get("content", ""))
-            if a.get("http-equiv", "").lower() == "refresh":
+                self.meta.setdefault(key.lower(), []).append(attributes.get("content", ""))
+            if attributes.get("http-equiv", "").lower() == "refresh":
                 self.refresh = True
-        elif tag == "script" and a.get("type") == "application/ld+json":
+        elif tag == "script" and attributes.get("type") == "application/ld+json":
             self._in_jsonld = True
             self.jsonld.append("")
 
@@ -78,7 +78,7 @@ class Head(HTMLParser):
         if self._in_jsonld:
             self.jsonld[-1] += data
 
-    def one(self, key: str) -> str | None:
+    def first(self, key: str) -> str | None:
         values = self.meta.get(key)
         return values[0] if values else None
 
@@ -118,15 +118,15 @@ def jsonld_objects(documents: list):
 
 def og_image_violations(head, local_file) -> list[str]:
     """What is wrong with the page's og:image and its declared size."""
-    og_image = head.one("og:image")
+    og_image = head.first("og:image")
     if not og_image:
         return ["has no og:image"]
     found = []
-    if og_image != head.one("twitter:image"):
-        found.append(f"twitter:image {head.one('twitter:image')!r} differs from og:image")
+    if og_image != head.first("twitter:image"):
+        found.append(f"twitter:image {head.first('twitter:image')!r} differs from og:image")
     if urlparse(og_image).path in ("", "/"):
         found.append(f"og:image {og_image!r} is the site root, not an image")
-    width, height = head.one("og:image:width"), head.one("og:image:height")
+    width, height = head.first("og:image:width"), head.first("og:image:height")
     if not (width or height):
         return found
     if (width, height) != tuple(str(n) for n in OG_SIZE):
@@ -149,7 +149,7 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
     build (or None when it is not local), so the fixtures below run this exact
     function.
     """
-    head = Head()
+    head = HeadMeta()
     head.feed(html)
     if head.refresh and "og:locale" not in head.meta:
         return []  # an alias redirect stub
@@ -158,18 +158,18 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
 
     if any("noodp" in v.lower() for v in meta.get("robots", [])):
         found.append("robots meta says noodp")
-    if head.one("og:locale") != LOCALE:
-        found.append(f"og:locale is {head.one('og:locale')!r}, expected {LOCALE!r}")
+    if head.first("og:locale") != LOCALE:
+        found.append(f"og:locale is {head.first('og:locale')!r}, expected {LOCALE!r}")
 
-    desc = head.one("description")
+    desc = head.first("description")
     if not desc or not desc.strip():
         found.append("has no meta description")
     elif len(desc) > MAX_DESCRIPTION:
         found.append(f"description is {len(desc)} characters (max {MAX_DESCRIPTION})")
 
     articles = {k: v for k, v in meta.items() if k.startswith("article:")}
-    if head.one("og:type") != "article" and articles:
-        found.append(f"og:type {head.one('og:type')!r} page emits {sorted(articles)}")
+    if head.first("og:type") != "article" and articles:
+        found.append(f"og:type {head.first('og:type')!r} page emits {sorted(articles)}")
     for key in ("article:published_time", "article:modified_time"):
         for value in meta.get(key, []):
             if not RFC3339.match(value):
@@ -177,7 +177,7 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
     if POST_PAGE.match(rel) and "article:published_time" not in meta:
         found.append("post has no article:published_time")
 
-    og_image = head.one("og:image")
+    og_image = head.first("og:image")
     found += og_image_violations(head, local_file)
 
     documents = []
