@@ -12,8 +12,9 @@ silently, because Hugo builds green either way:
 * the footer's profile links and the JSON-LD sameAs match data/home.toml, and
   the footer location matches data/cv.toml (#60)
 
-Hugo does not empty the output directory, so run it on a clean build
-(`make clean build`): a stale file from an older build fails this check.
+It needs a clean build: a stale file from an older build fails it. `make build`
+passes hugo --cleanDestinationDir for that; after a bare `hugo`, run
+`make clean` first.
 
 Usage:
     python3 scripts/check_build.py [--root PATH] [--public DIR]
