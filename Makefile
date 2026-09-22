@@ -20,7 +20,7 @@ dev: ## Run server (drafts+future). For remote access set HOST=<lan-ip>, e.g. ma
 build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check the output and its metadata
 	$(HUGO) --cleanDestinationDir
 	$(MAKE) --no-print-directory check-build
-	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
+	$(MAKE) --no-print-directory check-built-meta
 
 build-drafts: ## Build site including drafts and future posts
 	$(HUGO) -D -F
