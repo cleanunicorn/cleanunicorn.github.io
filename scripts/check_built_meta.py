@@ -116,6 +116,32 @@ def jsonld_objects(documents: list):
             stack.extend(item)
 
 
+def og_image_violations(head, local_file) -> list[str]:
+    """What is wrong with the page's og:image and its declared size."""
+    og_image = head.one("og:image")
+    if not og_image:
+        return ["has no og:image"]
+    found = []
+    if og_image != head.one("twitter:image"):
+        found.append(f"twitter:image {head.one('twitter:image')!r} differs from og:image")
+    if urlparse(og_image).path in ("", "/"):
+        found.append(f"og:image {og_image!r} is the site root, not an image")
+    width, height = head.one("og:image:width"), head.one("og:image:height")
+    if not (width or height):
+        return found
+    if (width, height) != tuple(str(n) for n in OG_SIZE):
+        return found + [f"og:image is declared {width}x{height}, expected {OG_SIZE_TEXT}"]
+    if not local_file:
+        return found
+    path = local_file(og_image)
+    if path is None or not path.is_file():
+        return found + [f"og:image {og_image!r} is not in the build"]
+    size = image_size(path)
+    if size and size != OG_SIZE:
+        found.append(f"og:image file is {size[0]}x{size[1]}, declared {OG_SIZE_TEXT}")
+    return found
+
+
 def page_violations(rel: str, html: str, local_file=None) -> list[str]:
     """Every metadata defect in one rendered page.
 
@@ -152,25 +178,7 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
         found.append("post has no article:published_time")
 
     og_image = head.one("og:image")
-    if not og_image:
-        found.append("has no og:image")
-    else:
-        if og_image != head.one("twitter:image"):
-            found.append(f"twitter:image {head.one('twitter:image')!r} differs from og:image")
-        if urlparse(og_image).path in ("", "/"):
-            found.append(f"og:image {og_image!r} is the site root, not an image")
-        width, height = head.one("og:image:width"), head.one("og:image:height")
-        if width or height:
-            if (width, height) != tuple(str(n) for n in OG_SIZE):
-                found.append(f"og:image is declared {width}x{height}, expected {OG_SIZE_TEXT}")
-            elif local_file:
-                path = local_file(og_image)
-                if path is None or not path.is_file():
-                    found.append(f"og:image {og_image!r} is not in the build")
-                else:
-                    size = image_size(path)
-                    if size and size != OG_SIZE:
-                        found.append(f"og:image file is {size[0]}x{size[1]}, declared {OG_SIZE_TEXT}")
+    found += og_image_violations(head, local_file)
 
     documents = []
     for block in head.jsonld:
