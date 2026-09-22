@@ -52,8 +52,7 @@
 {{- end }}
 
 {{- if and .IsPage (eq .Type "posts") }}
-  {{- $img := "og-image.png" | absURL -}}
-  {{- with .Params.cover }}{{ $img = . | absURL }}{{ end -}}
+  {{- $img := (partial "share-image.html" .).url -}}
   {{- $posting := dict
     "@context" "https://schema.org"
     "@type" "BlogPosting"
