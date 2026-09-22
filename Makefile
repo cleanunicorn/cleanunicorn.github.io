@@ -5,7 +5,6 @@ THEME ?= themes/terminal
 PUBLIC_DIR ?= public
 STATIC_DIR ?= static
 POSTS_DIR ?= content/posts
-DATE := $(shell date +"%Y-%m-%dT%H:%M:%S%z")
 
 .DEFAULT_GOAL := help
 
