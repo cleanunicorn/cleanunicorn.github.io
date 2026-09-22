@@ -41,6 +41,7 @@ from urllib.parse import urlparse
 
 MAX_DESCRIPTION = 160  # the same limit as check_positioning.py's Rule 9
 OG_SIZE = (1200, 630)
+OG_SIZE_TEXT = "{}x{}".format(*OG_SIZE)
 LOCALE = "en_US"
 RFC3339 = re.compile(r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(Z|[+-]\d\d:\d\d)$")
 POST_PAGE = re.compile(r"^posts/(?!page/)[^/]+/index\.html$")
@@ -161,7 +162,7 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
         width, height = head.one("og:image:width"), head.one("og:image:height")
         if width or height:
             if (width, height) != tuple(str(n) for n in OG_SIZE):
-                found.append(f"og:image is declared {width}x{height}, expected 1200x630")
+                found.append(f"og:image is declared {width}x{height}, expected {OG_SIZE_TEXT}")
             elif local_file:
                 path = local_file(og_image)
                 if path is None or not path.is_file():
@@ -169,7 +170,7 @@ def page_violations(rel: str, html: str, local_file=None) -> list[str]:
                 else:
                     size = image_size(path)
                     if size and size != OG_SIZE:
-                        found.append(f"og:image file is {size[0]}x{size[1]}, declared 1200x630")
+                        found.append(f"og:image file is {size[0]}x{size[1]}, declared {OG_SIZE_TEXT}")
 
     documents = []
     for block in head.jsonld:
