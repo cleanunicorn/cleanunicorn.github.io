@@ -1,32 +1,28 @@
 #!/usr/bin/env python3
 """Assert the site's identity copy still leads with what he builds.
 
-This repository has no test suite. This is its source-side check and the
-regression net behind the builder-first positioning; check_build.py and
-check_built_meta.py check the rendered site after a build. It fails when a
-protected field starts describing him as a partner or an investor before it
-describes him as someone who builds things, when a WHO surface (the hero
-`whoami` and its copies) names a role or an employer at all — those belong on
-the WHAT surfaces: the hugo.toml subtitle, the Work page, the terminal's
+This is the source-side check and the regression net behind the builder-first
+positioning; tests/ holds the unit tests for its rules (`make test`), and
+check_build.py and check_built_meta.py check the rendered site after a build.
+It fails when a protected field starts describing him as a partner or an
+investor before it describes him as someone who builds things, when a WHO
+surface (the hero `whoami` and its copies) names a role or an employer at
+all — those belong on the WHAT surfaces: the hugo.toml subtitle, the Work page, the terminal's
 work.md — and when static/llms.txt — the file agents read — drifts away from
 the pages it restates. It also holds every meta description — front-matter
 descriptions and the hugo.toml subtitle the homepage uses — to 160 characters,
 the length search engines show before truncating (Rule 9).
 
-Three deliberate choices, all load-bearing:
+Two deliberate choices, both load-bearing:
 
-* It imports nothing from this directory. An import would write
-  `scripts/__pycache__/*.pyc` into a tree whose .gitignore does not cover it,
-  and this check has to keep working when the CV generator is broken.
+* It imports nothing from this directory: this check has to keep working when
+  the CV generator is broken.
 * It reads TOML values with `tomllib`, so every form the format allows — a
   single-quoted value, a triple-quoted block, a value spread over lines — is
   read the way Hugo and the CV generator will read it. Line regexes were tried
   first and failed open two ways: a single-quoted value dropped out of the
   checked set entirely, and a triple-quoted block matched with the middle
   quote as its value.
-* Rule 3 is the exception and stays a raw-line count, because it exists to
-  mirror `parse_config()` in generate_cv.py, which scans lines rather than
-  parsing.
 
 What it reads, so the next editor does not have to infer it:
 
@@ -89,11 +85,6 @@ ROLE_WORDS = ("cto", "partner", "investor", "researcher", "engineer", "@")
 # because they are the ones this site's copy actually uses.
 LEADING_MARKUP = re.compile(r"""^[\s>*_#\-–—\["'(«“‘]+""")
 
-# generate_cv.py's parse_config() tests `"subtitle =" in line` — an
-# unanchored substring, so a commented-out or prefixed line counts for it
-# too. Rule 3 exists to mirror that scan, so it matches what the generator
-# matches, not what TOML means.
-SUBTITLE_LINE = re.compile(r"^.*subtitle\s*=.*$", re.MULTILINE)
 HUMANS_ROLE = re.compile(r"^\s*Role:\s*(.+?)\s*$", re.MULTILINE)
 # `(?!")` rejects a triple-quote opener instead of capturing the middle
 # quote as the value, and the body cannot span lines — either way the value
@@ -201,16 +192,6 @@ MIRROR_FIXTURES = [
      "### [drove](https://example.test/drove) Legacy\nRetired.\n", _FIXTURE_WORK, True),
     ("the role heading inside a longer line", _FIXTURE_LLMS, _FIXTURE_ABOUT,
      "## Founder, Akira Tech (former)\n\n*October 2020 \u2013 Present*\n", True),
-]
-
-# Rule 3's own fixture: the generator's line scan, and what Rule 3 must see.
-SUBTITLE_SCAN_FIXTURES = [
-    # (name, a hugo.toml fragment, how many lines Rule 3 must count,
-    #  whether that count is a violation)
-    ("a commented-out line below the live one",
-     '      subtitle = "Builder | Hacker"\n      # subtitle = "Investor | Builder"\n', 2, True),
-    ("the one live line", '      subtitle = "Builder | Hacker"\n', 1, False),
-    ("no subtitle at all", '      title = "Daniel Luca"\n', 0, True),
 ]
 
 
@@ -321,23 +302,6 @@ def mirror_violations(llms: str, about: str, work: str, projects, roles) -> list
     return found
 
 
-def subtitle_violation(matches: list[str]) -> str | None:
-    """Why this many `subtitle =` lines is wrong, or None when it is one.
-
-    Zero is as much a violation as two: generate_cv.py's parse_config() starts
-    with an empty subtitle and writes an empty CV header rather than failing.
-    """
-    if len(matches) == 1:
-        return None
-    problem = (
-        f"{len(matches)} lines contain `subtitle =` (including comments, which "
-        f"generate_cv.py's parse_config() counts too)"
-    )
-    if not matches:
-        return f"{problem}; the CV header would be blank"
-    return f"{problem}; it silently uses the last one: {matches[-1].strip()!r}"
-
-
 def heading_matches(lines: list[str], pattern: str) -> bool:
     """Whether a `## ` heading matches — the whole line, or its `, Org` tail."""
     if pattern.startswith("## "):
@@ -444,7 +408,6 @@ class Check:
         self.check_opening_fixtures()
         self.check_blank_fixtures()
         self.check_mirror_fixtures()
-        self.check_subtitle_scan_fixtures()
         self.check_toml_fixtures()
         self.check_who_fixtures()
         self.check_length_fixtures()
@@ -497,21 +460,6 @@ class Check:
                     f"{'a violation' if expect_violation else 'none'}"
                 )
 
-    def check_subtitle_scan_fixtures(self) -> None:
-        """Rule 3 still counts the lines generate_cv.py counts, and still reports."""
-        for name, document, expected_lines, expect_violation in SUBTITLE_SCAN_FIXTURES:
-            matches = SUBTITLE_LINE.findall(document)
-            if len(matches) != expected_lines:
-                self.self_check_failed(
-                    f"{name}: counted {len(matches)} `subtitle =` lines, expected {expected_lines}"
-                )
-            problem = subtitle_violation(matches)
-            if bool(problem) != expect_violation:
-                self.self_check_failed(
-                    f"{name}: reported {problem!r}, expected "
-                    f"{'a violation' if expect_violation else 'none'}"
-                )
-
     def check_toml_fixtures(self) -> None:
         """Every TOML quoting form still yields the value Rule 1 then tests."""
         for name, document, expected in TOML_FIXTURES:
@@ -559,15 +507,6 @@ class Check:
                     self.check_opening(f"{rel}: {key}", value)
                     if key == "description":
                         self.check_length(f"{rel}: {key}", value)
-
-    def rule_single_subtitle(self) -> None:
-        """Rule 3 — generate_cv.py takes the LAST `subtitle =` line it sees."""
-        config = self.read(HUGO_TOML)
-        if not config:
-            return
-        problem = subtitle_violation(SUBTITLE_LINE.findall(config))
-        if problem:
-            self.fail(f"{HUGO_TOML}: subtitle", problem)
 
     def rule_single_link(self) -> None:
         """Rule 4 — layouts/index.html:24 replaces EVERY match of whoamiLink."""
@@ -683,7 +622,6 @@ class Check:
             self.rule_fixtures,
             self.rule_config_fields,
             self.rule_front_matter,
-            self.rule_single_subtitle,
             self.rule_single_link,
             self.rule_four_stats,
             self.rule_secondary_surfaces,
