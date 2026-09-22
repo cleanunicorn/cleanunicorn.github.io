@@ -35,11 +35,12 @@ make new POST="My Post Title"   # create content/posts/my-post-title/index.md
 
 | Target | What it does |
 |---|---|
-| `make check-positioning` | Checks that the identity copy leads with what he builds and that `static/llms.txt` still matches the pages it restates |
+| `make check-positioning` | Checks that the identity copy leads with what he builds, that `static/llms.txt` still matches the pages it restates, and that descriptions fit in 160 characters |
 | `make test` | Runs the unit tests in `tests/` (the positioning guard's rules, the CV parser, cv-pdf's failure paths) |
 | `make check-alt-text` | Fails if a post image has placeholder alt text ("Untitled", "image 2", a filename) |
-| `make build` | Runs `check-positioning` and `check-alt-text`, builds the site into a clean `public/`, then runs `check-build` |
+| `make build` | Runs `check-positioning` and `check-alt-text`, builds the site into a clean `public/`, then runs `check-build` and `check-built-meta` |
 | `make check-build` | Checks the built site in `public/`: posts-only feed, no taxonomy pages, no published cv.css, profile links from `data/home.toml` |
+| `make check-built-meta` | Checks the built site's search and social metadata: descriptions, Open Graph image, JSON-LD, robots.txt |
 | `make cv` | Writes the CV as HTML to `static/cv.html`, generated from the About and Work pages |
 | `make cv-pdf` | Runs `make cv`, then prints `static/cv.pdf` with headless Chromium or Chrome (`CHROME=<path>` picks the browser) |
 | `make books` | Refreshes the About page's Books list from Goodreads |
@@ -56,13 +57,13 @@ example with no browser on `PATH` or an empty output file.
   - *Check positioning* (`.github/workflows/positioning.yml`) runs
     `make check-positioning` and `make test`.
   - *Build and link-check* (`.github/workflows/site-check.yml`) builds the site
-    with `hugo --minify`, runs `make check-alt-text` and `make check-build`,
-    and runs [lychee](https://lychee.cli.rs/) offline over `public/`. A dead
-    internal link or `#anchor` fails the PR.
+    with `hugo --minify`, runs `make check-alt-text`, `make check-build` and
+    `make check-built-meta`, and runs [lychee](https://lychee.cli.rs/) offline
+    over `public/`. A dead internal link or `#anchor` fails the PR.
 - **A push to `main`** runs *Build and deploy* (`.github/workflows/hugo.yml`).
   It runs the positioning guard and `make check-alt-text`, generates the CV
-  (HTML and PDF), builds with Hugo, runs `make check-build` and publishes
-  `public/` to GitHub Pages.
+  (HTML and PDF), builds with Hugo, runs `make check-build` and
+  `make check-built-meta`, and publishes `public/` to GitHub Pages.
 - **Dependabot** (`.github/dependabot.yml`) opens weekly PRs that bump the
   GitHub Actions and the theme submodule.
 

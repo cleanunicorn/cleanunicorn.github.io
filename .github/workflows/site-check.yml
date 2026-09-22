@@ -3,8 +3,8 @@
 # "Build and deploy" runs only on a push to main, so a broken template or a
 # dead internal link or #anchor used to surface only after merging. This job
 # builds the site the way the deploy does, runs the deploy's alt-text and
-# build-output checks (make check-alt-text, make check-build), and fails on
-# any of them. It is its own
+# build-output checks (make check-alt-text, check-build, check-built-meta),
+# and fails on any of them. It is its own
 # workflow, with read-only permissions, for the reason positioning.yml gives:
 # a pull_request trigger on the deploy workflow would hand PR runs its
 # `pages: write` and `id-token: write` permissions.
@@ -30,6 +30,8 @@ jobs:
         uses: actions/checkout@v5
         with:
           submodules: recursive
+          # Full history, as in the deploy: hugo.toml sets enableGitInfo.
+          fetch-depth: 0
       - name: Install Hugo
         # .hugo-version is the one place the Hugo version is pinned.
         run: |
@@ -56,6 +58,8 @@ jobs:
         run: hugo --minify
       - name: Check build output
         run: make check-build
+      - name: Check built metadata
+        run: make check-built-meta
       - name: Check internal links and anchors
         uses: lycheeverse/lychee-action@v2
         with:

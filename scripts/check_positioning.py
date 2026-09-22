@@ -7,8 +7,8 @@ check_build.py and check_built_meta.py check the rendered site after a build.
 It fails when a protected field starts describing him as a partner or an
 investor before it describes him as someone who builds things, when a WHO
 surface (the hero `whoami` and its copies) names a role or an employer at
-all — those belong on the WHAT surfaces: the hugo.toml subtitle, the Work page, the terminal's
-work.md — and when static/llms.txt — the file agents read — drifts away from
+all — those belong on the WHAT surfaces: the hugo.toml subtitle, the Work
+page, the terminal's work.md — and when static/llms.txt — the file agents read — drifts away from
 the pages it restates. It also holds every meta description — front-matter
 descriptions and the hugo.toml subtitle the homepage uses — to 160 characters,
 the length search engines show before truncating (Rule 9).
