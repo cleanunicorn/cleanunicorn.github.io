@@ -16,6 +16,11 @@ disableKinds = ["taxonomy", "term"]
 [markup.highlight]
   noClasses = false
 
+# Keep processed post images (render-image hook) in --cacheDir so the CI
+# cache step reuses them instead of re-encoding every image on each deploy.
+[caches.images]
+  dir = ':cacheDir/images'
+
 [params]
   contentTypeName = "about"
   showMenuItems = 4
