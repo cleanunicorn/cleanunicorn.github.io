@@ -4,9 +4,9 @@
   Hugo's embedded image hook. */ -}}
 {{- $src := .Destination -}}
 {{- $w := 0 -}}{{- $h := 0 -}}
-{{- $u := urls.Parse .Destination -}}
-{{- if not $u.IsAbs -}}
-  {{- $path := strings.TrimPrefix "./" $u.Path -}}
+{{- $destURL := urls.Parse .Destination -}}
+{{- if not $destURL.IsAbs -}}
+  {{- $path := strings.TrimPrefix "./" $destURL.Path -}}
   {{- with or (.PageInner.Resources.Get $path) (resources.Get $path) -}}
     {{- $img := . -}}
     {{- if and (eq .ResourceType "image") (not (in (slice "gif" "svg") .MediaType.SubType)) -}}
