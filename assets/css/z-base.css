@@ -175,6 +175,7 @@ pre code { border: 0; background: none; padding: 0; }
 
 /* ---- Media ---------------------------------------------------------------- */
 .content img {
+  height: auto; /* keep aspect ratio when max-width shrinks an image with width/height attrs */
   margin-inline: auto;
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
