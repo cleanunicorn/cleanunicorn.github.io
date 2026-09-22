@@ -1,0 +1,63 @@
+# Build the site and check its internal links, on pull requests.
+#
+# "Build and deploy" runs only on a push to main, so a broken template or a
+# dead internal link or #anchor used to surface only after merging. This job
+# builds the site the way the deploy does and fails on either. It is its own
+# workflow, with read-only permissions, for the reason positioning.yml gives:
+# a pull_request trigger on the deploy workflow would hand PR runs its
+# `pages: write` and `id-token: write` permissions.
+#
+# The link check is offline: it follows links inside public/ and never the
+# network. Absolute links to this site (Hugo's permalinks use the baseURL) are
+# remapped onto public/, root-relative ones resolve against it, and anchors
+# are checked with --include-fragments. /santoku/ is a separate GitHub Pages
+# project site on the same host, so it is not in public/ and is excluded.
+name: Build and link-check
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+      - name: Install Hugo
+        # .hugo-version is the one place the Hugo version is pinned.
+        run: |
+          HUGO_VERSION="$(tr -d '[:space:]' < .hugo-version)"
+          mkdir -p "${HOME}/.local/hugo"
+          curl -sLJO "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
+          tar -C "${HOME}/.local/hugo" -xf "hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
+          rm "hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
+          echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
+          "${HOME}/.local/hugo/hugo" version
+      # /cv.html and /cv.pdf are generated, not committed, and the pages link
+      # to them. The runner image's google-chrome prints the PDF.
+      - name: Generate CV (HTML + PDF)
+        run: make cv-pdf
+      - name: Build the site
+        run: hugo --minify
+      - name: Check internal links and anchors
+        uses: lycheeverse/lychee-action@v2
+        with:
+          lycheeVersion: v0.24.2
+          # The action runs these through `eval`, so the remap's `$1` must
+          # stay inside single quotes.
+          args: >-
+            --offline
+            --include-fragments
+            --no-progress
+            --root-dir '${{ github.workspace }}/public'
+            --remap 'https://cleanunicorn\.github\.io/(.*) file://${{ github.workspace }}/public/$1'
+            --exclude '/public/santoku/'
+            --index-files index.html
+            'public/**/*.html'
+          fail: true
