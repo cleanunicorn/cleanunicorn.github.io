@@ -22,7 +22,8 @@ Three deliberate choices, all load-bearing:
   checked set entirely, and a triple-quoted block matched with the middle
   quote as its value.
 * Rule 3 is the exception and stays a raw-line count, because it exists to
-  mirror `generate_cv.py:189-193`, which scans lines rather than parsing.
+  mirror `parse_config()` in generate_cv.py, which scans lines rather than
+  parsing.
 
 What it reads, so the next editor does not have to infer it:
 
@@ -78,10 +79,10 @@ ROLE_WORDS = ("cto", "partner", "investor", "researcher", "engineer", "@")
 # because they are the ones this site's copy actually uses.
 LEADING_MARKUP = re.compile(r"""^[\s>*_#\-–—\["'(«“‘]+""")
 
-# generate_cv.py:192 tests `"subtitle =" in line` — an unanchored substring,
-# so a commented-out or prefixed line counts for it too. Rule 3 exists to
-# mirror that scan, so it matches what the generator matches, not what TOML
-# means.
+# generate_cv.py's parse_config() tests `"subtitle =" in line` — an
+# unanchored substring, so a commented-out or prefixed line counts for it
+# too. Rule 3 exists to mirror that scan, so it matches what the generator
+# matches, not what TOML means.
 SUBTITLE_LINE = re.compile(r"^.*subtitle\s*=.*$", re.MULTILINE)
 HUMANS_ROLE = re.compile(r"^\s*Role:\s*(.+?)\s*$", re.MULTILINE)
 # `(?!")` rejects a triple-quote opener instead of capturing the middle
@@ -301,14 +302,14 @@ def mirror_violations(llms: str, about: str, work: str, projects, roles) -> list
 def subtitle_violation(matches: list[str]) -> str | None:
     """Why this many `subtitle =` lines is wrong, or None when it is one.
 
-    Zero is as much a violation as two: generate_cv.py:189-194 starts with an
-    empty subtitle and writes an empty CV header rather than failing.
+    Zero is as much a violation as two: generate_cv.py's parse_config() starts
+    with an empty subtitle and writes an empty CV header rather than failing.
     """
     if len(matches) == 1:
         return None
     problem = (
         f"{len(matches)} lines contain `subtitle =` (including comments, which "
-        f"generate_cv.py:192 counts too)"
+        f"generate_cv.py's parse_config() counts too)"
     )
     if not matches:
         return f"{problem}; the CV header would be blank"
