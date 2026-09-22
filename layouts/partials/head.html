@@ -43,7 +43,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="{{ "apple-touch-icon.png" | relURL }}">
 
 <!-- Resolve the share image: cover, lead image, first bundle image, else the site default -->
-{{ $share := partial "share-image.html" . }}
+{{ $share := partialCached "share-image.html" . .RelPermalink }}
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />

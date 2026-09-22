@@ -52,7 +52,7 @@
 {{- end }}
 
 {{- if and .IsPage (eq .Type "posts") }}
-  {{- $img := (partial "share-image.html" .).url -}}
+  {{- $img := (partialCached "share-image.html" . .RelPermalink).url -}}
   {{- $posting := dict
     "@context" "https://schema.org"
     "@type" "BlogPosting"
