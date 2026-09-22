@@ -5,6 +5,8 @@ check_positioning.py reads the sources; this reads what Hugo rendered, because
 the defects it guards against live in templates and config and only show in
 the output. It runs after a build: `make build` and the deploy workflow call it
 on public/, so a template edit or a theme update cannot quietly bring one back.
+check_build.py, its sibling, checks the rest of the output (feeds, removed
+pages, profile data); this one owns the <head> metadata and robots.txt.
 
 What it asserts, per rendered HTML page:
 
