@@ -18,8 +18,8 @@
 }
 
 .notfound__prompt { color: var(--accent); }
-.notfound__path   { color: var(--c-text-muted); }
-.notfound__err    { color: var(--c-error); }
+.notfound__path   { color: var(--text-muted); }
+.notfound__err    { color: var(--danger); }
 
 .notfound__cursor {
   display: inline-block;
@@ -34,8 +34,7 @@
 
 .notfound__lede {
   margin: 0 0 1.6rem;
-  max-width: 56ch;
-  color: var(--c-text-soft);
+  color: var(--text-body);
 }
 
 .notfound__links {
