@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Assert the site's identity copy still leads with what he builds.
 
-This repository has no test suite; this is its one assertion-running check and
-the regression net behind the builder-first positioning. It fails when a
+This repository has no test suite. This is its source-side check and the
+regression net behind the builder-first positioning; check_built_meta.py
+checks the rendered site after a build. It fails when a
 protected field starts describing him as a partner or an investor before it
 describes him as someone who builds things, when a WHO surface (the hero
 `whoami` and its copies) names a role or an employer at all — those belong on
