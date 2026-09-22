@@ -6,7 +6,8 @@
   Order:
     1. front-matter `cover`: a bundle resource, else a static path or URL
        (used as given, with no dimensions, since nothing is processed; so is
-       a bundle cover that is not a raster image, such as an SVG);
+       a bundle cover that is not a raster image, such as an SVG, because
+       .Fill would fail the build on it);
     2. the first markdown image in the content that is a bundle resource —
        the post's lead image (resources sort by name, so "image 1.png" would
        come before "image.png");
@@ -49,9 +50,7 @@
   {{- end -}}
 {{- end -}}
 
-{{- /* Only raster images can be processed. A cover that is an SVG (or any
-   other non-raster resource) is used as given, with no dimensions, like a
-   static-path cover; .Fill on it would fail the build. */ -}}
+{{- /* Only raster images can be processed; see item 1 above. */ -}}
 {{- with $image -}}
   {{- if and (eq .ResourceType "image") (ne .MediaType.SubType "svg") -}}
     {{- with .Fill "1200x630 Center" -}}
