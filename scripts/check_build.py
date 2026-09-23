@@ -13,6 +13,7 @@ silently, because Hugo builds green either way:
 * the footer's profile links, the JSON-LD sameAs and the terminal's
   data-book-url match data/home.toml, and the footer location matches
   data/cv.toml (#60)
+* primary navigation links and the mobile disclosure's source contract (#45)
 
 It needs a clean build: a stale file from an older build fails it. `make build`
 passes hugo --cleanDestinationDir for that; after a bare `hugo`, run
@@ -26,6 +27,7 @@ import argparse
 import json
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 
 try:
@@ -114,6 +116,94 @@ def check_profile_data(root: Path, public: Path) -> list[str]:
     return failures
 
 
+class NavParser(HTMLParser):
+    """Collect navigation semantics without depending on HTML minifier quoting."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.navs = []
+        self.current_nav = None
+        self.lists = []
+        self.anchor = None
+        self.bad_trigger = False
+        self.refresh = False
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        classes = set((attributes.get("class") or "").split())
+        if tag == "meta" and (attributes.get("http-equiv") or "").lower() == "refresh":
+            self.refresh = True
+        if tag == "li" and "menu__trigger" in classes:
+            self.bad_trigger = True
+        if tag == "nav":
+            self.current_nav = {"classes": classes, "buttons": [], "lists": [], "links": []}
+            self.navs.append(self.current_nav)
+        if self.current_nav is None:
+            return
+        if tag == "button":
+            self.current_nav["buttons"].append(attributes)
+        elif tag == "ul":
+            item = {"attrs": attributes, "links": []}
+            self.current_nav["lists"].append(item)
+            self.lists.append(item)
+        elif tag == "a":
+            self.anchor = {"href": attributes.get("href"), "text": ""}
+
+    def handle_data(self, data):
+        if self.anchor is not None:
+            self.anchor["text"] += data
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self.anchor is not None and self.current_nav is not None:
+            link = (self.anchor["href"], self.anchor["text"].strip())
+            self.current_nav["links"].append(link)
+            if self.lists:
+                self.lists[-1]["links"].append(link)
+            self.anchor = None
+        elif tag == "ul" and self.lists:
+            self.lists.pop()
+        elif tag == "nav":
+            self.current_nav = None
+            self.lists.clear()
+
+
+def check_nav(root: Path, public: Path) -> list[str]:
+    """Every rendered page has configured links and a safe mobile fallback."""
+    menu = tomllib.loads((root / "hugo.toml").read_text())["languages"]["en"]["menu"]["main"]
+    expected = [(item["url"], item["name"]) for item in sorted(menu, key=lambda item: item["weight"])]
+    failures = []
+    for path in sorted(public.rglob("*.html")):
+        rel = path.relative_to(public)
+        if (root / "static" / rel).is_file():
+            continue  # Hugo copies static HTML (for example, the generated CV) unchanged.
+        parser = NavParser()
+        parser.feed(path.read_text())
+        if parser.refresh:
+            continue
+        mobile = [nav for nav in parser.navs if "navigation-menu--mobile" in nav["classes"]]
+        desktop = [nav for nav in parser.navs if "navigation-menu" in nav["classes"] and "navigation-menu--mobile" not in nav["classes"]]
+        if len(mobile) != 1 or len(desktop) != 1:
+            failures.append(f"{rel}: expected one mobile and one desktop primary nav, got {len(mobile)} and {len(desktop)}")
+            continue
+        if parser.bad_trigger:
+            failures.append(f"{rel}: unfocusable li.menu__trigger remains")
+        if desktop[0]["links"] != expected:
+            failures.append(f"{rel}: desktop links {desktop[0]['links']} != {expected}")
+        if mobile[0]["links"] != expected:
+            failures.append(f"{rel}: mobile links {mobile[0]['links']} != {expected}")
+        buttons = mobile[0]["buttons"]
+        if len(buttons) != 1:
+            failures.append(f"{rel}: expected one mobile menu button, got {len(buttons)}")
+            continue
+        button = buttons[0]
+        targets = [lst for lst in mobile[0]["lists"] if lst["attrs"].get("id") == button.get("aria-controls")]
+        if button.get("type") != "button" or button.get("aria-expanded") != "true" or "hidden" not in button:
+            failures.append(f"{rel}: mobile button must start hidden with type=button and aria-expanded=true")
+        if not button.get("aria-controls") or len(targets) != 1 or "hidden" in targets[0]["attrs"] or targets[0]["links"] != expected:
+            failures.append(f"{rel}: mobile button must control one initially visible full link list")
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
@@ -130,6 +220,7 @@ def main() -> int:
         + check_feed_links(public)
         + check_removed_outputs(public)
         + check_profile_data(args.root, public)
+        + check_nav(args.root, public)
     )
     for line in failures:
         print(f"check_build: {line}", file=sys.stderr)

@@ -5,12 +5,12 @@ THEME ?= themes/terminal
 PUBLIC_DIR ?= public
 STATIC_DIR ?= static
 POSTS_DIR ?= content/posts
-# Browser for cv-pdf; empty means the first of chromium, google-chrome on PATH.
+# Browser for cv-pdf and check-browser-nav; empty picks one from PATH.
 CHROME ?=
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev build build-drafts check-positioning check-alt-text check-build check-built-meta test clean new update-theme submodules cv cv-pdf books og-image
+.PHONY: help dev build build-drafts check-positioning check-alt-text check-build check-built-meta check-browser-nav test clean new update-theme submodules cv cv-pdf books og-image
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -18,10 +18,11 @@ help: ## Show this help
 dev: ## Run server (drafts+future). For remote access set HOST=<lan-ip>, e.g. make dev HOST=192.168.1.50
 	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender --ignoreCache --gc --noHTTPCache $(if $(HOST),--baseURL http://$(HOST))
 
-build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check the output and its metadata
+build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check output, metadata, and browser navigation
 	$(HUGO) --cleanDestinationDir
 	$(MAKE) --no-print-directory check-build
 	$(MAKE) --no-print-directory check-built-meta
+	$(MAKE) --no-print-directory check-browser-nav
 
 build-drafts: ## Build site including drafts and future posts
 	$(HUGO) -D -F
@@ -48,8 +49,14 @@ submodules: ## Initialize and update all submodules
 check-positioning: ## Assert the identity copy leads builder-first, llms.txt still matches the pages, and descriptions fit in 160 characters
 	python3 scripts/check_positioning.py
 
-check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data
+check-build: ## Assert built feeds, removed outputs, profile data, and primary navigation markup
 	python3 scripts/check_build.py --public $(PUBLIC_DIR)
+
+node_modules/.package-lock.json: package-lock.json
+	npm ci --ignore-scripts --no-audit --no-fund
+
+check-browser-nav: node_modules/.package-lock.json ## Exercise mobile and desktop navigation in Chromium against the built site
+	CHROME="$(CHROME)" node --test tests/mobile_nav.test.cjs
 
 check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image 2", "alt text", or a filename)
 	@if grep -rniE '!\[((untitled|image|alt text)([ _-]?[0-9]+)?|[^]]*\.(png|jpe?g|gif|webp|svg))\]\(' content; then \
@@ -61,7 +68,7 @@ check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image
 check-built-meta: ## Assert the built site's search and social metadata (run after a build)
 	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
 
-test: ## Run the unit tests in tests/ (the positioning guard's rules, the CV parser, cv-pdf's failure paths)
+test: ## Run Python unit tests for navigation output, positioning, CV parsing, and cv-pdf failure paths
 	python3 -m unittest discover -s tests -v
 
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)

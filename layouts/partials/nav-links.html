@@ -1,0 +1,7 @@
+{{- $currentPage := . -}}
+{{ range $.Site.Menus.main }}
+  {{ if not .HasChildren }}
+    {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) (and (ne .URL "/") (hasPrefix $currentPage.RelPermalink (.URL | relLangURL))) }}
+    <li><a href="{{ .URL }}"{{ if $active }} aria-current="page"{{ end }}{{ if .Params.NewTab }} target="_blank"{{ end }}>{{ .Name }}</a></li>
+  {{ end }}
+{{ end }}
