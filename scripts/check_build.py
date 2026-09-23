@@ -13,6 +13,7 @@ silently, because Hugo builds green either way:
 * the footer's profile links, the JSON-LD sameAs and the terminal's
   data-book-url match data/home.toml, and the footer location matches
   data/cv.toml (#60)
+* each math page has one configured KaTeX render pass (#62)
 
 It needs a clean build: a stale file from an older build fails it. `make build`
 passes hugo --cleanDestinationDir for that; after a bare `hugo`, run
@@ -114,6 +115,39 @@ def check_profile_data(root: Path, public: Path) -> list[str]:
     return failures
 
 
+def check_math_rendering(public: Path) -> list[str]:
+    """Math pages have exactly one render pass with the expected options."""
+    failures = []
+    math_pages = []
+    delimiters = (
+        ("$$", "$$", "true"),
+        ("$", "$", "false"),
+        (r"\\[", r"\\]", "true"),
+        (r"\\(", r"\\)", "false"),
+    )
+    for path in sorted(public.rglob("*.html")):
+        page = path.read_text()
+        if "contrib/auto-render.min.js" not in page:
+            continue
+        math_pages.append(path)
+        rel = path.relative_to(public).as_posix()
+        calls = re.findall(r"renderMathInElement\s*\(", page)
+        if len(calls) != 1:
+            failures.append(f"{rel}: expected one KaTeX render call, found {len(calls)}")
+        if not re.search(r"renderMathInElement\s*\(\s*document\.body\s*,\s*\{", page):
+            failures.append(f"{rel}: missing configured body render call")
+        for left, right, display in delimiters:
+            pattern = (r"\{\s*left:\s*'" + re.escape(left) + r"'\s*,\s*right:\s*'"
+                       + re.escape(right) + r"'\s*,\s*display:\s*" + display + r"\s*\}")
+            if not re.search(pattern, page):
+                failures.append(f"{rel}: missing KaTeX delimiter {left!r}/{right!r}")
+        if not re.search(r"throwOnError\s*:\s*false\b", page):
+            failures.append(f"{rel}: missing KaTeX throwOnError: false")
+    if not math_pages:
+        failures.append("no math-enabled page loads KaTeX auto-render")
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
@@ -130,6 +164,7 @@ def main() -> int:
         + check_feed_links(public)
         + check_removed_outputs(public)
         + check_profile_data(args.root, public)
+        + check_math_rendering(public)
     )
     for line in failures:
         print(f"check_build: {line}", file=sys.stderr)
