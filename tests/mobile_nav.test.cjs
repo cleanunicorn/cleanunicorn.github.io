@@ -88,6 +88,12 @@ test("mobile disclosure and desktop navigation work in Chromium", { timeout: 300
     }
     assert.deepEqual(desktopFocused, expected);
 
+    const about = await browser.newPage({ viewport: { width: 375, height: 812 } });
+    await about.goto(`${url}about/`);
+    for (const nav of [".navigation-menu--mobile", ".navigation-menu:not(.navigation-menu--mobile)"]) {
+      assert.equal(await about.locator(`${nav} a[href="/about/"]`).getAttribute("aria-current"), "page");
+    }
+
     const noJs = await browser.newPage({ viewport: { width: 375, height: 812 }, javaScriptEnabled: false });
     await noJs.goto(url);
     assert.equal(await noJs.locator(".mobile-nav__toggle").isVisible(), false);

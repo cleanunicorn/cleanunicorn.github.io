@@ -1,13 +1,7 @@
 {{- /* Primary desktop navigation. Render every item inline so a fifth link
    never creates an unfocusable overflow trigger. */ -}}
-{{- $currentPage := . -}}
 <nav class="navigation-menu" aria-label="Primary">
   <ul class="navigation-menu__inner menu--desktop">
-    {{ range $.Site.Menus.main }}
-      {{ if not .HasChildren }}
-        {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) (and (ne .URL "/") (hasPrefix $currentPage.RelPermalink (.URL | relLangURL))) }}
-        <li><a href="{{ .URL }}"{{ if $active }} aria-current="page"{{ end }}{{ if .Params.NewTab }} target="_blank"{{ end }}>{{ .Name }}</a></li>
-      {{ end }}
-    {{ end }}
+    {{ partial "nav-links.html" . }}
   </ul>
 </nav>
