@@ -45,6 +45,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
+      - name: Set up Node.js (for browser navigation check)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Check positioning
         run: make check-positioning
       - name: Check image alt text
@@ -76,6 +80,8 @@ jobs:
         run: make check-build
       - name: Check built metadata
         run: make check-built-meta
+      - name: Check browser navigation
+        run: make check-browser-nav
       - name: Cache save
         id: cache-save
         if: steps.cache-restore.outputs.cache-hit != 'true'

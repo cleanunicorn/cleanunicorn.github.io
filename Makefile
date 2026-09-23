@@ -10,7 +10,7 @@ CHROME ?=
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev build build-drafts check-positioning check-alt-text check-build check-built-meta test clean new update-theme submodules cv cv-pdf books og-image
+.PHONY: help dev build build-drafts check-positioning check-alt-text check-build check-built-meta check-browser-nav test clean new update-theme submodules cv cv-pdf books og-image
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -22,6 +22,7 @@ build: check-positioning check-alt-text ## Build production site into $(PUBLIC_D
 	$(HUGO) --cleanDestinationDir
 	$(MAKE) --no-print-directory check-build
 	$(MAKE) --no-print-directory check-built-meta
+	$(MAKE) --no-print-directory check-browser-nav
 
 build-drafts: ## Build site including drafts and future posts
 	$(HUGO) -D -F
@@ -50,6 +51,12 @@ check-positioning: ## Assert the identity copy leads builder-first, llms.txt sti
 
 check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data
 	python3 scripts/check_build.py --public $(PUBLIC_DIR)
+
+node_modules/.package-lock.json: package-lock.json
+	npm ci --ignore-scripts --no-audit --no-fund
+
+check-browser-nav: node_modules/.package-lock.json ## Exercise mobile and desktop navigation in Chromium against the built site
+	CHROME="$(CHROME)" node --test tests/mobile_nav.test.cjs
 
 check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image 2", "alt text", or a filename)
 	@if grep -rniE '!\[((untitled|image|alt text)([ _-]?[0-9]+)?|[^]]*\.(png|jpe?g|gif|webp|svg))\]\(' content; then \

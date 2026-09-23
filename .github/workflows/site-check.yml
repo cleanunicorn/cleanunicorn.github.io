@@ -50,6 +50,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
+      - name: Set up Node.js (for browser navigation check)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       # /cv.html and /cv.pdf are generated, not committed, and the pages link
       # to them.
       - name: Generate CV (HTML + PDF)
@@ -60,6 +64,8 @@ jobs:
         run: make check-build
       - name: Check built metadata
         run: make check-built-meta
+      - name: Check browser navigation
+        run: make check-browser-nav
       - name: Check internal links and anchors
         uses: lycheeverse/lychee-action@v2
         with:
