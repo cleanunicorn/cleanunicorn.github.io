@@ -137,14 +137,19 @@ def check_math_rendering(public: Path) -> list[str]:
         calls = re.findall(r"renderMathInElement\s*\(", page)
         if len(calls) != 1:
             failures.append(f"{rel}: expected one KaTeX render call, found {len(calls)}")
-        if not re.search(r"renderMathInElement\s*\(\s*document\.body\s*,\s*\{", page):
+        render_call = re.search(
+            r"renderMathInElement\s*\(\s*document\.body\s*,\s*\{.*?\}\s*\)", page, re.S
+        )
+        if not render_call:
             failures.append(f"{rel}: missing configured body render call")
+            continue
+        options = render_call.group()
         for left, right, display in delimiters:
             pattern = (r"\{\s*left:\s*['\"]" + re.escape(left) + r"['\"]\s*,\s*right:\s*['\"]"
                        + re.escape(right) + r"['\"]\s*,\s*display:\s*" + boolean[display] + r"\s*\}")
-            if not re.search(pattern, page):
+            if not re.search(pattern, options):
                 failures.append(f"{rel}: missing KaTeX delimiter {left!r}/{right!r}")
-        if not re.search(r"throwOnError\s*:\s*(?:false|!1)(?=\s*[,}])", page):
+        if not re.search(r"throwOnError\s*:\s*(?:false|!1)(?=\s*[,}])", options):
             failures.append(f"{rel}: missing KaTeX throwOnError: false")
     if not math_pages:
         failures.append("no math-enabled page marker in built site")
