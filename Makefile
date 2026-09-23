@@ -49,7 +49,7 @@ submodules: ## Initialize and update all submodules
 check-positioning: ## Assert the identity copy leads builder-first, llms.txt still matches the pages, and descriptions fit in 160 characters
 	python3 scripts/check_positioning.py
 
-check-build: ## Assert built feeds, removed outputs, profile data, and primary navigation markup
+check-build: ## Assert built feeds, removed outputs, profile data, navigation markup, and one KaTeX pass per math page
 	python3 scripts/check_build.py --public $(PUBLIC_DIR)
 
 node_modules/.package-lock.json: package-lock.json
@@ -68,7 +68,7 @@ check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image
 check-built-meta: ## Assert the built site's search and social metadata (run after a build)
 	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
 
-test: ## Run Python unit tests for navigation output, positioning, CV parsing, and cv-pdf failure paths
+test: ## Run Python unit tests for navigation, positioning, CV tools, and KaTeX build checks
 	python3 -m unittest discover -s tests -v
 
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)

@@ -13,6 +13,7 @@ silently, because Hugo builds green either way:
 * the footer's profile links, the JSON-LD sameAs and the terminal's
   data-book-url match data/home.toml, and the footer location matches
   data/cv.toml (#60)
+* each math page has one configured KaTeX render pass (#62)
 * primary navigation links and the mobile disclosure's source contract (#45)
 
 It needs a clean build: a stale file from an older build fails it. `make build`
@@ -113,6 +114,47 @@ def check_profile_data(root: Path, public: Path) -> list[str]:
     book_url = by_net["calendar"]["url"]
     if not re.search(r'class="?poster__eyebrow"? data-book-url="?' + re.escape(book_url) + r'[">\s]', page):
         failures.append(f"index.html: poster__eyebrow has no data-book-url={book_url!r}")
+    return failures
+
+
+def check_math_rendering(public: Path) -> list[str]:
+    """Math pages have exactly one render pass with the expected options."""
+    failures = []
+    math_pages = []
+    delimiters = (
+        ("$$", "$$", "true"),
+        ("$", "$", "false"),
+        (r"\\[", r"\\]", "true"),
+        (r"\\(", r"\\)", "false"),
+    )
+    boolean = {"true": r"(?:true|!0)", "false": r"(?:false|!1)"}
+    for path in sorted(public.rglob("*.html")):
+        page = path.read_text()
+        if not re.search(r'<meta\s+name="?math-enabled"?\s+content="?true"?>', page):
+            continue
+        math_pages.append(path)
+        rel = path.relative_to(public).as_posix()
+        if "contrib/auto-render.min.js" not in page:
+            failures.append(f"{rel}: missing KaTeX auto-render loader")
+        calls = re.findall(r"renderMathInElement\s*\(", page)
+        if len(calls) != 1:
+            failures.append(f"{rel}: expected one KaTeX render call, found {len(calls)}")
+        render_call = re.search(
+            r"renderMathInElement\s*\(\s*document\.body\s*,\s*\{.*?\}\s*\)", page, re.S
+        )
+        if not render_call:
+            failures.append(f"{rel}: missing configured body render call")
+            continue
+        options = render_call.group()
+        for left, right, display in delimiters:
+            pattern = (r"\{\s*left:\s*['\"]" + re.escape(left) + r"['\"]\s*,\s*right:\s*['\"]"
+                       + re.escape(right) + r"['\"]\s*,\s*display:\s*" + boolean[display] + r"\s*\}")
+            if not re.search(pattern, options):
+                failures.append(f"{rel}: missing KaTeX delimiter {left!r}/{right!r}")
+        if not re.search(r"throwOnError\s*:\s*(?:false|!1)(?=\s*[,}])", options):
+            failures.append(f"{rel}: missing KaTeX throwOnError: false")
+    if not math_pages:
+        failures.append("no math-enabled page marker in built site")
     return failures
 
 
@@ -220,6 +262,7 @@ def main() -> int:
         + check_feed_links(public)
         + check_removed_outputs(public)
         + check_profile_data(args.root, public)
+        + check_math_rendering(public)
         + check_nav(args.root, public)
     )
     for line in failures:
