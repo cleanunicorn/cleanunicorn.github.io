@@ -75,6 +75,12 @@ test("mobile disclosure and desktop navigation work in Chromium", { timeout: 300
     await mobile.keyboard.press("Space");
     assert.equal(await button.getAttribute("aria-expanded"), "false");
 
+    await mobile.keyboard.press("Enter");
+    assert.equal(await button.getAttribute("aria-expanded"), "true");
+    await mobile.setViewportSize({ width: 1024, height: 768 });
+    assert.equal(await button.getAttribute("aria-expanded"), "false");
+    assert.equal(await list.evaluate(element => element.hidden), true);
+
     const desktop = await browser.newPage({ viewport: { width: 1024, height: 768 } });
     await desktop.goto(url);
     assert.equal(await desktop.locator(".navigation-menu--mobile").isVisible(), false);
