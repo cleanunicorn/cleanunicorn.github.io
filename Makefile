@@ -48,7 +48,7 @@ submodules: ## Initialize and update all submodules
 check-positioning: ## Assert the identity copy leads builder-first, llms.txt still matches the pages, and descriptions fit in 160 characters
 	python3 scripts/check_positioning.py
 
-check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data
+check-build: ## Assert the built site: feeds, removed outputs, profile data, and one configured KaTeX pass per math page
 	python3 scripts/check_build.py --public $(PUBLIC_DIR)
 
 check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image 2", "alt text", or a filename)
@@ -61,7 +61,7 @@ check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image
 check-built-meta: ## Assert the built site's search and social metadata (run after a build)
 	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
 
-test: ## Run the unit tests in tests/ (the positioning guard's rules, the CV parser, cv-pdf's failure paths)
+test: ## Run the unit tests in tests/ (positioning, CV tools, and KaTeX build checks)
 	python3 -m unittest discover -s tests -v
 
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
