@@ -39,10 +39,10 @@ make new POST="My Post Title"   # create content/posts/my-post-title/index.md
 | Target | What it does |
 |---|---|
 | `make check-positioning` | Checks that the identity copy leads with what he builds, that `static/llms.txt` still matches the pages it restates, and that descriptions fit in 160 characters |
-| `make test` | Runs the Python unit tests in `tests/` (including navigation and KaTeX output guards, positioning rules, CV tools, and cv-pdf failure paths) |
+| `make test` | Runs the Python unit tests in `tests/` (including navigation, KaTeX, and built-HTML semantic guards, positioning rules, CV tools, and cv-pdf failure paths) |
 | `make check-alt-text` | Fails if a post image has placeholder alt text ("Untitled", "image 2", a filename) |
 | `make build` | Runs `check-positioning` and `check-alt-text`, builds the site into a clean `public/`, then runs `check-build`, `check-built-meta`, and the Chromium navigation check |
-| `make check-build` | Checks the built site in `public/`: feeds, removed outputs, profile data, primary navigation markup, and one configured KaTeX render pass per math page |
+| `make check-build` | Checks the built site in `public/`: feeds, removed outputs, profile data, primary navigation markup, one configured KaTeX render pass per math page, accessible heading links, and machine-readable dates |
 | `make check-built-meta` | Checks the built site's search and social metadata: descriptions, Open Graph image, JSON-LD, robots.txt |
 | `make check-browser-nav` | Uses Chromium to check the mobile Menu state, Tab order, desktop links, and the no-JS fallback against `public/`; installs the pinned `playwright-core` package with npm if needed |
 | `make cv` | Writes the CV as HTML to `static/cv.html`, generated from the About and Work pages |

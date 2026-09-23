@@ -65,6 +65,8 @@ jobs:
         run: make check-build
       - name: Check built metadata
         run: make check-built-meta
+      - name: Test Hugo date rendering
+        run: make test
       - name: Check browser navigation
         run: make check-browser-nav
       - name: Check internal links and anchors

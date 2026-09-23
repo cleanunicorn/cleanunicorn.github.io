@@ -13,6 +13,7 @@ silently, because Hugo builds green either way:
 * the footer's profile links, the JSON-LD sameAs and the terminal's
   data-book-url match data/home.toml, and the footer location matches
   data/cv.toml (#60)
+* heading links have accessible names, and time elements have machine dates (#51)
 * each math page has one configured KaTeX render pass (#62)
 * primary navigation links and the mobile disclosure's source contract (#45)
 
@@ -28,6 +29,7 @@ import argparse
 import json
 import re
 import sys
+from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -35,6 +37,71 @@ try:
     import tomllib
 except ModuleNotFoundError as exc:  # Python < 3.11
     raise SystemExit("check_build: needs Python 3.11+ for tomllib") from exc
+
+
+RFC3339 = re.compile(
+    r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$"
+)
+HEADING_LABEL = "Link to this section"
+
+
+class HtmlSemantics(HTMLParser):
+    """Check heading links and time elements, including minified HTML."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.failures: list[str] = []
+        self.heading_links = 0
+
+    def handle_starttag(self, tag, attrs):
+        self._check_tag(tag, attrs)
+
+    def handle_startendtag(self, tag, attrs):
+        self._check_tag(tag, attrs)
+
+    def _check_tag(self, tag, attrs):
+        attributes = dict(attrs)
+        if "arialabel" in attributes:
+            self.failures.append("invalid arialabel attribute")
+
+        if tag == "a" and "hanchor" in (attributes.get("class") or "").split():
+            self.heading_links += 1
+            if attributes.get("aria-label") != HEADING_LABEL:
+                self.failures.append(f"heading link aria-label must be {HEADING_LABEL!r}")
+
+        if tag == "time":
+            value = attributes.get("datetime")
+            if not value or not RFC3339.fullmatch(value):
+                self.failures.append(f"time datetime is missing or invalid: {value!r}")
+            else:
+                try:
+                    datetime.fromisoformat(value.replace("Z", "+00:00"))
+                except ValueError:
+                    self.failures.append(f"time datetime is invalid: {value!r}")
+
+
+def check_html_semantics(markup: str) -> list[str]:
+    """Return semantic failures in one HTML document."""
+    checker = HtmlSemantics()
+    checker.feed(markup)
+    checker.close()
+    return checker.failures
+
+
+def check_html_pages(public: Path) -> list[str]:
+    """Check every rendered page and require at least one heading link."""
+    failures = []
+    heading_links = 0
+    for page in sorted(public.rglob("*.html")):
+        checker = HtmlSemantics()
+        checker.feed(page.read_text())
+        checker.close()
+        heading_links += checker.heading_links
+        rel = page.relative_to(public).as_posix()
+        failures.extend(f"{rel}: {failure}" for failure in checker.failures)
+    if not heading_links:
+        failures.append("no .hanchor heading links in built HTML")
+    return failures
 
 
 def check_feeds(public: Path) -> list[str]:
@@ -262,6 +329,7 @@ def main() -> int:
         + check_feed_links(public)
         + check_removed_outputs(public)
         + check_profile_data(args.root, public)
+        + check_html_pages(public)
         + check_math_rendering(public)
         + check_nav(args.root, public)
     )
