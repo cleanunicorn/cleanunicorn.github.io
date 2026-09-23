@@ -3,7 +3,8 @@
 # "Build and deploy" runs only on a push to main, so a broken template or a
 # dead internal link or #anchor used to surface only after merging. This job
 # builds the site the way the deploy does, runs the deploy's alt-text and
-# build-output checks (make check-alt-text, check-build, check-built-meta),
+# build-output checks (make check-alt-text, check-build, check-built-meta,
+# check-browser-nav),
 # and fails on any of them. It is its own
 # workflow, with read-only permissions, for the reason positioning.yml gives:
 # a pull_request trigger on the deploy workflow would hand PR runs its
