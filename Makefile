@@ -48,7 +48,7 @@ submodules: ## Initialize and update all submodules
 check-positioning: ## Assert the identity copy leads builder-first, llms.txt still matches the pages, and descriptions fit in 160 characters
 	python3 scripts/check_positioning.py
 
-check-build: ## Assert the built site: posts-only feed, no taxonomies, no cv.css, profile links from data
+check-build: ## Assert the built site: feeds, output paths, profile data, heading links, and time dates
 	python3 scripts/check_build.py --public $(PUBLIC_DIR)
 
 check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image 2", "alt text", or a filename)
