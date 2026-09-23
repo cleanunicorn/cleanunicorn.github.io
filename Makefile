@@ -61,7 +61,7 @@ check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image
 check-built-meta: ## Assert the built site's search and social metadata (run after a build)
 	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
 
-test: ## Run the unit tests in tests/ (the positioning guard's rules, the CV parser, cv-pdf's failure paths)
+test: ## Run the unit tests in tests/ (positioning, built HTML, CV parser, and cv-pdf)
 	python3 -m unittest discover -s tests -v
 
 cv: ## Generate CV as HTML into static/ (served by Hugo at /cv.html)
