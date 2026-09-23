@@ -125,6 +125,7 @@ def check_math_rendering(public: Path) -> list[str]:
         (r"\\[", r"\\]", "true"),
         (r"\\(", r"\\)", "false"),
     )
+    boolean = {"true": r"(?:true|!0)", "false": r"(?:false|!1)"}
     for path in sorted(public.rglob("*.html")):
         page = path.read_text()
         if "contrib/auto-render.min.js" not in page:
@@ -137,11 +138,11 @@ def check_math_rendering(public: Path) -> list[str]:
         if not re.search(r"renderMathInElement\s*\(\s*document\.body\s*,\s*\{", page):
             failures.append(f"{rel}: missing configured body render call")
         for left, right, display in delimiters:
-            pattern = (r"\{\s*left:\s*'" + re.escape(left) + r"'\s*,\s*right:\s*'"
-                       + re.escape(right) + r"'\s*,\s*display:\s*" + display + r"\s*\}")
+            pattern = (r"\{\s*left:\s*['\"]" + re.escape(left) + r"['\"]\s*,\s*right:\s*['\"]"
+                       + re.escape(right) + r"['\"]\s*,\s*display:\s*" + boolean[display] + r"\s*\}")
             if not re.search(pattern, page):
                 failures.append(f"{rel}: missing KaTeX delimiter {left!r}/{right!r}")
-        if not re.search(r"throwOnError\s*:\s*false\b", page):
+        if not re.search(r"throwOnError\s*:\s*(?:false|!1)(?=\s*[,}])", page):
             failures.append(f"{rel}: missing KaTeX throwOnError: false")
     if not math_pages:
         failures.append("no math-enabled page loads KaTeX auto-render")
