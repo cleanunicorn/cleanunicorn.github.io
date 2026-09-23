@@ -3,7 +3,8 @@
 # "Build and deploy" runs only on a push to main, so a broken template or a
 # dead internal link or #anchor used to surface only after merging. This job
 # builds the site the way the deploy does, runs the deploy's alt-text and
-# build-output checks (make check-alt-text, check-build, check-built-meta),
+# build-output checks (make check-alt-text, check-build, check-built-meta,
+# check-browser-nav),
 # and fails on any of them. It is its own
 # workflow, with read-only permissions, for the reason positioning.yml gives:
 # a pull_request trigger on the deploy workflow would hand PR runs its
@@ -46,10 +47,14 @@ jobs:
         run: make check-alt-text
       # The runner image's google-chrome aborts in headless mode (no usable
       # sandbox), so install the same Chromium the deploy workflow prints with.
-      - name: Install Chromium (for CV PDF generation)
+      - name: Install Chromium (for CV PDF and navigation checks)
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
+      - name: Set up Node.js (for browser navigation check)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       # /cv.html and /cv.pdf are generated, not committed, and the pages link
       # to them.
       - name: Generate CV (HTML + PDF)
@@ -62,6 +67,8 @@ jobs:
         run: make check-built-meta
       - name: Test Hugo date rendering
         run: make test
+      - name: Check browser navigation
+        run: make check-browser-nav
       - name: Check internal links and anchors
         uses: lycheeverse/lychee-action@v2
         with:

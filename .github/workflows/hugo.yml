@@ -41,10 +41,14 @@ jobs:
           rm "hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
           echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
           "${HOME}/.local/hugo/hugo" version
-      - name: Install Chromium (for CV PDF generation)
+      - name: Install Chromium (for CV PDF and navigation checks)
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
+      - name: Set up Node.js (for browser navigation check)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Check positioning
         run: make check-positioning
       - name: Check image alt text
@@ -76,6 +80,8 @@ jobs:
         run: make check-build
       - name: Check built metadata
         run: make check-built-meta
+      - name: Check browser navigation
+        run: make check-browser-nav
       - name: Cache save
         id: cache-save
         if: steps.cache-restore.outputs.cache-hit != 'true'
@@ -84,7 +90,7 @@ jobs:
           path: ${{ runner.temp }}/hugo_cache
           key: ${{ steps.cache-restore.outputs.cache-primary-key }}
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           name: github-pages
           path: public/
