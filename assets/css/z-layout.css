@@ -78,6 +78,7 @@
   background: transparent;
   border: 1px solid var(--accent-line);
   font: inherit;
+  min-height: 44px;
   padding: var(--sp-1) var(--sp-2);
   cursor: pointer;
 }

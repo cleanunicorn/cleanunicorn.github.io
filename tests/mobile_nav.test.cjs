@@ -51,6 +51,7 @@ test("mobile disclosure and desktop navigation work in Chromium", { timeout: 300
     const button = mobile.locator(".mobile-nav__toggle");
     const list = mobile.locator("#mobile-nav-links");
     assert.equal(await button.isVisible(), true);
+    assert.ok((await button.boundingBox()).height >= 44, "mobile Menu target must be at least 44px high");
     assert.equal(await button.getAttribute("aria-expanded"), "false");
     assert.equal(await list.isVisible(), false);
     assert.equal(await mobile.locator(".navigation-menu:not(.navigation-menu--mobile)").isVisible(), false);
