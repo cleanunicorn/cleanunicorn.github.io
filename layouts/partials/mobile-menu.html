@@ -1,8 +1,9 @@
-{{- /* Primary desktop navigation. Render every item inline so a fifth link
-   never creates an unfocusable overflow trigger. */ -}}
+{{- /* Mobile primary navigation. Links remain available when JavaScript is off;
+   js/menu.js reveals the button and initializes the list as collapsed. */ -}}
 {{- $currentPage := . -}}
-<nav class="navigation-menu" aria-label="Primary">
-  <ul class="navigation-menu__inner menu--desktop">
+<nav class="navigation-menu navigation-menu--mobile" aria-label="Primary mobile">
+  <button class="mobile-nav__toggle" type="button" aria-expanded="true" aria-controls="mobile-nav-links" hidden>Menu <span aria-hidden="true">▾</span></button>
+  <ul class="mobile-nav__links" id="mobile-nav-links">
     {{ range $.Site.Menus.main }}
       {{ if not .HasChildren }}
         {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) (and (ne .URL "/") (hasPrefix $currentPage.RelPermalink (.URL | relLangURL))) }}

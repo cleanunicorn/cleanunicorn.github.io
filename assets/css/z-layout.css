@@ -69,11 +69,27 @@
 .navigation-menu a[aria-current="page"]::after { transform: scaleX(1); }
 .navigation-menu a[aria-current="page"] { color: var(--accent); }
 
-/* Mobile-menu trigger inherits accent; keep it crisp. */
-.menu--mobile .menu__trigger { border-color: var(--accent-line); }
-
-/* Keep dropdown items on a single line (was wrapping "Contact" → "conta"/"ct"). */
-.menu__dropdown > li a { white-space: nowrap; }
+/* The mobile links work without JS. JS reveals the disclosure button and
+   collapses the list, keeping its hidden state in sync with aria-expanded. */
+.navigation-menu--mobile { display: none; }
+.navigation-menu--mobile [hidden] { display: none !important; }
+.mobile-nav__toggle {
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent-line);
+  font: inherit;
+  padding: var(--sp-1) var(--sp-2);
+  cursor: pointer;
+}
+.mobile-nav__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mobile-nav__links li { white-space: nowrap; }
 
 /* ---- Footer colophon ------------------------------------------------------ */
 .footer { padding: var(--sp-7) 0 var(--sp-5); opacity: 1; }
@@ -126,4 +142,9 @@
 
 @media (max-width: 560px) {
   .container.center { padding: var(--sp-5) var(--sp-5) 0; }
+}
+
+@media (max-width: 684px) {
+  .header__inner { flex-wrap: wrap; }
+  .navigation-menu--mobile { display: block; flex: 1 1 100%; }
 }
