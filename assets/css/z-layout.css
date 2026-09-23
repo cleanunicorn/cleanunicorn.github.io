@@ -145,6 +145,7 @@
   .container.center { padding: var(--sp-5) var(--sp-5) 0; }
 }
 
+/* Match the theme's menu.css mobile breakpoint and assets/js/menu.js. */
 @media (max-width: 684px) {
   .header__inner { flex-wrap: wrap; }
   .navigation-menu--mobile { display: block; flex: 1 1 100%; }

@@ -21,5 +21,6 @@
       button.focus();
     }
   });
+  // Match the theme's menu.css breakpoint and assets/css/z-layout.css.
   window.matchMedia("(max-width: 684px)").addEventListener("change", () => setExpanded(false));
 })();
