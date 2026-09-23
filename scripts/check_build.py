@@ -128,10 +128,12 @@ def check_math_rendering(public: Path) -> list[str]:
     boolean = {"true": r"(?:true|!0)", "false": r"(?:false|!1)"}
     for path in sorted(public.rglob("*.html")):
         page = path.read_text()
-        if "contrib/auto-render.min.js" not in page:
+        if not re.search(r'<meta\s+name="?math-enabled"?\s+content="?true"?>', page):
             continue
         math_pages.append(path)
         rel = path.relative_to(public).as_posix()
+        if "contrib/auto-render.min.js" not in page:
+            failures.append(f"{rel}: missing KaTeX auto-render loader")
         calls = re.findall(r"renderMathInElement\s*\(", page)
         if len(calls) != 1:
             failures.append(f"{rel}: expected one KaTeX render call, found {len(calls)}")
@@ -145,7 +147,7 @@ def check_math_rendering(public: Path) -> list[str]:
         if not re.search(r"throwOnError\s*:\s*(?:false|!1)(?=\s*[,}])", page):
             failures.append(f"{rel}: missing KaTeX throwOnError: false")
     if not math_pages:
-        failures.append("no math-enabled page loads KaTeX auto-render")
+        failures.append("no math-enabled page marker in built site")
     return failures
 
 
