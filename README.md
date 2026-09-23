@@ -12,7 +12,10 @@ included as a git submodule in `themes/terminal`.
   hand to see what CI builds.
 - **Python 3.11+** for the scripts in `scripts/` and the tests. All of them
   except `generate_og_image.py` (`make og-image`) use only the standard library.
-- **Chromium or Google Chrome** on `PATH` for `make cv-pdf`.
+- **Node.js 22+** for the browser navigation check in `make build`. The build
+  installs its pinned `playwright-core` package with npm.
+- **Chromium or Google Chrome** on `PATH` for `make build`,
+  `make check-browser-nav`, and `make cv-pdf` (`CHROME=<path>` selects a browser).
 - **Pillow**, only for `make og-image`: `pip install -r requirements.txt`.
 
 Clone with the theme:

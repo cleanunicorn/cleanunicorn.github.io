@@ -5,7 +5,7 @@ THEME ?= themes/terminal
 PUBLIC_DIR ?= public
 STATIC_DIR ?= static
 POSTS_DIR ?= content/posts
-# Browser for cv-pdf; empty means the first of chromium, google-chrome on PATH.
+# Browser for cv-pdf and check-browser-nav; empty picks one from PATH.
 CHROME ?=
 
 .DEFAULT_GOAL := help

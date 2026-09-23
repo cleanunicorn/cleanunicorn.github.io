@@ -47,7 +47,7 @@ jobs:
         run: make check-alt-text
       # The runner image's google-chrome aborts in headless mode (no usable
       # sandbox), so install the same Chromium the deploy workflow prints with.
-      - name: Install Chromium (for CV PDF generation)
+      - name: Install Chromium (for CV PDF and navigation checks)
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
