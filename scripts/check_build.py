@@ -173,11 +173,13 @@ def check_nav(root: Path, public: Path) -> list[str]:
     expected = [(item["url"], item["name"]) for item in sorted(menu, key=lambda item: item["weight"])]
     failures = []
     for path in sorted(public.rglob("*.html")):
+        rel = path.relative_to(public)
+        if (root / "static" / rel).is_file():
+            continue  # Hugo copies static HTML (for example, the generated CV) unchanged.
         parser = NavParser()
         parser.feed(path.read_text())
         if parser.refresh:
             continue
-        rel = path.relative_to(public)
         mobile = [nav for nav in parser.navs if "navigation-menu--mobile" in nav["classes"]]
         desktop = [nav for nav in parser.navs if "navigation-menu" in nav["classes"] and "navigation-menu--mobile" not in nav["classes"]]
         if len(mobile) != 1 or len(desktop) != 1:

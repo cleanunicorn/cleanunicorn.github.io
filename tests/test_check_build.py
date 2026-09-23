@@ -74,6 +74,12 @@ class NavGuardTests(unittest.TestCase):
         (self.public / "about" / "index.html").write_text('<meta http-equiv=refresh content="0; url=/about/">')
         self.assertEqual([], self.check())
 
+    def test_static_html_copy_is_skipped(self):
+        (self.root / "static").mkdir()
+        (self.root / "static" / "cv.html").write_text("<h1>CV</h1>")
+        (self.public / "cv.html").write_text("<h1>CV</h1>")
+        self.assertEqual([], self.check())
+
 
 if __name__ == "__main__":
     unittest.main()
