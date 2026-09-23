@@ -1,14 +1,28 @@
 """Regression tests for heading links and machine-readable dates in built HTML."""
 
+import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import check_build  # noqa: E402
+
+
+class PostDates(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.values = []
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag == "time" and "post-date" in (attributes.get("class") or "").split():
+            self.values.append(attributes.get("datetime"))
 
 
 class HtmlSemanticsTests(unittest.TestCase):
@@ -62,6 +76,33 @@ class HtmlSemanticsTests(unittest.TestCase):
             failures = check_build.check_html_pages(public)
             self.assertEqual(1, len(failures))
             self.assertIn("posts/example/index.html: time datetime", failures[0])
+
+
+@unittest.skipUnless(shutil.which("hugo") and (ROOT / "themes/terminal/layouts").is_dir(),
+                     "Hugo and the theme submodule are required for the render fixture")
+class HugoDateSourceTests(unittest.TestCase):
+    def test_home_list_and_single_use_publication_date(self):
+        published = "2024-02-29T14:23:45+01:00"
+        updated = "2025-06-01T09:08:07-04:00"
+        with tempfile.TemporaryDirectory() as directory:
+            temporary = Path(directory)
+            post = temporary / "content" / "posts" / "date-source-fixture"
+            post.mkdir(parents=True)
+            (post / "index.md").write_text(
+                f'+++\ntitle = "Date source fixture"\ndate = {published}\n'
+                f'lastmod = {updated}\n+++\n\n## Fixture heading\n'
+            )
+            output = temporary / "public"
+            subprocess.run(
+                ["hugo", "--source", str(ROOT), "--contentDir", str(temporary / "content"),
+                 "--destination", str(output), "--cleanDestinationDir"],
+                check=True, capture_output=True, text=True,
+            )
+            for relative in ("index.html", "posts/index.html", "posts/date-source-fixture/index.html"):
+                with self.subTest(page=relative):
+                    dates = PostDates()
+                    dates.feed((output / relative).read_text())
+                    self.assertEqual([published], dates.values)
 
 
 if __name__ == "__main__":

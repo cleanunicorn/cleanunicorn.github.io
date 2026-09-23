@@ -5,9 +5,9 @@
 # PR runs that workflow's `pages: write` and `id-token: write` permissions and
 # put them in its `pages` concurrency group, for a check that reads files.
 #
-# scripts/check_positioning.py and the unit tests in tests/ (`make test`) are
-# standard-library Python over repository files, so this job needs none of the
-# deploy job's toolchain — no Hugo or Chromium, and no theme submodule.
+# The positioning guard and Python-only unit tests need none of the deploy
+# toolchain. The Hugo render fixture skips here; site-check runs it with Hugo
+# and the theme submodule installed.
 name: Check positioning
 on:
   pull_request:
