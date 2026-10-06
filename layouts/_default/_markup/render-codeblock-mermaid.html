@@ -1,0 +1,7 @@
+{{- /* ```mermaid fences become diagrams; Mermaid is loaded by partials/extended_head.html */ -}}
+<figure class="diagram">
+  <div class="mermaid">{{ .Inner | htmlEscape | safeHTML }}</div>
+  {{- with .Attributes.caption }}
+  <figcaption>{{ . }}</figcaption>
+  {{- end }}
+</figure>

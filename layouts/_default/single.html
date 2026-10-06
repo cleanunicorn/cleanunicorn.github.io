@@ -1,5 +1,5 @@
 {{ define "main" }}
-<article class="post{{ with .Params.class }} {{ . }}{{ end }}">
+<article class="post{{ if eq .Section "posts" }} post--article{{ end }}{{ with .Params.class }} {{ . }}{{ end }}">
   <header class="page-head">
     <h1 class="page-title">{{ .Title | markdownify }}</h1>
     <div class="post-meta">
