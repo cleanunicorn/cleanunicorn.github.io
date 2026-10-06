@@ -149,3 +149,45 @@
   transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .page-contact .post-content h2:last-of-type + ul a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Terminal recordings (layouts/shortcodes/asciinema.html) */
+figure.asciinema {
+  margin: 25px 0;
+}
+
+figure.asciinema figcaption {
+  margin-top: 8px;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+/* The theme's `pre` background and radius would tint and round the terminal */
+figure.asciinema pre.ap-terminal {
+  background: transparent !important;
+  border-radius: 0;
+}
+
+figure.asciinema-pending pre {
+  margin: 0;
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px dashed currentColor;
+  opacity: 0.7;
+}
+
+/* Mermaid diagrams (layouts/_default/_markup/render-codeblock-mermaid.html) */
+figure.diagram {
+  margin: 25px 0;
+  overflow-x: auto;
+}
+
+figure.diagram .mermaid {
+  min-width: 640px;
+  text-align: center;
+}
+
+figure.diagram figcaption {
+  margin-top: 8px;
+  font-size: 0.9em;
+  opacity: 0.8;
+}

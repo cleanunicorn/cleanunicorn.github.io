@@ -3,6 +3,56 @@
 {{- partial "math.html" . }}
 {{- end }}
 
+{{- if .HasShortcode "asciinema" }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.8.0/dist/bundle/asciinema-player.css"
+    integrity="sha384-VAIywtUJJ6n5TJ2byhF+zitDG0mvuNWwRS2gSv1QtEZiVw+c/T/gdOXGwyP2OeJK" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/asciinema-player@3.8.0/dist/bundle/asciinema-player.min.js"
+    integrity="sha384-svQ3ol2I6XJvPsGztCmG9/XctZ37XNsP86aAFDcKciKlaGHNbEmhhedZ7tNu5b9h"
+    crossorigin="anonymous"></script>
+{{- end }}
+
+{{- if findRE "(?m)^```mermaid" .RawContent }}
+<script defer src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"
+    integrity="sha384-rbtjAdnIQE/aQJGEgXrVUlMibdfTSa4PQju4HDhN3sR2PmaKFzhEafuePsl9H/9I"
+    crossorigin="anonymous"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var css = getComputedStyle(document.documentElement);
+    var v = function (name) { return css.getPropertyValue(name).trim(); };
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      themeVariables: {
+        darkMode: true,
+        fontFamily: getComputedStyle(document.body).fontFamily,
+        fontSize: "14px",
+        background: v("--background"),
+        primaryColor: "#262219",
+        primaryTextColor: v("--text"),
+        primaryBorderColor: v("--accent"),
+        lineColor: v("--text-muted"),
+        textColor: v("--text-body"),
+        noteBkgColor: "#2a3a2c",
+        noteTextColor: v("--text"),
+        noteBorderColor: v("--accent"),
+        actorBkg: "#262219",
+        actorBorder: v("--accent"),
+        actorTextColor: v("--text"),
+        signalColor: v("--text-muted"),
+        signalTextColor: v("--text-body"),
+        labelBoxBkgColor: "#262219",
+        labelBoxBorderColor: v("--text-muted"),
+        labelTextColor: v("--text"),
+        loopTextColor: v("--text-muted")
+      },
+      sequence: { useMaxWidth: true, mirrorActors: false, noteMargin: 12, messageMargin: 34 }
+    });
+    // Mermaid sizes boxes by measuring text, so wait for the page font first
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () { mermaid.run(); });
+  });
+</script>
+{{- end }}
+
 {{- partial "structured_data.html" . }}
 
 {{- partial "analytics.html" . }}
