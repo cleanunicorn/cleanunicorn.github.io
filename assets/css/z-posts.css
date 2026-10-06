@@ -91,6 +91,9 @@ a.read-more:hover { color: var(--accent-bright); }
 /* Blog posts fill the column, so prose lines up with code, figures and tables.
    Other pages (About, Work, Contact) keep the narrower --measure. */
 .post--article .post-content > div > * { max-width: 100%; }
+/* A long post title fills the column like the body; balanced wrapping would
+   break it into short lines that look narrower than the text below. */
+.post--article .page-title { text-wrap: pretty; }
 
 /* Sub-sections in a blog post. The h2 has an emerald tick; the h3 gets an
    emerald bar down its left edge, so the two read as different levels at a
