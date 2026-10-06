@@ -1,7 +1,7 @@
 +++
 title = "My Agents Prompt Each Other More Than I Prompt Them"
 date = "2026-10-06T14:00:00+03:00"
-draft = true
+draft = false
 authorTwitter = "cleanunicorn" #do not include @
 cover = ""
 keywords = ["ai", "coding agents", "claude code", "codex", "herdr", "multi-agent", "workflow"]
