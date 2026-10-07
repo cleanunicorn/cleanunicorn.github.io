@@ -16,6 +16,8 @@ silently, because Hugo builds green either way:
 * heading links have accessible names, and time elements have machine dates (#51)
 * each math page has one configured KaTeX render pass (#62)
 * primary navigation links and the mobile disclosure's source contract (#45)
+* posts link their older/newer published neighbour and end with the closing
+  CTA (X, RSS, contact); no other page has either block (#55)
 
 It needs a clean build: a stale file from an older build fails it. `make build`
 passes hugo --cleanDestinationDir for that; after a bare `hugo`, run
