@@ -85,7 +85,7 @@ a.read-more:hover { color: var(--accent-bright); }
 .post-content figure, .post-content img, .post-content pre,
 .post-content .__h_video, .post-content iframe { max-width: 100%; }
 /* Blog posts fill the column, so prose lines up with code, figures and tables.
-   Other pages (About, Work, Contact) keep the narrower --measure. */
+   About does the same (z-content.css); Work and Contact keep --measure. */
 .post--article .post-content > div > * { max-width: 100%; }
 /* A long post title fills the column like the body; balanced wrapping would
    break it into short lines that look narrower than the text below. */

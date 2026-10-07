@@ -10,7 +10,7 @@ const { chromium } = require("playwright-core");
 
 const publicDir = path.resolve(__dirname, "..", "public");
 const expected = ["About", "Work", "Posts", "Contact"];
-const mime = { ".css": "text/css", ".html": "text/html", ".js": "text/javascript" };
+const mime = { ".css": "text/css", ".html": "text/html", ".js": "text/javascript", ".woff2": "font/woff2" };
 
 function browserPath() {
   if (process.env.CHROME) return process.env.CHROME;
@@ -109,6 +109,54 @@ test("mobile disclosure and desktop navigation work in Chromium", { timeout: 300
     await noJs.goto(url);
     assert.equal(await noJs.locator(".mobile-nav__toggle").isVisible(), false);
     assert.deepEqual(await noJs.locator(".mobile-nav__links a:visible").allTextContents(), expected);
+  } finally {
+    if (browser) await browser.close();
+    await new Promise(resolve => server.close(resolve));
+  }
+});
+
+test("About prose fills the content column and no page scrolls sideways", { timeout: 60000 }, async () => {
+  const server = siteServer();
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  let browser;
+  try {
+    browser = await chromium.launch({ executablePath: browserPath(), headless: true, args: ["--no-sandbox"] });
+    const base = `http://127.0.0.1:${server.address().port}`;
+    for (const width of [1300, 390]) {
+      const page = await browser.newPage({ viewport: { width, height: 900 } });
+      for (const route of ["/", "/about/", "/work/", "/contact/", "/posts/", "/404.html"]) {
+        await page.goto(`${base}${route}`);
+        await page.evaluate(() => document.fonts.ready);
+        const { scroll, client } = await page.evaluate(() => ({
+          scroll: document.documentElement.scrollWidth,
+          client: document.documentElement.clientWidth,
+        }));
+        assert.ok(scroll <= client, `${route} at ${width}px scrolls sideways: ${scroll} > ${client}`);
+      }
+
+      await page.goto(`${base}/about/`);
+      await page.evaluate(() => document.fonts.ready);
+      const { column, blocks } = await page.evaluate(() => {
+        const content = document.querySelector(".index-content--about");
+        return {
+          column: content.getBoundingClientRect().width,
+          blocks: [...content.querySelectorAll(":scope > p, :scope > ul, :scope > ol")].map(element => {
+            const style = getComputedStyle(element);
+            return {
+              tag: element.tagName,
+              text: element.textContent.trim().slice(0, 40),
+              outer: element.getBoundingClientRect().width + parseFloat(style.marginLeft) + parseFloat(style.marginRight),
+            };
+          }),
+        };
+      });
+      assert.ok(blocks.some(block => block.tag === "P"), "About must have direct paragraphs to measure");
+      for (const block of blocks) {
+        assert.ok(Math.abs(block.outer - column) <= 1,
+          `About ${block.tag} "${block.text}" at ${width}px is ${block.outer}px, column is ${column}px`);
+      }
+      await page.close();
+    }
   } finally {
     if (browser) await browser.close();
     await new Promise(resolve => server.close(resolve));
