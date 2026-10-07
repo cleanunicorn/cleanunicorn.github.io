@@ -17,7 +17,8 @@
 {{- $name := strings.TrimSpace (or (.Get "name") "") -}}
 {{- $date := strings.TrimSpace (or (.Get "date") "") -}}
 {{- $lang := strings.TrimSpace (or (.Get "lang") "en") -}}
-{{- /* .Inner is template.HTML; string makes the template escape it. */ -}}
+{{- /* .Inner is template.HTML: make it a string, escape it, then turn line
+   breaks into <br> as oEmbed does (--minify collapses newlines in a <p>). */ -}}
 {{- $text := strings.TrimSpace (string .Inner) -}}
 {{- if not (findRE `^[A-Za-z0-9_]{1,15}$` $user) -}}
   {{- errorf "x shortcode: user must be an X handle without @, got %q: %s" $user .Position -}}
@@ -37,4 +38,4 @@
 {{- if not $text -}}
   {{- errorf "x shortcode: the tweet text is required between {{< x >}} and {{< /x >}}: %s" .Position -}}
 {{- end -}}
-<blockquote class="twitter-tweet x-embed"><p lang="{{ $lang }}" dir="auto">{{ $text }}</p>&mdash; {{ $name }} (@{{ $user }}) <a href="https://twitter.com/{{ $user }}/status/{{ $id }}">{{ $date }} · View on X</a></blockquote>
+<blockquote class="twitter-tweet x-embed"><p lang="{{ $lang }}" dir="auto">{{ $text | htmlEscape | replaceRE `\r?\n` "<br>" | safeHTML }}</p>&mdash; {{ $name }} (@{{ $user }}) <a href="https://twitter.com/{{ $user }}/status/{{ $id }}">{{ $date }} · View on X</a></blockquote>

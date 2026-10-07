@@ -220,5 +220,4 @@ blockquote.x-embed p {
   color: var(--text);
   font-size: var(--font-size);
   line-height: var(--leading-prose);
-  white-space: pre-line;
 }

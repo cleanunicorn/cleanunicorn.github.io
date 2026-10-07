@@ -216,7 +216,7 @@ class HugoXShortcodeTests(unittest.TestCase):
         return result, output
 
     def embed(self, user="some_user", id="42", name="Some <Name>", date="May 1, 2024",
-              text='Hi <script>alert("x")</script> & bye'):
+              text='Hi <script>alert("x")</script> & bye\n\nNext <br> line'):
         return (f'{{{{< x user="{user}" id="{id}" name="{name}" date="{date}" >}}}}\n'
                 f'{text}\n{{{{< /x >}}}}')
 
@@ -227,7 +227,7 @@ class HugoXShortcodeTests(unittest.TestCase):
         self.assertEqual(2, two.count('<blockquote class="twitter-tweet x-embed">'))
         self.assertEqual(1, two.count("platform.twitter.com/widgets.js"))
         self.assertIn("<script async src=\"https://platform.twitter.com/widgets.js\"", two)
-        self.assertIn("Hi &lt;script&gt;alert(&#34;x&#34;)&lt;/script&gt; &amp; bye</p>", two)
+        self.assertIn("Hi &lt;script&gt;alert(&#34;x&#34;)&lt;/script&gt; &amp; bye<br><br>Next &lt;br&gt; line</p>", two)
         self.assertIn("&mdash; Some &lt;Name&gt; (@some_user) ", two)
         self.assertIn('<a href="https://twitter.com/some_user/status/42">May 1, 2024 · View on X</a>', two)
         self.assertNotIn("<script>alert", two)
