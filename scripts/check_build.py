@@ -15,6 +15,8 @@ silently, because Hugo builds green either way:
   data/cv.toml (#60)
 * heading links have accessible names, and time elements have machine dates (#51)
 * each math page has one configured KaTeX render pass (#62)
+* X embeds carry their tweet text, attribution and a named status link, and
+  embed pages load widgets.js once, async (#52)
 * primary navigation links and the mobile disclosure's source contract (#45)
 
 It needs a clean build: a stale file from an older build fails it. `make build`
@@ -43,6 +45,9 @@ RFC3339 = re.compile(
     r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$"
 )
 HEADING_LABEL = "Link to this section"
+X_STATUS_URL = re.compile(r"^https://(?:twitter|x)\.com/[A-Za-z0-9_]{1,15}/status/\d+(?:[?#].*)?$")
+X_ATTRIBUTION = re.compile(r"\(@[A-Za-z0-9_]{1,15}\)")
+X_WIDGETS = re.compile(r"^(?:https:)?//platform\.twitter\.com/widgets\.js$")
 
 
 class HtmlSemantics(HTMLParser):
@@ -86,6 +91,101 @@ def check_html_semantics(markup: str) -> list[str]:
     checker.feed(markup)
     checker.close()
     return checker.failures
+
+
+class XEmbeds(HTMLParser):
+    """Collect each twitter-tweet blockquote and every widgets.js loader."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.cards: list[dict] = []
+        self.loaders: list[bool] = []  # one async flag per widgets.js script
+        self.is_post = False
+        self._card = None
+        self._depth = 0
+        self._in_p = False
+        self._link = None
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        classes = (attributes.get("class") or "").split()
+        if tag == "article" and "post" in classes:
+            self.is_post = True
+        if tag == "script" and X_WIDGETS.match(attributes.get("src") or ""):
+            self.loaders.append("async" in attributes)
+        if self._card is None:
+            if tag == "blockquote" and "twitter-tweet" in classes:
+                self._card = {"text": "", "attribution": "", "links": []}
+                self._depth = 1
+            return
+        if tag == "blockquote":
+            self._depth += 1
+        elif tag == "p" and not self._in_p:
+            self._in_p = True
+        elif tag == "a" and not self._in_p:
+            self._link = {"href": attributes.get("href") or "", "text": ""}
+
+    def handle_endtag(self, tag):
+        if self._card is None:
+            return
+        if tag == "p":
+            self._in_p = False
+        elif tag == "a" and self._link is not None:
+            self._card["links"].append(self._link)
+            self._link = None
+        elif tag == "blockquote":
+            self._depth -= 1
+            if not self._depth:
+                self.cards.append(self._card)
+                self._card = None
+
+    def handle_data(self, data):
+        if self._card is None:
+            return
+        if self._in_p:
+            self._card["text"] += data
+        elif self._link is not None:
+            self._link["text"] += data
+        else:
+            self._card["attribution"] += data
+
+
+def check_x_embed_markup(markup: str) -> list[str]:
+    """Return X embed failures in one HTML document.
+
+    widgets.js may never load (blockers, no JS), so the blockquote itself must
+    read as a quote: text, author, and a status link with a visible name.
+    """
+    parser = XEmbeds()
+    parser.feed(markup)
+    parser.close()
+    failures = []
+    for number, card in enumerate(parser.cards, 1):
+        if not card["text"].strip():
+            failures.append(f"X embed {number} has no tweet text")
+        if not X_ATTRIBUTION.search(card["attribution"]):
+            failures.append(f"X embed {number} has no (@handle) attribution")
+        if not any(X_STATUS_URL.match(link["href"]) and link["text"].strip()
+                   for link in card["links"]):
+            failures.append(f"X embed {number} has no named link to the tweet")
+    if len(parser.loaders) > 1:
+        failures.append(f"widgets.js loaded {len(parser.loaders)} times")
+    if not all(parser.loaders):
+        failures.append("widgets.js loaded without async")
+    # Lists with showFullContent may show a card without the page-level loader;
+    # the card still reads fine there, so only post pages must load it.
+    if parser.cards and parser.is_post and not parser.loaders:
+        failures.append("X embed page does not load widgets.js")
+    return failures
+
+
+def check_x_embeds(public: Path) -> list[str]:
+    """Check X embeds on every rendered page."""
+    failures = []
+    for page in sorted(public.rglob("*.html")):
+        rel = page.relative_to(public).as_posix()
+        failures.extend(f"{rel}: {failure}" for failure in check_x_embed_markup(page.read_text()))
+    return failures
 
 
 def check_html_pages(public: Path) -> list[str]:
@@ -330,6 +430,7 @@ def main() -> int:
         + check_removed_outputs(public)
         + check_profile_data(args.root, public)
         + check_html_pages(public)
+        + check_x_embeds(public)
         + check_math_rendering(public)
         + check_nav(args.root, public)
     )

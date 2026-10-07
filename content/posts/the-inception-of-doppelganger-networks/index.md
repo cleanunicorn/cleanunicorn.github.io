@@ -14,7 +14,9 @@ This new approach has a few characteristics that define it. It **mirrors an exis
 
 One project stands out as the pioneer of this still-early movement. That project is **Shadow**. Their promise is “free logs,” and maybe you have heard of their successful round recently.
 
-{{<x user="shadowxyz" id="1732049145140015142" >}}
+{{< x user="shadowxyz" id="1732049145140015142" name="Shadow" date="December 5, 2023" >}}
+1/ We’re thrilled to announce our $9M seed round led by @Paradigm pic.twitter.com/LPnJBXC564
+{{< /x >}}
 
 
 In this article, we explore both the potential and the challenges of a private **Doppelganger Network**. We seek to determine if this truly signals a new era of advanced side-chain computation and storage or a plunge back into centralized structures.

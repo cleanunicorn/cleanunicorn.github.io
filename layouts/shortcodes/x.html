@@ -1,2 +1,40 @@
-<blockquote class="twitter-tweet"><a href="https://twitter.com/{{ .Get "user" }}/status/{{ .Get "id" }}"></a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+{{- /*
+  X (Twitter) embed that reads fine without X's widgets.js (#52).
+
+    {{< x user="handle" id="123" name="Display Name" date="January 27, 2024" >}}
+    Tweet text, plain, blank lines kept.
+    {{< /x >}}
+
+  Copy text, name and date from X's oEmbed response, never from memory:
+  https://publish.twitter.com/oembed?url=https://twitter.com/<user>/status/<id>&omit_script=1
+  Links in the tweet stay as their displayed text. `lang` is optional (default en).
+
+  The markup is X's own oEmbed shape, so widgets.js can still upgrade it; the
+  script is loaded once per page by layouts/partials/extended_head.html.
+*/ -}}
+{{- $user := strings.TrimSpace (or (.Get "user") "") -}}
+{{- $id := strings.TrimSpace (or (.Get "id") "") -}}
+{{- $name := strings.TrimSpace (or (.Get "name") "") -}}
+{{- $date := strings.TrimSpace (or (.Get "date") "") -}}
+{{- $lang := strings.TrimSpace (or (.Get "lang") "en") -}}
+{{- /* .Inner is template.HTML; string makes the template escape it. */ -}}
+{{- $text := strings.TrimSpace (string .Inner) -}}
+{{- if not (findRE `^[A-Za-z0-9_]{1,15}$` $user) -}}
+  {{- errorf "x shortcode: user must be an X handle without @, got %q: %s" $user .Position -}}
+{{- end -}}
+{{- if not (findRE `^[0-9]+$` $id) -}}
+  {{- errorf "x shortcode: id must be the numeric status id, got %q: %s" $id .Position -}}
+{{- end -}}
+{{- if not (findRE `^[a-z]{2,3}(-[A-Za-z0-9]+)*$` $lang) -}}
+  {{- errorf "x shortcode: lang must be a language tag, got %q: %s" $lang .Position -}}
+{{- end -}}
+{{- if not $name -}}
+  {{- errorf "x shortcode: name (the author's display name) is required: %s" .Position -}}
+{{- end -}}
+{{- if not $date -}}
+  {{- errorf "x shortcode: date (as X shows it, e.g. January 27, 2024) is required: %s" .Position -}}
+{{- end -}}
+{{- if not $text -}}
+  {{- errorf "x shortcode: the tweet text is required between {{< x >}} and {{< /x >}}: %s" .Position -}}
+{{- end -}}
+<blockquote class="twitter-tweet x-embed"><p lang="{{ $lang }}" dir="auto">{{ $text }}</p>&mdash; {{ $name }} (@{{ $user }}) <a href="https://twitter.com/{{ $user }}/status/{{ $id }}">{{ $date }} · View on X</a></blockquote>
