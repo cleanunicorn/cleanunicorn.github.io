@@ -1,0 +1,46 @@
+{{- /*
+  Post card shared by the posts list and the homepage.
+  Context: dict "page" (the post), "heading" ("h2" | "h3"), "compact" (bool).
+  Compact cards (homepage) always show read time and Read more, and skip
+  author, cover and showFullContent.
+*/ -}}
+{{- $heading := .heading -}}
+{{- $compact := .compact -}}
+{{- with .page -}}
+<article class="post on-list">
+  {{ if eq $heading "h3" }}<h3 class="post-title">{{ else }}<h2 class="post-title">{{ end }}
+    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+  {{ if eq $heading "h3" }}</h3>{{ else }}</h2>{{ end }}
+  <div class="post-meta">
+    {{- if .Date -}}
+      <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{- partial "post-date" . -}}</time>
+    {{- end -}}
+    {{- if or $compact (eq .Type "posts") -}}
+      <span class="post-readtime">{{ .ReadingTime }} min read</span>
+    {{- end -}}
+    {{- if not $compact -}}
+      {{- with .Params.Author -}}
+        <span class="post-author">{{- . -}}</span>
+      {{- end -}}
+    {{- end -}}
+  </div>
+
+  {{ if not $compact }}{{ partial "cover.html" . }}{{ end }}
+
+  <div class="post-content">
+    {{ if and (not $compact) .Params.showFullContent }}
+      {{ .Content }}
+    {{ else if .Description }}
+      <p>{{ .Description | markdownify }}</p>
+    {{ else }}
+      {{ .Summary }}
+    {{ end }}
+  </div>
+
+  {{ if or $compact (not .Params.showFullContent) }}
+    <div>
+      <a class="read-more button inline" href="{{ .RelPermalink }}">Read more <span aria-hidden="true">→</span></a>
+    </div>
+  {{ end }}
+</article>
+{{- end -}}

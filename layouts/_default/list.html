@@ -18,40 +18,7 @@
 
   <div class="posts">
     {{ range .Paginator.Pages }}
-      <article class="post on-list">
-        <h2 class="post-title">
-          <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-        </h2>
-        <div class="post-meta">
-          {{- if .Date -}}
-            <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{- partial "post-date" . -}}</time>
-          {{- end -}}
-          {{- if eq .Type "posts" -}}
-            <span class="post-readtime">{{ .ReadingTime }} min read</span>
-          {{- end -}}
-          {{- with .Params.Author -}}
-            <span class="post-author">{{- . -}}</span>
-          {{- end -}}
-        </div>
-
-        {{ partial "cover.html" . }}
-
-        <div class="post-content">
-          {{ if .Params.showFullContent }}
-            {{ .Content }}
-          {{ else if .Description }}
-            <p>{{ .Description | markdownify }}</p>
-          {{ else }}
-            {{ .Summary }}
-          {{ end }}
-        </div>
-
-        {{ if not .Params.showFullContent }}
-          <div>
-            <a class="read-more button inline" href="{{ .RelPermalink }}">Read more <span aria-hidden="true">→</span></a>
-          </div>
-        {{ end }}
-      </article>
+      {{ partial "post-card.html" (dict "page" . "heading" "h2" "compact" false) }}
     {{ end }}
 
     {{ partial "pagination.html" . }}
