@@ -1,5 +1,6 @@
 """Regression tests for built HTML semantics and primary navigation."""
 
+import os
 import shutil
 import subprocess
 import sys
@@ -78,31 +79,58 @@ class HtmlSemanticsTests(unittest.TestCase):
             self.assertIn("posts/example/index.html: time datetime", failures[0])
 
 
+def render_fixture(directory, front_matter, env=None):
+    """Build the site with one fixture post and return the output directory."""
+    temporary = Path(directory)
+    post = temporary / "content" / "posts" / "fixture"
+    post.mkdir(parents=True)
+    (post / "index.md").write_text(f"+++\n{front_matter}+++\n\n## Fixture heading\n")
+    output = temporary / "public"
+    subprocess.run(
+        ["hugo", "--source", str(ROOT), "--contentDir", str(temporary / "content"),
+         "--destination", str(output), "--cleanDestinationDir"],
+        check=True, capture_output=True, text=True,
+        env=None if env is None else {**os.environ, **env},
+    )
+    return output
+
+
+FIXTURE_PAGES = ("index.html", "posts/index.html", "posts/fixture/index.html")
+
+
 @unittest.skipUnless(shutil.which("hugo") and (ROOT / "themes/terminal/layouts").is_dir(),
                      "Hugo and the theme submodule are required for the render fixture")
-class HugoDateSourceTests(unittest.TestCase):
+class HugoRenderFixtureTests(unittest.TestCase):
     def test_home_list_and_single_use_publication_date(self):
         published = "2024-02-29T14:23:45+01:00"
         updated = "2025-06-01T09:08:07-04:00"
         with tempfile.TemporaryDirectory() as directory:
-            temporary = Path(directory)
-            post = temporary / "content" / "posts" / "date-source-fixture"
-            post.mkdir(parents=True)
-            (post / "index.md").write_text(
-                f'+++\ntitle = "Date source fixture"\ndate = {published}\n'
-                f'lastmod = {updated}\n+++\n\n## Fixture heading\n'
+            output = render_fixture(
+                directory,
+                f'title = "Date source fixture"\ndate = {published}\nlastmod = {updated}\n',
             )
-            output = temporary / "public"
-            subprocess.run(
-                ["hugo", "--source", str(ROOT), "--contentDir", str(temporary / "content"),
-                 "--destination", str(output), "--cleanDestinationDir"],
-                check=True, capture_output=True, text=True,
-            )
-            for relative in ("index.html", "posts/index.html", "posts/date-source-fixture/index.html"):
+            for relative in FIXTURE_PAGES:
                 with self.subTest(page=relative):
                     dates = PostDates()
                     dates.feed((output / relative).read_text())
                     self.assertEqual([published], dates.values)
+
+    def test_removed_theme_features_do_not_render(self):
+        """Tags, TOC and the last-updated stamp stay off even when requested."""
+        with tempfile.TemporaryDirectory() as directory:
+            output = render_fixture(
+                directory,
+                'title = "Feature fixture"\ndate = 2024-02-29T14:23:45+01:00\n'
+                'lastmod = 2025-06-01T09:08:07-04:00\ntags = ["fixture-tag"]\ntoc = true\n',
+                env={"HUGO_PARAMS_SHOWLASTUPDATED": "true", "HUGO_PARAMS_TOC": "true"},
+            )
+            # Markers: the tag/TOC classes and the theme post-lastmod prefix. The theme
+            # comments partial is only an HTML comment, which html/template strips.
+            for relative in FIXTURE_PAGES:
+                markup = (output / relative).read_text()
+                for marker in ("post-tags", "table-of-contents", "Updated:"):
+                    with self.subTest(page=relative, marker=marker):
+                        self.assertNotIn(marker, markup)
 
 
 CONFIG = """[languages.en.menu]
