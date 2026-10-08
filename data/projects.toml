@@ -1,5 +1,5 @@
 # Featured projects — the tools I spend most of my time on and am happiest
-# with. Rendered twice: in full on /projects/ (layouts/_default/projects.html)
+# with. The first two get the top of the page; the rest follow in order. Rendered twice: in full on /projects/ (layouts/_default/projects.html)
 # and as compact cards on the homepage (layouts/index.html). Edit freely; no
 # template changes needed to add, reorder or remove a project.
 #
@@ -17,7 +17,7 @@
 # `make check-build` fails if a featured project is missing from either page.
 
 label = "Featured projects"
-note = "Two tools I use every day and keep improving. Both run entirely on your own machine."
+note = "The tools I use every day and keep improving. All of them run on your own machine and open their work for review."
 
 [[featured]]
 slug = "earheart"
@@ -80,3 +80,88 @@ drove chat"""
 links = [
   { label = "Documentation", url = "https://github.com/cleanunicorn/drove/tree/main/docs" },
 ]
+
+[[featured]]
+slug = "agents-library"
+name = "Agents Library"
+tagline = "Coding agents that open reviewable pull requests."
+summary = "Eight single-purpose agents and ten orchestrator skills for Claude Code, Codex, opencode and Kilo Code. Each agent picks one problem, fixes every instance of it in the repository, runs the linter and tests, and opens a pull request — never a commit to main."
+repo = "https://github.com/cleanunicorn/agents-library"
+meta = ["Claude Code · Codex · opencode · Kilo", "8 agents · 10 skills", "Stack-agnostic"]
+why = [
+  "Install it as a plugin in two commands and get `architect`, `deadwood`, `docbot`, `refactor`, `sentinel`, `testforge`, `uidesigner` and `uxpolish` as subagents, plus skills like `/review-pr`, `/triage-issues` and `/plan-feature`.",
+  "Every run is a PR you can read: one primary problem, a sweep that fixes the other instances in the same PR, and an \"also spotted\" list of what it left alone.",
+  "Written against roles — the linter, the test suite, the auth model — not a language or framework, so the same agent works on a Go service and a React app.",
+  "Numbers, not adjectives: each PR body carries what was measured, the threshold, and the command that produced it, and names the guardrail that would now fail if the problem came back.",
+  "Schedule them: `/install-agents` sets the agents up as weekly periodic agents in any project.",
+]
+cool = [
+  "One source of truth for four hosts — the Claude Code and Codex plugin manifests, and the opencode and Kilo directories, all symlink to the same `agents/` and `skills/` files.",
+  "Agents journal durable, codebase-specific learnings per project, so the second run on a repo is sharper than the first.",
+  "The PR body reports the exact search run for other instances and its count — `N found · N fixed · N left` — so a reviewer can rerun it.",
+  "Orchestrator skills like `/manager` and `/batch-merge-prs` dispatch the agents as subagents, turning one prompt into a team.",
+  "Releases are versioned and the changes written up, so an update is a diff you can read, not a surprise.",
+]
+install = """# Claude Code
+/plugin marketplace add cleanunicorn/agents-library
+/plugin install agents-library@agents-library
+
+# Codex
+codex plugin marketplace add cleanunicorn/agents-library
+codex plugin add agents-library@agents-library"""
+links = [
+  { label = "The agents", url = "https://github.com/cleanunicorn/agents-library#about-the-agents" },
+  { label = "Releases", url = "https://github.com/cleanunicorn/agents-library/releases" },
+]
+
+[[featured]]
+slug = "dispatch"
+name = "dispatch"
+tagline = "Orchestrate coding agents from Slack."
+summary = "A single Go binary that turns Slack messages into tasks, runs each one as a Claude Code session in a local folder, a Docker container or an SSH host, relays permission prompts back as buttons, and keeps every event in SQLite so a restarted dispatch resumes the work it cut short."
+repo = "https://github.com/cleanunicorn/dispatch"
+meta = ["Go · single binary", "Slack · web UI · terminal", "local · Docker · SSH"]
+why = [
+  "Mention `@dispatch` with what you want and the work happens in a thread under your message — a live status line while the agent runs, buttons when it needs permission, a summary and the cost when it is done.",
+  "Run agents where the code is: a local directory, a throwaway Docker container, or a machine over SSH, with named agent definitions for model, tools and permission mode.",
+  "`review` opens a second thread where a fresh session reads the pull request from the diff alone; `merge` asks the agent to push, resolve conflicts and squash-merge, and only closes the thread when gh confirms it.",
+  "Workflows: multi-step runs where each step is a real agent turn and dispatch decides whether it happened from the records the step produced — a PR opened, a branch pushed, a merge confirmed — never from the agent's say-so.",
+  "Nothing public to expose: Slack Socket Mode needs no URL, and the web UI and terminal share the same threads.",
+]
+cool = [
+  "Everything is an event in SQLite — transports and the web UI are projections of the log, so a crash mid-task is resumed, not lost.",
+  "The permission handshake rides Claude Code's stream-json protocol, so a Bash call becomes an Allow/Deny button in Slack and the answer flows straight back.",
+  "On a subscription it reads the plan's usage windows after each turn and draws a meter, with the reset time once a window passes 80%.",
+  "`plan` hands the ask to a planner agent that composes a workflow from the agents that exist, validates it like a config-defined one, and starts nothing until you say yes.",
+  "Drivers speak one tool vocabulary, so `allowed_tools` means the same whether Claude, Codex or opencode runs the task.",
+]
+install = """make build
+bin/dispatch setup      # wizard: paths, claude check, Slack tokens, first agent
+bin/dispatch run        # or: bin/dispatch run -web, bin/dispatch run -terminal"""
+links = [
+  { label = "Setup guide", url = "https://github.com/cleanunicorn/dispatch/blob/main/SETUP.md" },
+]
+
+[[featured]]
+slug = "quill"
+name = "Quill"
+tagline = "Transcribe anything from the command line."
+summary = "One command turns an audio file, a YouTube link or a podcast URL into a transcript, on your own machine with faster-whisper. CPU by default so it works everywhere; CUDA when you have an NVIDIA GPU and want it fast."
+repo = "https://github.com/cleanunicorn/quill"
+meta = ["macOS · Linux · Windows", "faster-whisper", "Apache-2.0"]
+why = [
+  "Point it at a file, a YouTube URL or a direct audio link and get a text file back — the output name comes from the input or the video title if you leave it out.",
+  "Private by construction: the audio never leaves your machine, and the model is downloaded once on first run.",
+  "Timestamps, language pinning and model choice are flags — `tiny` to `large-v3` and `turbo`, or any faster-whisper identifier.",
+  "Two prerequisites, `uv` and `ffmpeg`, and the README walks each OS through both.",
+]
+cool = [
+  "The CUDA dependency is a platform-gated optional extra, so the default install stays lean and CPU-only everywhere, and macOS skips it even if asked.",
+  "`uv` manages the Python version too, so there is no Python to install and no virtualenv to think about.",
+  "YouTube shorts, `youtu.be` links and direct audio URLs all resolve through the same path.",
+  "A `uv tool install .` makes it a global `quill` command.",
+]
+install = """git clone https://github.com/cleanunicorn/quill && cd quill
+uv sync
+uv run quill "https://youtube.com/watch?v=..."   # a video, by title
+uv run quill talk.mp3 notes.txt --timestamps     # a file, with timestamps"""

@@ -17,7 +17,9 @@
 }
 .featured__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  /* Three tracks fit the 49rem content column: 3x15 + 2x1rem of gap = 47rem
+     (the same floor as the offer grid, z-home.css). Five cards sit 3 + 2. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   gap: var(--sp-4);
 }
 .featured__card {
@@ -42,22 +44,13 @@
   color: var(--accent);
 }
 .featured__summary {
-  margin: 0 0 var(--sp-4);
+  margin: 0 0 var(--sp-5);
+  flex: 1 1 auto;
   font-size: var(--fs-small);
   line-height: 1.65;
   color: var(--text-body);
 }
-.featured__why {
-  margin: 0 0 var(--sp-5);
-  padding: 0 0 0 1.1em;
-  flex: 1 1 auto;
-  font-size: var(--fs-small);
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-.featured__why li { margin: 0 0 var(--sp-2); }
-.featured__why li::marker { content: "› "; color: var(--accent); }
-.featured__why code, .project code { font-size: 0.92em; }
+.project code { font-size: 0.92em; }
 .featured__links { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin: 0; font-size: var(--fs-small); font-weight: 600; }
 .featured__link { text-decoration: none; }
 .featured__link--repo { color: var(--text-muted); }

@@ -44,6 +44,9 @@
     "projects.md": [
       "Earheart — talk to your coding agents. Local STT + cleanup, pastes anywhere.",
       "drove — local models on demand behind one OpenAI-compatible endpoint.",
+      "Agents Library — coding agents that open reviewable PRs.",
+      "dispatch — orchestrate coding agents from Slack.",
+      "Quill — transcribe audio, YouTube and podcasts locally.",
       "Why they're cool: /projects/  (or just type: projects)",
       "Everything else I've shipped: /about/#projects",
     ],

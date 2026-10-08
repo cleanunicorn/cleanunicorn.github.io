@@ -41,7 +41,7 @@ Whether I'm writing a contract, breaking one or evaluating a seed round, **the l
 
 ## Projects
 
-I build and ship — here are a few things I'm proud of. [Earheart and drove have their own page](/projects/) with why to use them and why they are cool. There's more on [GitHub](https://github.com/cleanunicorn).
+I build and ship — here are a few things I'm proud of. [The ones I work on most have their own page](/projects/) with why to use them and why they are cool. There's more on [GitHub](https://github.com/cleanunicorn).
 
 ### [Earheart](https://github.com/cleanunicorn/earheart)
 Private, hotkey-driven voice dictation for Windows, macOS and Linux — speech-to-text and LLM cleanup run in-process on your own machine, so nothing ever leaves it.
@@ -61,6 +61,7 @@ The smart contracts powering [Gensyn](https://www.gensyn.ai/)'s [RL Swarm](https
 ### More projects
 
 - [AtlasPA](https://github.com/cleanunicorn/atlasPA) — AI-powered personal assistant for private use.
+- [dispatch](https://github.com/cleanunicorn/dispatch) — orchestrate coding agents from Slack: one Go binary runs each task as a Claude Code session locally, in Docker or over SSH, and keeps every event so restarts resume the work.
 - [Quill](https://github.com/cleanunicorn/quill) — CLI tool for transcribing audio files, YouTube videos and podcasts using Faster Whisper.
 - [Multistream](https://github.com/cleanunicorn/multistream) — Node.js RTMP server that restreams OBS to Twitch, YouTube and Kick, with auto-record, transcription and clip detection.
 - [Ethereum Smart Contract Template](https://github.com/cleanunicorn/ethereum-smartcontract-template) — a Foundry-based dapp quick-start, inspired by [Georgios's template](https://github.com/gakonst/dapptools-template).

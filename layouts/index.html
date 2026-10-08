@@ -93,11 +93,6 @@
             <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
             <p class="featured__tagline">{{ .tagline }}</p>
             <p class="featured__summary">{{ .summary | markdownify }}</p>
-            {{ with .why }}
-              <ul class="featured__why">
-                {{ range first 3 . }}<li>{{ . | markdownify }}</li>{{ end }}
-              </ul>
-            {{ end }}
             <p class="featured__links">
               <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Why it's cool <span aria-hidden="true">→</span></a>
               <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
