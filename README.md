@@ -42,9 +42,9 @@ make new POST="My Post Title"   # create content/posts/my-post-title/index.md
 | `make test` | Runs the Python unit tests in `tests/` (including navigation, KaTeX, and built-HTML semantic guards, positioning rules, CV tools, and cv-pdf failure paths) |
 | `make check-alt-text` | Fails if a post image has placeholder alt text ("Untitled", "image 2", a filename) |
 | `make build` | Runs `check-positioning` and `check-alt-text`, builds the site into a clean `public/`, then runs `check-build`, `check-built-meta`, and the Chromium navigation check |
-| `make check-build` | Checks the built site in `public/`: feeds, removed outputs, profile data, primary navigation markup, one configured KaTeX render pass per math page, accessible heading links, and machine-readable dates |
+| `make check-build` | Checks the built site in `public/`: feeds, removed outputs, profile data, primary navigation markup, post older/newer links and closing CTA, one configured KaTeX render pass per math page, accessible heading links, and machine-readable dates |
 | `make check-built-meta` | Checks the built site's search and social metadata: descriptions, Open Graph image, JSON-LD, robots.txt |
-| `make check-browser-nav` | Uses Chromium to check the mobile Menu state, Tab order, desktop links, and the no-JS fallback against `public/`; installs the pinned `playwright-core` package with npm if needed |
+| `make check-browser-nav` | Uses Chromium to check the mobile Menu state, Tab order, desktop links, the no-JS fallback, and that post navigation and the closing CTA fit at 390px and 1300px against `public/`; installs the pinned `playwright-core` package with npm if needed |
 | `make cv` | Writes the CV as HTML to `static/cv.html`, generated from the About and Work pages |
 | `make cv-pdf` | Runs `make cv`, then prints `static/cv.pdf` with headless Chromium or Chrome (`CHROME=<path>` picks the browser) |
 | `make books` | Refreshes the About page's Books list from Goodreads |
