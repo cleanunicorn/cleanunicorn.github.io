@@ -1,0 +1,82 @@
+# Featured projects — the tools I spend most of my time on and am happiest
+# with. Rendered twice: in full on /projects/ (layouts/_default/projects.html)
+# and as compact cards on the homepage (layouts/index.html). Edit freely; no
+# template changes needed to add, reorder or remove a project.
+#
+# Each [[featured]] entry:
+#   slug        anchor on /projects/#<slug>; also the homepage card's id
+#   name, tagline, summary
+#   repo        the GitHub URL (also the canonical link everywhere)
+#   meta        short chips under the name: platforms, stack, license
+#   image       optional screenshot in static/, with imageAlt
+#   why         "Why you'd use it" — the user's reasons, one sentence each
+#   cool        "Why it's cool" — the engineering, one sentence each
+#   install     a copy-pasteable quick start, shown in a code block
+#   links       extra buttons after the repo link
+#
+# `make check-build` fails if a featured project is missing from either page.
+
+label = "Featured projects"
+note = "Two tools I use every day and keep improving. Both run entirely on your own machine."
+
+[[featured]]
+slug = "earheart"
+name = "Earheart"
+tagline = "Talk to your coding agents."
+summary = "Press a hotkey, say what you want, press again — the prompt lands in Claude Code, Codex, Cursor or whatever has focus. Speech-to-text and cleanup run inside the app, so your voice, your code and your unshipped ideas never leave your machine."
+repo = "https://github.com/cleanunicorn/earheart"
+meta = ["Windows · macOS · Linux", "Parakeet + Qwen3 on-device", "MIT"]
+image = "/images/projects/earheart-overlay.png"
+imageAlt = "Earheart's overlay bar transcribing a spoken coding-agent prompt live, with a status dot, waveform and timer"
+why = [
+  "The prompts that work with an agent are long — context, constraints, the three things you tried. Speaking them is faster than typing, so you send the whole thought instead of a one-liner and three corrections.",
+  "Nothing leaves your machine: no account, no telemetry, no cloud. What you say to an agent is your architecture and your unreleased work, and it stays on your disk.",
+  "Works in any app with no integration — a terminal running Claude Code, Cursor's chat, a GitHub issue, an email. It pastes; you review and press Enter.",
+  "Cleanup made for spoken prompts: ums and false starts go, your wording and intent stay. A dictionary teaches it `pnpm`, `kubectl`, `useEffect` and your teammates' names.",
+  "Install and go — a wizard downloads the models once; after that transcription runs faster than realtime, even on CPU.",
+]
+cool = [
+  "Both models run in-process — NVIDIA Parakeet TDT 0.6B v3 (25 languages) through sherpa-onnx, Qwen3 4B Instruct for cleanup — with no sidecar server, no Python and no localhost socket.",
+  "Live transcript: the overlay fills in words as you speak and a cleaned-up version settles in behind them on pauses, without ever stealing focus from the app you are dictating into.",
+  "Every stage is modular and OpenAI-compatible, so you can mix local STT with a hosted LLM, point it at Ollama, Groq or OpenRouter, or run its `earheart-stt` server for other tools.",
+  "Signed releases that update themselves in place on all three platforms, with a checksum-verified download and a changelog on the dictation bar.",
+  "Plain JavaScript, no bundler, two runtime dependencies — easy to read, easy to hack on.",
+]
+install = """# Download the installer for your OS, run it, finish the wizard.
+# Then, with the cursor in your agent's input:
+Ctrl/Cmd + Shift + Space    # speak…
+Ctrl/Cmd + Shift + Space    # …and the prompt is pasted"""
+links = [
+  { label = "Download", url = "https://github.com/cleanunicorn/earheart/releases/latest" },
+  { label = "Agent recipes", url = "https://github.com/cleanunicorn/earheart/blob/main/docs/agents.md" },
+]
+
+[[featured]]
+slug = "drove"
+name = "drove"
+tagline = "Local models on demand."
+summary = "One OpenAI-compatible endpoint in front of llama.cpp and a built-in ONNX speech worker. drove wakes a model on the first request, streams the answer, and puts it back to sleep when it goes idle — so your GPU is never pinned by something you used an hour ago."
+repo = "https://github.com/cleanunicorn/drove"
+meta = ["Python · llama.cpp · ONNX", "Text · vision · speech-to-text", "OpenAI-compatible"]
+why = [
+  "Point any OpenAI SDK at `localhost:8080/v1` and ask for a model by name. It loads on first use and unloads itself — no daemon per model, no remembering flags, no idle VRAM.",
+  "Text, vision and speech-to-text models share one port and one lifecycle. Earheart, scripts and chat clients all talk to the same endpoint.",
+  "A memory budget you set: keep several models hot, and the least-recently-used idle one is evicted to make room.",
+  "Smart downloads from HuggingFace — a quantization picker, sharded models, projector files auto-detected for vision models, partial downloads resumed.",
+  "A terminal chat client with sessions and themes, and a request/response log browser (TUI and web) for when you need to see exactly what a model was sent.",
+]
+cool = [
+  "The prompt cache survives sleep: a woken model picks up the KV cache it had before it went idle instead of re-processing the whole prompt.",
+  "Backends are chosen per model from the file type — `.gguf` starts `llama-server`, `.onnx` starts the built-in ASR worker — so adding a kind of model never touches the proxy.",
+  "Hot config reload: edit the TOML while the server runs and the change is picked up, with per-model llama.cpp flags layered over global defaults.",
+  "Live status with tokens per second, time-to-first-token and idle timers — the numbers you actually tune a local setup by.",
+  "Direct llama.cpp underneath, not a fork: new quantizations, kernels and flags work the day llama.cpp ships them.",
+]
+install = """uv tool install 'drove[asr] @ git+https://github.com/cleanunicorn/drove'
+drove init
+drove models download unsloth/Qwen3-8B-GGUF
+drove serve &
+drove chat"""
+links = [
+  { label = "Documentation", url = "https://github.com/cleanunicorn/drove/tree/main/docs" },
+]

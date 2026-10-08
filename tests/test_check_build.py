@@ -26,6 +26,36 @@ class PostDates(HTMLParser):
             self.values.append(attributes.get("datetime"))
 
 
+class FeaturedProjectsTests(unittest.TestCase):
+    """A featured project must be on both pages, each linking its repo."""
+
+    REPO = "https://github.com/cleanunicorn/earheart"
+    HOME = '<article class=featured__card id=featured-earheart><a href="https://github.com/cleanunicorn/earheart">GitHub</a></article>'
+    PAGE = '<section class="project" id="earheart"><a href="https://github.com/cleanunicorn/earheart">GitHub</a></section>'
+
+    def check(self, home=HOME, page=PAGE):
+        return check_build.featured_project_violations("earheart", self.REPO, home, page)
+
+    def test_both_pages_render_the_project(self):
+        self.assertEqual([], self.check())
+
+    def test_missing_homepage_card(self):
+        self.assertEqual(["index.html: no featured card for 'earheart'"], self.check(home="<main></main>"))
+
+    def test_missing_projects_section(self):
+        self.assertEqual(["projects/index.html: no section #earheart"], self.check(page="<main></main>"))
+
+    def test_card_without_repo_link(self):
+        got = self.check(home="<article id=featured-earheart></article>")
+        self.assertEqual([f"index.html: featured card for 'earheart' does not link {self.REPO}"], got)
+
+    def test_slug_is_not_a_prefix_match(self):
+        self.assertEqual(
+            ["projects/index.html: no section #earheart"],
+            self.check(page='<section id="earheart-legacy"></section>'),
+        )
+
+
 class HtmlSemanticsTests(unittest.TestCase):
     def check(self, markup):
         return check_build.check_html_semantics(markup)

@@ -41,7 +41,7 @@ Whether I'm writing a contract, breaking one or evaluating a seed round, **the l
 
 ## Projects
 
-I build and ship — here are a few things I'm proud of. There's more on [GitHub](https://github.com/cleanunicorn).
+I build and ship — here are a few things I'm proud of. [Earheart and drove have their own page](/projects/) with why to use them and why they are cool. There's more on [GitHub](https://github.com/cleanunicorn).
 
 ### [Earheart](https://github.com/cleanunicorn/earheart)
 Private, hotkey-driven voice dictation for Windows, macOS and Linux — speech-to-text and LLM cleanup run in-process on your own machine, so nothing ever leaves it.

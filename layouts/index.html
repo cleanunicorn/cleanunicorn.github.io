@@ -79,6 +79,35 @@
     </section>
   {{ end }}
 
+  {{/* ---- FEATURED PROJECTS: compact cards from data/projects.toml ---------- */}}
+  {{ with $.Site.Data.projects }}
+    <section class="featured" aria-labelledby="featured-head">
+      <div class="section-head section-head--row">
+        <h2 id="featured-head">{{ .label | default "Featured projects" }}</h2>
+        <a class="section-head__more" href="{{ "projects/" | relLangURL }}">All about them <span aria-hidden="true">→</span></a>
+      </div>
+      {{ with .note }}<p class="featured__note">{{ . }}</p>{{ end }}
+      <div class="featured__grid">
+        {{ range .featured }}
+          <article class="featured__card" id="featured-{{ .slug }}">
+            <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
+            <p class="featured__tagline">{{ .tagline }}</p>
+            <p class="featured__summary">{{ .summary | markdownify }}</p>
+            {{ with .why }}
+              <ul class="featured__why">
+                {{ range first 3 . }}<li>{{ . | markdownify }}</li>{{ end }}
+              </ul>
+            {{ end }}
+            <p class="featured__links">
+              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Why it's cool <span aria-hidden="true">→</span></a>
+              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+            </p>
+          </article>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
   {{ with $home.cta }}
     <section class="offer" aria-label="Ways to work together">
       <div class="section-head section-head--row">

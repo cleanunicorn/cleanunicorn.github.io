@@ -1,0 +1,82 @@
+{{ define "main" }}
+{{/* /projects/ — the featured tools from data/projects.toml, in full.
+     The homepage renders the same entries as compact cards; see
+     partials/project-card.html for the shared summary and layouts/index.html
+     for the band. */}}
+{{ $projects := $.Site.Data.projects }}
+<article class="post {{ with .Params.class }}{{ . }}{{ end }}">
+  <header class="page-head">
+    <h1 class="page-title">{{ .Title | markdownify }}</h1>
+    {{ with .Params.lede }}<p class="page-lede">{{ . | markdownify }}</p>{{ end }}
+  </header>
+
+  <nav class="projects-toc" aria-label="Featured projects">
+    <ul>
+      {{ range $projects.featured }}
+        <li><a href="#{{ .slug }}">{{ .name }}</a><span class="projects-toc__tag">{{ .tagline }}</span></li>
+      {{ end }}
+    </ul>
+  </nav>
+
+  <div class="post-content">
+    {{ range $projects.featured }}
+      <section class="project" id="{{ .slug }}" aria-labelledby="{{ .slug }}-title">
+        <header class="project__head">
+          <h2 class="project__name" id="{{ .slug }}-title">
+            <a href="{{ .repo }}" target="_blank" rel="noopener">{{ .name }}</a>
+            <a href="#{{ .slug }}" class="hanchor" aria-label="Link to this section">#</a>
+          </h2>
+          <p class="project__tagline">{{ .tagline }}</p>
+          {{ with .meta }}
+            <ul class="project__meta" aria-label="At a glance">
+              {{ range . }}<li>{{ . }}</li>{{ end }}
+            </ul>
+          {{ end }}
+        </header>
+
+        <p class="project__summary">{{ .summary | markdownify }}</p>
+
+        {{ $p := . }}
+        {{ with .image }}
+          <figure class="project__figure">
+            <img src="{{ . | relURL }}" alt="{{ $p.imageAlt }}" loading="lazy">
+          </figure>
+        {{ end }}
+
+        <div class="project__reasons">
+          {{ with .why }}
+            <div class="project__list">
+              <h3>Why you'd use it</h3>
+              <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+            </div>
+          {{ end }}
+          {{ with .cool }}
+            <div class="project__list">
+              <h3>Why it's cool</h3>
+              <ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+            </div>
+          {{ end }}
+        </div>
+
+        {{ with .install }}
+          <div class="project__install">
+            <h3>Quick start</h3>
+            <pre><code>{{ . }}</code></pre>
+          </div>
+        {{ end }}
+
+        <p class="project__links">
+          <a href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">→</span></a>
+          {{ range .links }}
+            <a class="project__link--secondary" href="{{ .url }}" target="_blank" rel="noopener">{{ .label }} <span aria-hidden="true">→</span></a>
+          {{ end }}
+        </p>
+      </section>
+    {{ end }}
+
+    {{ with .Content }}
+      <div class="project__outro">{{ . }}</div>
+    {{ end }}
+  </div>
+</article>
+{{ end }}

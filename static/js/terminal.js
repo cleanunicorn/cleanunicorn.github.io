@@ -37,9 +37,15 @@
     "work.md": [
       "CTO @ Stealth Startup — since August 2026.",
       "Technical Partner @ Eden Block — research-driven diligence.",
-      "Open-source projects: /about/#projects",
+      "Open-source projects: `cat projects.md`.",
       "Prev: ConsenSys Diligence, Akira Tech, FiatDAO.",
       "Details: /work/  (or just type: work)",
+    ],
+    "projects.md": [
+      "Earheart — talk to your coding agents. Local STT + cleanup, pastes anywhere.",
+      "drove — local models on demand behind one OpenAI-compatible endpoint.",
+      "Why they're cool: /projects/  (or just type: projects)",
+      "Everything else I've shipped: /about/#projects",
     ],
     "contact.md": [
       "Fastest: DM @cleanunicorn on X, or book 30 min (type: book).",
@@ -71,6 +77,7 @@
       return [
         "available commands:",
         "  about      who I am",
+        "  projects   what I build",
         "  work       what I've done",
         "  posts      what I write",
         "  contact    how to reach me",
@@ -119,6 +126,7 @@
       return ["cd: no such directory: " + dir];
     },
     about: function () { go("/about/"); return ["→ /about/"]; },
+    projects: function () { go("/projects/"); return ["→ /projects/"]; },
     work: function () { go("/work/"); return ["→ /work/"]; },
     posts: function () { go("/posts/"); return ["→ /posts/"]; },
     blog: function () { go("/posts/"); return ["→ /posts/"]; },
