@@ -62,19 +62,12 @@
   {{ with $home.stats }}
     <section class="stats" aria-label="Track record by the numbers">
       {{ range . }}
-        {{ if .url }}
-          <a class="stats__item stats__item--link" href="{{ .url }}">
-            <span class="sr-only">{{ .label }}: {{ .value }}</span>
-            <span class="stats__value" aria-hidden="true">{{ .value }}</span>
-            <span class="stats__label" aria-hidden="true">{{ .label }}</span>
-          </a>
-        {{ else }}
-          <div class="stats__item">
-            <span class="sr-only">{{ .label }}: {{ .value }}</span>
-            <span class="stats__value" aria-hidden="true">{{ .value }}</span>
-            <span class="stats__label" aria-hidden="true">{{ .label }}</span>
-          </div>
-        {{ end }}
+        {{ $tag := cond (not (not .url)) "a" "div" }}
+        {{ if eq $tag "a" }}<a class="stats__item stats__item--link" href="{{ .url }}">{{ else }}<div class="stats__item">{{ end }}
+          <span class="sr-only">{{ .label }}: {{ .value }}</span>
+          <span class="stats__value" aria-hidden="true">{{ .value }}</span>
+          <span class="stats__label" aria-hidden="true">{{ .label }}</span>
+        {{ if eq $tag "a" }}</a>{{ else }}</div>{{ end }}
       {{ end }}
     </section>
   {{ end }}
@@ -109,23 +102,7 @@
     <div class="posts">
       {{ $posts := where $.Site.RegularPages "Type" "posts" }}
       {{ range first 3 $posts }}
-        <article class="post on-list">
-          <h3 class="post-title">
-            <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-          </h3>
-          <div class="post-meta">
-            {{- if .Date -}}
-              <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{- partial "post-date" . -}}</time>
-            {{- end -}}
-            <span class="post-readtime">{{ .ReadingTime }} min read</span>
-          </div>
-          <div class="post-content">
-            {{ if .Description }}<p>{{ .Description | markdownify }}</p>{{ else }}{{ .Summary }}{{ end }}
-          </div>
-          <div>
-            <a class="read-more button inline" href="{{ .RelPermalink }}">Read more <span aria-hidden="true">→</span></a>
-          </div>
-        </article>
+        {{ partial "post-card.html" (dict "page" . "heading" "h3" "compact" true) }}
       {{ end }}
     </div>
   </section>
