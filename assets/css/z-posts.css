@@ -67,9 +67,6 @@
 }
 .post-date, .post-readtime, .post-author { color: var(--text-muted); }
 
-.post-tags { display: block; margin-bottom: var(--sp-4); font-size: var(--fs-small); }
-.post-tags a { color: var(--accent); }
-
 /* ---- Read-more ------------------------------------------------------------ */
 a.read-more {
   display: inline-flex;
@@ -85,7 +82,6 @@ a.read-more:hover { color: var(--accent-bright); }
 /* ---- Single post body ----------------------------------------------------- */
 .post-content { margin-top: var(--sp-5); }
 .post-content > div > * { max-width: var(--measure); }
-.post-content > div > .table-of-contents,
 .post-content figure, .post-content img, .post-content pre,
 .post-content .__h_video, .post-content iframe { max-width: 100%; }
 /* Blog posts fill the column, so prose lines up with code, figures and tables.
@@ -107,16 +103,6 @@ a.read-more:hover { color: var(--accent-bright); }
 }
 .post--article .post-content h2 + h3,
 .post--article .post-content h3:first-child { margin-top: var(--sp-5); }
-
-.table-of-contents {
-  max-width: var(--measure);
-  margin: var(--sp-6) 0;
-  padding: var(--sp-4) var(--sp-5);
-  border: 1px solid var(--hairline);
-  background: var(--surface-1);
-  font-size: var(--fs-small);
-}
-.table-of-contents ul { margin: 0.3rem 0 0; }
 
 /* Heading anchor (theme) — keep subtle. */
 .hanchor { color: var(--accent-line); }

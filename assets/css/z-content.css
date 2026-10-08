@@ -17,7 +17,6 @@
   vertical-align: 0.22em;
   background: var(--accent);
 }
-.table-of-contents h2::before,
 .section-head__more::before { content: none !important; }
 
 /* ---- Generic prose page --------------------------------------------------- */

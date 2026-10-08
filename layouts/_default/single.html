@@ -6,9 +6,6 @@
       {{- if and .Date (eq .Type "posts") -}}
         <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
           {{- partial "post-date" . -}}
-          {{- if and $.Site.Params.showLastUpdated .Lastmod -}}
-            &nbsp;{{- partial "post-lastmod" . -}}
-          {{- end -}}
         </time>
       {{- end -}}
       {{- if eq .Type "posts" -}}
@@ -21,21 +18,7 @@
     {{ with .Params.lede }}<p class="page-lede">{{ . | markdownify }}</p>{{ end }}
   </header>
 
-  {{ if .Params.tags }}
-    <span class="post-tags">
-      {{ range .Params.tags }}
-      #<a href="{{ (urlize (printf "tags/%s/" .)) | absLangURL }}">{{ . }}</a>&nbsp;
-      {{ end }}
-    </span>
-  {{ end }}
   {{ partial "cover.html" . }}
-
-  {{ if (.Params.Toc | default .Site.Params.Toc) }}
-    <div class="table-of-contents">
-      <h2>{{ (.Params.TocTitle | default .Site.Params.TocTitle) | default "Table of Contents" }}</h2>
-      {{ .TableOfContents }}
-    </div>
-  {{ end }}
 
   <div class="post-content">
     {{- with .Content -}}
@@ -47,10 +30,6 @@
 
   {{ if eq .Type $.Site.Params.contentTypeName }}
     {{ partial "posts_pagination.html" . }}
-  {{ end }}
-
-  {{ if not (.Params.hideComments | default false) }}
-    {{ partial "comments.html" . }}
   {{ end }}
 </article>
 {{ end }}
