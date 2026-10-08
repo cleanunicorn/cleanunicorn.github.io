@@ -1,8 +1,7 @@
 {{ define "main" }}
 {{/* /projects/ — the featured tools from data/projects.toml, in full.
-     The homepage renders the same entries as compact cards; see
-     partials/project-card.html for the shared summary and layouts/index.html
-     for the band. */}}
+     The homepage renders the same entries as compact cards (the featured
+     band in layouts/index.html). */}}
 {{ $projects := $.Site.Data.projects }}
 <article class="post {{ with .Params.class }}{{ . }}{{ end }}">
   <header class="page-head">
@@ -39,7 +38,7 @@
         {{ $p := . }}
         {{ with .image }}
           <figure class="project__figure">
-            <img src="{{ . | relURL }}" alt="{{ $p.imageAlt }}" loading="lazy">
+            <img src="{{ . | relURL }}" alt="{{ $p.imageAlt }}"{{ with $p.imageWidth }} width="{{ . }}"{{ end }}{{ with $p.imageHeight }} height="{{ . }}"{{ end }} loading="lazy">
           </figure>
         {{ end }}
 

@@ -210,16 +210,31 @@ def check_featured_projects(root: Path, public: Path) -> list[str]:
 def featured_project_violations(slug: str, repo: str, home: str, page: str) -> list[str]:
     """Where one featured project is missing from the two pages that show it."""
     found = []
-    # Patterns allow unquoted attributes: CI builds with --minify.
-    if not re.search(r'id="?featured-' + re.escape(slug) + r'[">\s]', home):
+    card = element_with_id(home, f"featured-{slug}", "article")
+    if card is None:
         found.append(f"index.html: no featured card for {slug!r}")
-    elif repo not in home:
+    elif f'href="{repo}"' not in card and f"href={repo}" not in card:
         found.append(f"index.html: featured card for {slug!r} does not link {repo}")
-    if not re.search(r'id="?' + re.escape(slug) + r'[">\s]', page):
+    section = element_with_id(page, slug, "section")
+    if section is None:
         found.append(f"projects/index.html: no section #{slug}")
-    elif repo not in page:
+    elif f'href="{repo}"' not in section and f"href={repo}" not in section:
         found.append(f"projects/index.html: section #{slug} does not link {repo}")
     return found
+
+
+def element_with_id(markup: str, element_id: str, tag: str) -> str | None:
+    """The markup from `id=<element_id>` to the next closing `tag`, or None.
+
+    Scoped on purpose: a repo URL elsewhere on the page — Quill's install
+    block clones its own repository — must not count as the card's link.
+    Patterns allow unquoted attributes: CI builds with --minify.
+    """
+    match = re.search(r'id="?' + re.escape(element_id) + r'[">\s]', markup)
+    if not match:
+        return None
+    end = markup.find(f"</{tag}>", match.start())
+    return markup[match.start():end if end != -1 else None]
 
 
 def check_math_rendering(public: Path) -> list[str]:

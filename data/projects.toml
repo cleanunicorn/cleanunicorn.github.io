@@ -1,5 +1,5 @@
 # Featured projects — the tools I spend most of my time on and am happiest
-# with. The first two get the top of the page; the rest follow in order. Rendered twice: in full on /projects/ (layouts/_default/projects.html)
+# with, in the order they appear on both pages. Rendered twice: in full on /projects/ (layouts/_default/projects.html)
 # and as compact cards on the homepage (layouts/index.html). Edit freely; no
 # template changes needed to add, reorder or remove a project.
 #
@@ -8,7 +8,8 @@
 #   name, tagline, summary
 #   repo        the GitHub URL (also the canonical link everywhere)
 #   meta        short chips under the name: platforms, stack, license
-#   image       optional screenshot in static/, with imageAlt
+#   image       optional screenshot in static/, with imageAlt and its pixel
+#               imageWidth / imageHeight so the page does not shift while it loads
 #   why         "Why you'd use it" — the user's reasons, one sentence each
 #   cool        "Why it's cool" — the engineering, one sentence each
 #   install     a copy-pasteable quick start, shown in a code block
@@ -17,7 +18,7 @@
 # `make check-build` fails if a featured project is missing from either page.
 
 label = "Featured projects"
-note = "The tools I use every day and keep improving. All of them run on your own machine and open their work for review."
+note = "The tools I use every day and keep improving: local-first voice and LLM tooling, and coding agents that show their work."
 
 [[featured]]
 slug = "earheart"
@@ -27,6 +28,8 @@ summary = "Press a hotkey, say what you want, press again — the prompt lands i
 repo = "https://github.com/cleanunicorn/earheart"
 meta = ["Windows · macOS · Linux", "Parakeet + Qwen3 on-device", "MIT"]
 image = "/images/projects/earheart-overlay.png"
+imageWidth = 500
+imageHeight = 152
 imageAlt = "Earheart's overlay bar transcribing a spoken coding-agent prompt live, with a status dot, waveform and timer"
 why = [
   "The prompts that work with an agent are long — context, constraints, the three things you tried. Speaking them is faster than typing, so you send the whole thought instead of a one-liner and three corrections.",
@@ -133,7 +136,7 @@ cool = [
   "The permission handshake rides Claude Code's stream-json protocol, so a Bash call becomes an Allow/Deny button in Slack and the answer flows straight back.",
   "On a subscription it reads the plan's usage windows after each turn and draws a meter, with the reset time once a window passes 80%.",
   "`plan` hands the ask to a planner agent that composes a workflow from the agents that exist, validates it like a config-defined one, and starts nothing until you say yes.",
-  "Drivers speak one tool vocabulary, so `allowed_tools` means the same whether Claude, Codex or opencode runs the task.",
+  "Drivers speak one tool vocabulary, so `allowed_tools` will mean the same whatever runs the task — Claude Code today, with Codex and opencode drivers on the way.",
 ]
 install = """make build
 bin/dispatch setup      # wizard: paths, claude check, Slack tokens, first agent

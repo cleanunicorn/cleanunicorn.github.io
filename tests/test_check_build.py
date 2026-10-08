@@ -49,6 +49,15 @@ class FeaturedProjectsTests(unittest.TestCase):
         got = self.check(home="<article id=featured-earheart></article>")
         self.assertEqual([f"index.html: featured card for 'earheart' does not link {self.REPO}"], got)
 
+    def test_repo_link_outside_the_section_does_not_count(self):
+        page = ('<section class="project" id="quill"><pre>git clone https://github.com/cleanunicorn/earheart</pre></section>'
+                '<section id="earheart"></section><a href="https://github.com/cleanunicorn/earheart">x</a>')
+        self.assertEqual([f"projects/index.html: section #earheart does not link {self.REPO}"], self.check(page=page))
+
+    def test_minified_unquoted_href_counts(self):
+        page = '<section id=earheart><a href=https://github.com/cleanunicorn/earheart target=_blank>GitHub</a></section>'
+        self.assertEqual([], self.check(page=page))
+
     def test_slug_is_not_a_prefix_match(self):
         self.assertEqual(
             ["projects/index.html: no section #earheart"],

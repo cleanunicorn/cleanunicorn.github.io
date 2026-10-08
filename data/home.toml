@@ -54,7 +54,7 @@ items = [
 [[stats]]
 value = "15+"
 label = "Open-source projects"
-url = "/projects/"
+url = "/about/#projects"
 
 [[stats]]
 value = "2008"
