@@ -14,6 +14,7 @@ silently, because Hugo builds green either way:
   data-book-url match data/home.toml, and the footer location matches
   data/cv.toml (#60)
 * heading links have accessible names, and time elements have machine dates (#51)
+* feeds carry no heading permalinks (render-heading.rss.xml)
 * each math page has one configured KaTeX render pass (#62)
 * primary navigation links and the mobile disclosure's source contract (#45)
 * every featured project in data/projects.toml is on the homepage band and
@@ -107,14 +108,17 @@ def check_html_pages(public: Path) -> list[str]:
 
 
 def check_feeds(public: Path) -> list[str]:
-    """The home feed is posts only, and no feed is empty."""
+    """The home feed is posts only, no feed is empty, and none has heading links."""
     failures = []
     home_feed = public / "index.xml"
     for feed in sorted(public.rglob("index.xml")):
         rel = feed.relative_to(public).as_posix()
-        item_links = re.findall(r"<item>.*?<link>([^<]*)</link>", feed.read_text(), re.S)
+        text = feed.read_text()
+        item_links = re.findall(r"<item>.*?<link>([^<]*)</link>", text, re.S)
         if not item_links:
             failures.append(f"{rel}: feed has no items")
+        if "hanchor" in text:
+            failures.append(f"{rel}: heading permalinks leaked into the feed")
         if feed == home_feed:
             strays = [link for link in item_links if "/posts/" not in link]
             if strays:

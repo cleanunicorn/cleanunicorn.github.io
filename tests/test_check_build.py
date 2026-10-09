@@ -118,6 +118,22 @@ class HtmlSemanticsTests(unittest.TestCase):
             self.assertIn("posts/example/index.html: time datetime", failures[0])
 
 
+class FeedTests(unittest.TestCase):
+    ITEM = "<rss><channel><item><link>https://x/posts/a/</link>{}</item></channel></rss>"
+
+    def check(self, description):
+        with tempfile.TemporaryDirectory() as directory:
+            (Path(directory) / "index.xml").write_text(self.ITEM.format(description))
+            return check_build.check_feeds(Path(directory))
+
+    def test_plain_heading_passes(self):
+        self.assertEqual([], self.check("<description>&lt;h2&gt;Intro&lt;/h2&gt;</description>"))
+
+    def test_heading_permalink_in_feed_fails(self):
+        self.assertEqual(["index.xml: heading permalinks leaked into the feed"], self.check(
+            '<description>&lt;a href="#intro" class="hanchor"&gt;#&lt;/a&gt;</description>'))
+
+
 def render_fixture(directory, front_matter, env=None, body="## Fixture heading\n"):
     """Build the site with one fixture post and return the output directory."""
     temporary = Path(directory)
@@ -168,6 +184,9 @@ class HugoRenderFixtureTests(unittest.TestCase):
                     self.assertIn(f'id="{anchor}"', markup)
                     self.assertIn(f'<a href="#{anchor}" class="hanchor" '
                                   f'aria-label="Link to this section">#</a>', markup)
+            feed = (output / "posts/index.xml").read_text()
+            self.assertIn("Fixture heading", feed)
+            self.assertNotIn("hanchor", feed)
 
     def test_heading_attributes_keep_one_id(self):
         """A {#custom} id drives the permalink; other attributes pass through."""
