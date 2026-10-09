@@ -208,6 +208,7 @@ def check_x_embeds(public: Path) -> list[str]:
         failures.extend(f"{rel}: {failure}" for failure in check_x_embed_markup(page.read_text()))
     return failures
 
+
 GA_ID = "G-42RTQLDG4M"
 CONSENT_SIGNALS = ("analytics_storage", "ad_storage", "ad_user_data", "ad_personalization")
 

@@ -451,7 +451,6 @@ class PostNavigationGuardTests(unittest.TestCase):
         self.assertEqual([], self.check(**{"old/index.html": '<meta http-equiv=refresh content="0; url=/posts/one/"><nav class=post-nav></nav>'}))
 
 
-
 @unittest.skipUnless(shutil.which("hugo") and (ROOT / "themes/terminal/layouts").is_dir(),
                      "Hugo and the theme submodule are required for the render fixture")
 class HugoXShortcodeTests(unittest.TestCase):
@@ -580,7 +579,6 @@ class NavGuardTests(unittest.TestCase):
         (self.root / "static" / "cv.html").write_text("<h1>CV</h1>")
         (self.public / "cv.html").write_text("<h1>CV</h1>")
         self.assertEqual([], self.check())
-
 
 
 CONSENT_HEAD = """<script>
