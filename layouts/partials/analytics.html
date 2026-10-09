@@ -1,9 +1,24 @@
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-42RTQLDG4M"></script>
+{{- /* Google Analytics 4 behind Consent Mode v2. Order matters: consent is
+   denied by default (the site runs no ads, so Accept grants analytics_storage
+   only), a saved "granted" choice is restored, and only then do
+   config and the gtag.js loader run. assets/js/consent.js owns the banner and
+   later updates; the key below must match it. scripts/check_build.py asserts
+   this order in the built HTML. */ -}}
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied'
+  });
+  try {
+    if (localStorage.getItem('consent.v1') === 'granted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  } catch (e) {}
   gtag('js', new Date());
-
   gtag('config', 'G-42RTQLDG4M');
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-42RTQLDG4M"></script>
