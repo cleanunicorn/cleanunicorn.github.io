@@ -9,6 +9,22 @@ const { test } = require("node:test");
 const { chromium } = require("playwright-core");
 
 const publicDir = path.resolve(__dirname, "..", "public");
+const tweets = [
+  {
+    path: "posts/the-right-way-to-use-transient-storage-eip-1153/",
+    text: "Be EXTREMELY careful with EIP1153 Transient Storage\n\nHere is why \u{1F447}\u{1F447}\u{1F447} https://t.co/eFPPyy6AIQ",
+    author: "BountyHunt3r (@Bount3yHunt3r)",
+    link: "January 27, 2024 · View on X",
+    href: "https://twitter.com/Bount3yHunt3r/status/1751059387555135777",
+  },
+  {
+    path: "posts/the-inception-of-doppelganger-networks/",
+    text: "1/ We\u2019re thrilled to announce our $9M seed round led by @Paradigm pic.twitter.com/LPnJBXC564",
+    author: "Shadow (@shadowxyz)",
+    link: "December 5, 2023 · View on X",
+    href: "https://twitter.com/shadowxyz/status/1732049145140015142",
+  },
+];
 const expected = ["About", "Projects", "Work", "Posts", "Contact"];
 const mime = { ".css": "text/css", ".html": "text/html", ".js": "text/javascript", ".woff2": "font/woff2" };
 
@@ -109,6 +125,63 @@ test("mobile disclosure and desktop navigation work in Chromium", { timeout: 300
     await noJs.goto(url);
     assert.equal(await noJs.locator(".mobile-nav__toggle").isVisible(), false);
     assert.deepEqual(await noJs.locator(".mobile-nav__links a:visible").allTextContents(), expected);
+  } finally {
+    if (browser) await browser.close();
+    await new Promise(resolve => server.close(resolve));
+  }
+});
+
+// Text, author and date are X's oEmbed responses for these tweets (#52).
+test("X embeds read without widgets.js and fit narrow screens", { timeout: 60000 }, async () => {
+  const server = siteServer();
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  let browser;
+  try {
+    browser = await chromium.launch({ executablePath: browserPath(), headless: true, args: ["--no-sandbox"] });
+    const url = `http://127.0.0.1:${server.address().port}/`;
+    for (const javaScriptEnabled of [false, true]) {
+      for (const width of [390, 1024]) {
+        const context = await browser.newContext({ viewport: { width, height: 844 }, javaScriptEnabled });
+        // Stay offline: abort everything that is not the local site, widgets.js included.
+        const blocked = [];
+        await context.route("**/*", route => {
+          if (new URL(route.request().url()).hostname === "127.0.0.1") return route.continue();
+          blocked.push(route.request().url());
+          return route.abort();
+        });
+        for (const tweet of tweets) {
+          const label = `${tweet.path} js=${javaScriptEnabled} width=${width}`;
+          const page = await context.newPage();
+          await page.goto(url + tweet.path, { waitUntil: "load" });
+          const card = page.locator("blockquote.twitter-tweet");
+          assert.equal(await card.count(), 1, label);
+          assert.ok(await card.isVisible(), label);
+          assert.equal(await card.locator("p").innerText(), tweet.text, label);
+          assert.match(await card.innerText(), new RegExp(`— ${tweet.author.replace(/[()]/g, "\\$&")}`), label);
+          const link = card.getByRole("link", { name: tweet.link, exact: true });
+          assert.ok(await link.isVisible(), label);
+          assert.equal(await link.getAttribute("href"), tweet.href, label);
+          const fit = await card.evaluate(element => {
+            const box = element.getBoundingClientRect();
+            return {
+              documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+              cardOverflow: element.scrollWidth - element.clientWidth,
+              right: box.right,
+              viewport: window.innerWidth,
+            };
+          });
+          assert.ok(fit.documentOverflow <= 0, `${label}: page scrolls sideways ${JSON.stringify(fit)}`);
+          assert.ok(fit.cardOverflow <= 0, `${label}: card overflows ${JSON.stringify(fit)}`);
+          assert.ok(fit.right <= fit.viewport, `${label}: card past viewport ${JSON.stringify(fit)}`);
+          await page.close();
+        }
+        if (javaScriptEnabled) {
+          assert.ok(blocked.some(request => request.startsWith("https://platform.twitter.com/widgets.js")),
+            "widgets.js should be requested (and blocked) on embed pages");
+        }
+        await context.close();
+      }
+    }
   } finally {
     if (browser) await browser.close();
     await new Promise(resolve => server.close(resolve));
