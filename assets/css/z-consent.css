@@ -57,3 +57,6 @@
 }
 .consent-open[hidden] { display: none; }
 .consent-open:hover { color: var(--accent); }
+
+/* consent.js sets --consent-h to the banner height while it is shown. */
+body { padding-bottom: var(--consent-h, 0px); }

@@ -24,11 +24,19 @@
     });
   };
 
+  // Reserve room under the page while the fixed banner is up, so the footer
+  // (and its Cookie settings button) can always be scrolled clear of it.
+  const reserve = () => {
+    document.documentElement.style.setProperty("--consent-h", banner.hidden ? "0px" : `${banner.offsetHeight}px`);
+  };
+  window.addEventListener("resize", reserve);
+
   const choose = granted => {
     write(granted ? "granted" : "denied");
     if (typeof gtag === "function") gtag("consent", "update", { analytics_storage: granted ? "granted" : "denied" });
     if (!granted) clearAnalyticsCookies();
     banner.hidden = true;
+    reserve();
     if (fromOpener && opener) opener.focus();
     fromOpener = false;
   };
@@ -41,9 +49,13 @@
     opener.addEventListener("click", () => {
       fromOpener = true;
       banner.hidden = false;
+      reserve();
       if (title) title.focus();
     });
   }
 
-  if (read() === null) banner.hidden = false;
+  if (read() === null) {
+    banner.hidden = false;
+    reserve();
+  }
 })();

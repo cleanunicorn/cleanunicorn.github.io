@@ -322,6 +322,21 @@ test("analytics consent banner defaults to denied and remembers a choice", { tim
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
       assert.equal(await banner.getAttribute("aria-labelledby"), "consent-title");
 
+      // The fixed banner must not hide the footer: scroll to the bottom and
+      // check Cookie settings sits entirely above the banner.
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      const [openerBox, bannerBox] = await Promise.all([page.locator("#consent-open").boundingBox(), banner.boundingBox()]);
+      assert.ok(openerBox.y + openerBox.height <= bannerBox.y,
+        `Cookie settings (bottom ${openerBox.y + openerBox.height}) is covered by the banner (top ${bannerBox.y}) at ${width}px`);
+      // The last text on the page (the Connect block after the footer) must clear it too.
+      const lastBottom = await page.evaluate(() => Math.max(...[...document.querySelectorAll("body *")]
+        .filter(el => !el.closest("#consent-banner, script") && !el.children.length && el.textContent.trim())
+        .map(el => el.getBoundingClientRect())
+        .filter(box => box.height > 0)
+        .map(box => box.bottom)));
+      assert.ok(lastBottom <= bannerBox.y, `last page content (bottom ${lastBottom}) is covered by the banner (top ${bannerBox.y}) at ${width}px`);
+      await page.evaluate(() => window.scrollTo(0, 0));
+
       // Keyboard: Tab reaches Accept then Reject, Enter chooses.
       await page.locator("#consent-title").focus();
       await page.keyboard.press("Tab");
