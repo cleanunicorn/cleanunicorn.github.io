@@ -1,0 +1,12 @@
+{{- /* Analytics consent banner. Hidden until assets/js/consent.js shows it on a
+   first visit or from the footer's "Cookie settings" button. */ -}}
+<section id="consent-banner" class="consent" role="region" aria-labelledby="consent-title" hidden>
+  <div class="consent__text">
+    <h2 id="consent-title" class="consent__title" tabindex="-1">Analytics</h2>
+    <p>Google Analytics measures visits. It stays off until you accept.</p>
+  </div>
+  <div class="consent__actions">
+    <button type="button" class="consent__btn" data-consent="accept">Accept analytics</button>
+    <button type="button" class="consent__btn" data-consent="reject">Reject</button>
+  </div>
+</section>
