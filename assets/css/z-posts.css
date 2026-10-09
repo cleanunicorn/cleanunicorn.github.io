@@ -104,17 +104,20 @@ a.read-more:hover { color: var(--accent-bright); }
 .post--article .post-content h2 + h3,
 .post--article .post-content h3:first-child { margin-top: var(--sp-5); }
 
-/* Heading anchor (theme) — keep subtle. The theme hides it with
-   visibility, which also drops it from the tab order; fade it instead so
-   keyboard users can reach it, and keep it visible where there is no hover. */
+/* Heading anchor (theme). The theme hides it with visibility, which also
+   drops it from the tab order; fade it instead so keyboard users can reach
+   it, and keep it visible where there is no hover. --accent keeps even the
+   touch state above 3:1 (4.2:1 at 0.6); --accent-line was 1.6:1. */
 .hanchor {
-  color: var(--accent-line);
+  color: var(--accent);
   visibility: visible;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, color 0.15s;
 }
 :is(h1, h2, h3, h4, h5, h6):hover .hanchor,
 .hanchor:focus-visible { opacity: 1; }
+.hanchor:hover,
+.hanchor:focus-visible { color: var(--accent-bright); }
 @media (hover: none) { .hanchor { opacity: 0.6; } }
 :is(h1, h2, h3, h4, h5, h6)[id] { scroll-margin-top: var(--sp-5); }
 
