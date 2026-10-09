@@ -582,5 +582,70 @@ class NavGuardTests(unittest.TestCase):
         self.assertEqual([], self.check())
 
 
+
+CONSENT_HEAD = """<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied'
+  });
+  try { if (localStorage.getItem('consent.v1') === 'granted') { gtag('consent', 'update', { analytics_storage: 'granted' }); } } catch (e) {}
+  gtag('js', new Date());
+  gtag('config', 'G-42RTQLDG4M');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-42RTQLDG4M"></script>"""
+CONSENT_BODY = ('<section id=consent-banner class=consent role=region aria-labelledby=consent-title hidden>'
+                '<h2 id=consent-title>Analytics</h2><button type=button>Accept</button>'
+                '<button type=button>Reject</button></section>'
+                '<button type=button id=consent-open hidden>Cookie settings</button>')
+
+
+class ConsentTests(unittest.TestCase):
+    def check(self, head=CONSENT_HEAD, body=CONSENT_BODY):
+        return check_build.consent_violations(f"<head>{head}</head><body>{body}</body>")
+
+    def test_good_page(self):
+        self.assertEqual([], self.check())
+
+    def test_config_before_default_fails(self):
+        head = CONSENT_HEAD.replace("gtag('config', 'G-42RTQLDG4M');", "").replace(
+            "gtag('consent', 'default'", "gtag('config', 'G-42RTQLDG4M');\n  gtag('consent', 'default'")
+        self.assertIn("gtag config runs before the consent default", self.check(head))
+
+    def test_loader_before_default_fails(self):
+        loader = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-42RTQLDG4M"></script>'
+        head = loader + CONSENT_HEAD.replace(loader, "")
+        self.assertIn("gtag.js is requested before the consent default", self.check(head))
+
+    def test_granted_default_fails(self):
+        head = CONSENT_HEAD.replace("analytics_storage: 'denied'", "analytics_storage: 'granted'")
+        failures = self.check(head)
+        self.assertIn("consent default does not deny analytics_storage", failures)
+        self.assertIn("consent default grants a signal", failures)
+
+    def test_missing_signal_fails(self):
+        head = CONSENT_HEAD.replace(" ad_user_data: 'denied',", "")
+        self.assertEqual(["consent default does not deny ad_user_data"], self.check(head))
+
+    def test_missing_default_fails(self):
+        head = CONSENT_HEAD.replace("gtag('consent', 'default'", "gtag('set', 'default'")
+        self.assertIn("no gtag consent default", self.check(head))
+
+    def test_double_config_fails(self):
+        self.assertIn("expected exactly one gtag config, found 2", self.check(CONSENT_HEAD + CONSENT_HEAD))
+
+    def test_banner_contract(self):
+        self.assertIn("consent banner is not hidden by default", self.check(body=CONSENT_BODY.replace(" hidden>", ">", 1)))
+        self.assertIn("consent banner aria-labelledby does not name an element",
+                      self.check(body=CONSENT_BODY.replace("id=consent-title", "id=other")))
+        self.assertIn("consent banner has 1 buttons, expected 2",
+                      self.check(body=CONSENT_BODY.replace("<button type=button>Reject</button>", "")))
+        self.assertIn("no #consent-banner", self.check(body=""))
+
+    def test_missing_cookie_settings_fails(self):
+        body = CONSENT_BODY.replace("id=consent-open", "id=x")
+        self.assertEqual(["no Cookie settings button"], self.check(body=body))
+
+
 if __name__ == "__main__":
     unittest.main()
