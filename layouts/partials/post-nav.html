@@ -1,0 +1,16 @@
+{{- /* Older/newer published post in the posts section (#55). Hugo's
+   PrevInSection is the older post and NextInSection the newer one;
+   scripts/check_build.py pins that against the built dates. */ -}}
+{{- if or .PrevInSection .NextInSection }}
+<nav class="post-nav" aria-labelledby="post-nav-title">
+  <h2 id="post-nav-title" class="post-nav__title">Read other posts</h2>
+  <ul class="post-nav__links">
+    {{- with .PrevInSection }}
+    <li class="post-nav__item post-nav__item--older"><a href="{{ .RelPermalink }}" data-direction="older"><span class="post-nav__dir"><span aria-hidden="true">← </span>Older post</span> <span class="post-nav__name">{{ .Title | markdownify }}</span></a></li>
+    {{- end }}
+    {{- with .NextInSection }}
+    <li class="post-nav__item post-nav__item--newer"><a href="{{ .RelPermalink }}" data-direction="newer"><span class="post-nav__dir">Newer post<span aria-hidden="true"> →</span></span> <span class="post-nav__name">{{ .Title | markdownify }}</span></a></li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end }}

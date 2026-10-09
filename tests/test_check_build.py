@@ -8,6 +8,7 @@ import tempfile
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -118,16 +119,22 @@ class HtmlSemanticsTests(unittest.TestCase):
             self.assertIn("posts/example/index.html: time datetime", failures[0])
 
 
-def render_fixture(directory, front_matter, env=None):
-    """Build the site with one fixture post and return the output directory."""
+def render_fixture(directory, front_matter=None, env=None, posts=None, pages=None, args=()):
+    """Build the site from fixture content and return the output directory.
+
+    `posts` maps post slugs to front matter (default: one "fixture" post with
+    `front_matter`); `pages` maps content-relative paths to whole files."""
     temporary = Path(directory)
-    post = temporary / "content" / "posts" / "fixture"
-    post.mkdir(parents=True)
-    (post / "index.md").write_text(f"+++\n{front_matter}+++\n\n## Fixture heading\n")
+    for slug, matter in (posts or {"fixture": front_matter}).items():
+        post = temporary / "content" / "posts" / slug
+        post.mkdir(parents=True)
+        (post / "index.md").write_text(f"+++\n{matter}+++\n\n## Fixture heading\n")
+    for relative, text in (pages or {}).items():
+        (temporary / "content" / relative).write_text(text)
     output = temporary / "public"
     subprocess.run(
         ["hugo", "--source", str(ROOT), "--contentDir", str(temporary / "content"),
-         "--destination", str(output), "--cleanDestinationDir"],
+         "--destination", str(output), "--cleanDestinationDir", *args],
         check=True, capture_output=True, text=True,
         env=None if env is None else {**os.environ, **env},
     )
@@ -170,6 +177,139 @@ class HugoRenderFixtureTests(unittest.TestCase):
                 for marker in ("post-tags", "table-of-contents", "Updated:"):
                     with self.subTest(page=relative, marker=marker):
                         self.assertNotIn(marker, markup)
+
+    def test_posts_link_chronological_neighbours_and_end_with_cta(self):
+        """Slugs sort opposite to dates; drafts are skipped; non-post pages stay clean."""
+        posts = {
+            "a-newest": 'title = "Newest"\ndate = 2024-03-01T09:00:00-05:00\n',
+            "b-draft": 'title = "Draft"\ndate = 2023-06-01T00:00:00Z\ndraft = true\n',
+            "c-middle": 'title = "Middle with a very long title that has to wrap on narrow screens"\ndate = 2023-01-01T23:30:00+09:00\n',
+            "d-oldest": 'title = "Oldest"\ndate = 2022-12-31T15:00:00Z\n',
+        }
+        pages = {
+            "contact.md": '+++\ntitle = "Connect"\nslug = "contact"\n+++\nHi\n',
+            "previous-work.md": '+++\ntitle = "Work"\nslug = "work"\n+++\nWork\n',
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            output = render_fixture(directory, posts=posts, pages=pages, args=("--minify",))
+            self.assertEqual([], check_build.check_post_navigation(ROOT, output))
+            expected = {
+                "d-oldest": {"newer": "/posts/c-middle/"},
+                "c-middle": {"older": "/posts/d-oldest/", "newer": "/posts/a-newest/"},
+                "a-newest": {"older": "/posts/c-middle/"},
+            }
+            self.assertFalse((output / "posts" / "b-draft").exists())
+            for slug, want in expected.items():
+                with self.subTest(post=slug):
+                    parser = check_build.PostEndParser()
+                    parser.feed((output / "posts" / slug / "index.html").read_text())
+                    got = {link["data-direction"]: urlparse(link["href"]).path for link in parser.navs[0]["links"]}
+                    self.assertEqual(want, got)
+                    self.assertEqual(1, len(parser.ctas))
+            for relative in ("index.html", "posts/index.html", "contact/index.html", "work/index.html", "404.html"):
+                with self.subTest(page=relative):
+                    parser = check_build.PostEndParser()
+                    parser.feed((output / relative).read_text())
+                    self.assertEqual(0, parser.markers)
+
+    def test_single_post_has_cta_and_no_navigation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = render_fixture(directory, 'title = "Alone"\ndate = 2024-01-01T00:00:00Z\n')
+            parser = check_build.PostEndParser()
+            parser.feed((output / "posts" / "fixture" / "index.html").read_text())
+            self.assertEqual([], parser.navs)
+            self.assertEqual(1, len(parser.ctas))
+
+
+def post_html(older=None, newer=None, date="2024-01-01T00:00:00Z", cta=True, x="https://x.com/cleanunicorn"):
+    """A built post page in the shape of layouts/partials/post-{nav,cta}.html."""
+    links = ""
+    if older:
+        links += f'<li><a href="{older}" data-direction="older"><span aria-hidden="true">← </span>Older post <span>Old title</span></a></li>'
+    if newer:
+        links += f'<li><a href="{newer}" data-direction="newer">Newer post<span aria-hidden="true"> →</span> <span>New title</span></a></li>'
+    nav = f'<nav class="post-nav" aria-labelledby="post-nav-title"><h2 id="post-nav-title">Read other posts</h2><ul>{links}</ul></nav>' if links else ""
+    end = (
+        '<aside class="post-cta" aria-labelledby="post-cta-title"><h2 id="post-cta-title">Thanks for reading</h2><ul>'
+        f'<li><a href="{x}">Follow on X</a></li>'
+        '<li><a href="https://cleanunicorn.github.io/index.xml" type="application/rss+xml">Subscribe via RSS</a></li>'
+        '<li><a href="https://cleanunicorn.github.io/contact/">Get in touch</a></li></ul></aside>'
+    ) if cta else ""
+    return f'<article class="post post--article"><time class="post-date" datetime="{date}">x</time><div class="post-content"></div>{nav}{end}</article>'
+
+
+class PostNavigationGuardTests(unittest.TestCase):
+    """check_post_navigation on a synthetic public/ (#55)."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.public = Path(self.tmp.name)
+        for relative in ("index.html", "contact/index.html", "about/index.html"):
+            self.write(relative, "<main></main>")
+        self.write("index.xml", "<rss></rss>")
+        self.pages = {
+            "posts/one/index.html": post_html(newer="/posts/two/", date="2020-01-01T00:00:00Z"),
+            "posts/two/index.html": post_html(older="/posts/one/", newer="/posts/three/", date="2021-01-01T00:00:00+02:00"),
+            "posts/three/index.html": post_html(older="https://cleanunicorn.github.io/posts/two/", date="2022-01-01T00:00:00-03:00"),
+        }
+
+    def write(self, relative, html):
+        path = self.public / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(html)
+
+    def check(self, **changes):
+        for relative, html in {**self.pages, **changes}.items():
+            self.write(relative, html)
+        return check_build.check_post_navigation(ROOT, self.public)
+
+    def test_valid_site(self):
+        self.assertEqual([], self.check())
+
+    def test_minified_unquoted_attributes_and_no_li_end_tags(self):
+        minified = {
+            path: html.replace('class="post-nav"', "class=post-nav").replace('class="post-cta"', "class=post-cta")
+            .replace('data-direction="older"', "data-direction=older").replace('data-direction="newer"', "data-direction=newer")
+            .replace('type="application/rss+xml"', "type=application/rss+xml").replace("</li>", "")
+            for path, html in self.pages.items()
+        }
+        self.assertEqual([], self.check(**minified))
+
+    def test_list_pagination_page_is_not_a_post(self):
+        self.assertEqual([], self.check(**{"posts/page/2/index.html": "<main></main>"}))
+
+    def test_rejects_broken_shapes(self):
+        cases = {
+            "pre-change post without either block": {"posts/two/index.html": post_html(date="2021-01-01T00:00:00+02:00", cta=False)},
+            "swapped directions": {"posts/two/index.html": post_html(older="/posts/three/", newer="/posts/one/", date="2021-01-01T00:00:00+02:00")},
+            "older link on the oldest post": {"posts/one/index.html": post_html(older="/posts/three/", newer="/posts/two/", date="2020-01-01T00:00:00Z")},
+            "skipped neighbour": {"posts/one/index.html": post_html(newer="/posts/three/", date="2020-01-01T00:00:00Z")},
+            "missing CTA": {"posts/three/index.html": post_html(older="/posts/two/", date="2022-01-01T00:00:00-03:00", cta=False)},
+            "wrong X URL": {"posts/one/index.html": post_html(newer="/posts/two/", date="2020-01-01T00:00:00Z", x="https://x.com/someone")},
+            "missing RSS": {"posts/one/index.html": post_html(newer="/posts/two/", date="2020-01-01T00:00:00Z").replace(' type="application/rss+xml"', "")},
+            "duplicate CTA": {"posts/one/index.html": post_html(newer="/posts/two/", date="2020-01-01T00:00:00Z").replace("</article>", '<aside class="post-cta"></aside></article>')},
+            "unlabelled nav": {"posts/one/index.html": post_html(newer="/posts/two/", date="2020-01-01T00:00:00Z").replace(' aria-labelledby="post-nav-title"', "")},
+            "direction word missing": {"posts/one/index.html": post_html(newer="/posts/two/", date="2020-01-01T00:00:00Z").replace("Newer post", "Next")},
+            "dead neighbour link": {"posts/three/index.html": post_html(older="/posts/gone/", date="2022-01-01T00:00:00-03:00")},
+            "leak onto about": {"about/index.html": post_html(cta=True)},
+            "invalid date": {"posts/one/index.html": post_html(newer="/posts/two/", date="soon")},
+        }
+        for name, changes in cases.items():
+            with self.subTest(name):
+                self.setUp()
+                self.assertTrue(self.check(**changes))
+
+    def test_dead_contact_target_fails(self):
+        (self.public / "contact" / "index.html").unlink()
+        self.assertTrue(self.check())
+
+    def test_needs_two_posts(self):
+        self.pages = {"posts/one/index.html": post_html(date="2020-01-01T00:00:00Z")}
+        self.assertTrue(self.check())
+
+    def test_refresh_alias_is_skipped(self):
+        self.assertEqual([], self.check(**{"old/index.html": '<meta http-equiv=refresh content="0; url=/posts/one/"><nav class=post-nav></nav>'}))
 
 
 CONFIG = """[languages.en.menu]
