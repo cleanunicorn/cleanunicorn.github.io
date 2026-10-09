@@ -16,7 +16,7 @@ whoami = "builder · hacker · extropian"
 # `whoami` exactly once and carry no regex metacharacter — enforced by
 # `make check-positioning`.
 whoamiLink = "builder"
-whoamiURL = "/about/#projects"
+whoamiURL = "/projects/"
 
 # Portrait shown in the hero. Lives in static/images/.
 photo = "/images/daniel-luca.jpg"
@@ -76,7 +76,7 @@ url = "/about/#talks"
 title = "Want to see what I build?"
 text = "Open-source tools I wanted to exist — private dictation, coding agents, local LLM infrastructure and the contracts behind them."
 label = "Browse the projects"
-url = "/about/#projects"
+url = "/projects/"
 primary = true
 
 [[cta]]

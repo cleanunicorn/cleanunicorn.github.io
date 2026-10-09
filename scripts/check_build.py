@@ -18,6 +18,8 @@ silently, because Hugo builds green either way:
 * primary navigation links and the mobile disclosure's source contract (#45)
 * posts link their older/newer published neighbour and end with the closing
   CTA (X, RSS, contact); no other page has either block (#55)
+* every featured project in data/projects.toml is on the homepage band and
+  has its own section on /projects/, each linking its repository
 
 It needs a clean build: a stale file from an older build fails it. `make build`
 passes hugo --cleanDestinationDir for that; after a bare `hugo`, run
@@ -185,6 +187,57 @@ def check_profile_data(root: Path, public: Path) -> list[str]:
     if not re.search(r'class="?poster__eyebrow"? data-book-url="?' + re.escape(book_url) + r'[">\s]', page):
         failures.append(f"index.html: poster__eyebrow has no data-book-url={book_url!r}")
     return failures
+
+
+def check_featured_projects(root: Path, public: Path) -> list[str]:
+    """The homepage band and /projects/ both render every featured project.
+
+    Both pages read data/projects.toml, so a typo in a slug or a template that
+    silently drops an entry builds green. Pin each project to the markup that
+    carries it: the card id on the homepage, the section id on /projects/, and
+    on each a link to its repository.
+    """
+    failures = []
+    projects = tomllib.loads((root / "data" / "projects.toml").read_text())["featured"]
+    home = (public / "index.html").read_text()
+    page_path = public / "projects" / "index.html"
+    if not page_path.is_file():
+        return ["projects/index.html: missing — content/projects.md should render it"]
+    page = page_path.read_text()
+    for project in projects:
+        slug, repo = project["slug"], project["repo"]
+        failures += featured_project_violations(slug, repo, home, page)
+    return failures
+
+
+def featured_project_violations(slug: str, repo: str, home: str, page: str) -> list[str]:
+    """Where one featured project is missing from the two pages that show it."""
+    found = []
+    card = element_with_id(home, f"featured-{slug}", "article")
+    if card is None:
+        found.append(f"index.html: no featured card for {slug!r}")
+    elif f'href="{repo}"' not in card and f"href={repo}" not in card:
+        found.append(f"index.html: featured card for {slug!r} does not link {repo}")
+    section = element_with_id(page, slug, "section")
+    if section is None:
+        found.append(f"projects/index.html: no section #{slug}")
+    elif f'href="{repo}"' not in section and f"href={repo}" not in section:
+        found.append(f"projects/index.html: section #{slug} does not link {repo}")
+    return found
+
+
+def element_with_id(markup: str, element_id: str, tag: str) -> str | None:
+    """The markup from `id=<element_id>` to the next closing `tag`, or None.
+
+    Scoped on purpose: a repo URL elsewhere on the page — Quill's install
+    block clones its own repository — must not count as the card's link.
+    Patterns allow unquoted attributes: CI builds with --minify.
+    """
+    match = re.search(r'id="?' + re.escape(element_id) + r'[">\s]', markup)
+    if not match:
+        return None
+    end = markup.find(f"</{tag}>", match.start())
+    return markup[match.start():end if end != -1 else None]
 
 
 def check_math_rendering(public: Path) -> list[str]:
@@ -483,6 +536,7 @@ def main() -> int:
         + check_math_rendering(public)
         + check_nav(args.root, public)
         + check_post_navigation(args.root, public)
+        + check_featured_projects(args.root, public)
     )
     for line in failures:
         print(f"check_build: {line}", file=sys.stderr)

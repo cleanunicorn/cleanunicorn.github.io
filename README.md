@@ -34,6 +34,10 @@ make dev HOST=192.168.1.50      # the same, reachable from another device on the
 make new POST="My Post Title"   # create content/posts/my-post-title/index.md
 ```
 
+The homepage band and `/projects/` both read `data/projects.toml`, the
+featured projects; `make check-build` fails if either page drops one. The full
+project list stays in `content/about/_index.md`.
+
 `make help` lists every target. The ones you will use most:
 
 | Target | What it does |
