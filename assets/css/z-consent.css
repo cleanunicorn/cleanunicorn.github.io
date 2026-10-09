@@ -1,0 +1,62 @@
+/* ---- Analytics consent banner (layouts/partials/consent.html) -------------
+   Fixed bottom bar. Accept and Reject share one style on purpose: neither is
+   the accented, preferred choice. */
+.consent {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3) var(--sp-5);
+  max-height: 45vh;
+  overflow-y: auto;
+  padding: var(--sp-4) var(--sp-4) calc(var(--sp-4) + env(safe-area-inset-bottom));
+  background: var(--surface-1);
+  border-top: 1px solid var(--hairline-strong);
+  color: var(--text-body);
+  font-size: var(--fs-small);
+}
+.consent[hidden] { display: none; }
+.consent__text { flex: 1 1 18rem; }
+.consent__text p { margin: 0; }
+.consent__title {
+  margin: 0 0 var(--sp-1);
+  font-size: inherit;
+  color: var(--text);
+}
+.consent__title::before, .consent__title::after { content: none; }
+.consent__actions {
+  display: flex;
+  flex: 1 1 18rem;
+  gap: var(--sp-3);
+  justify-content: flex-end;
+}
+.consent__btn {
+  flex: 1 1 0;
+  max-width: 14rem;
+  min-height: 44px;
+  padding: var(--sp-1) var(--sp-3);
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  font: inherit;
+  cursor: pointer;
+}
+.consent__btn:hover { color: var(--accent); border-color: var(--accent-line); }
+
+/* Footer control that reopens the banner (shown by JS). */
+.consent-open {
+  padding: 0;
+  color: var(--text-muted);
+  background: none;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.consent-open[hidden] { display: none; }
+.consent-open:hover { color: var(--accent); }
+
+/* consent.js sets --consent-h to the banner height while it is shown. */
+body { padding-bottom: var(--consent-h, 0px); }
