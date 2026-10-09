@@ -72,6 +72,14 @@
   line-height: 1.6;
 }
 
+/* ---- About: fill the column ----------------------------------------------- */
+/* Like blog posts, About's long-form prose runs the full column so it lines up
+   with the headings and the multi-column Talks/Books lists. Direct children
+   only, so the .cols lists keep their own column geometry. */
+.index-content.index-content--about > p,
+.index-content.index-content--about > ul,
+.index-content.index-content--about > ol { max-width: 100%; }
+
 /* ---- Work: timeline ------------------------------------------------------- */
 .page-work .post-content { margin-top: var(--sp-6); }
 
@@ -189,4 +197,34 @@ figure.diagram figcaption {
   margin-top: 8px;
   font-size: 0.9em;
   opacity: 0.8;
+}
+
+/* X embeds (layouts/shortcodes/x.html): the quote widgets.js upgrades when it
+   loads, and the whole embed when it doesn't. Keeps the theme's "> From X:"
+   label (blockquote.twitter-tweet::before) and overrides the italic base
+   blockquote. */
+blockquote.x-embed {
+  max-width: var(--measure);
+  min-width: 0;
+  margin: var(--sp-5) 0;
+  padding: calc(var(--sp-4) + 1.75em) var(--sp-4) var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--hairline-strong);
+  border-left: 2px solid var(--accent);
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  font-style: normal;
+  overflow-wrap: anywhere;
+}
+
+blockquote.x-embed::before {
+  top: var(--sp-4);
+  left: var(--sp-4);
+}
+
+blockquote.x-embed p {
+  margin: 0 0 var(--sp-3);
+  color: var(--text);
+  font-size: var(--font-size);
+  line-height: var(--leading-prose);
 }

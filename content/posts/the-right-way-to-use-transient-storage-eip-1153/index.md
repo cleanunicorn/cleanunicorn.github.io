@@ -16,7 +16,11 @@ If you're a developer familiar with Solidity and keen on Ethereum's latest, this
 
 EIP-1153 was first proposed in June 2018, and since then, it has evolved and changed how gas pricing and refunding work and how the opcodes are designed. That’s why some articles you’ll find online are obsolete or don’t explain correctly how this works and how it should be used.
 
-{{<x user="Bount3yHunt3r" id="1751059387555135777" >}}
+{{< x user="Bount3yHunt3r" id="1751059387555135777" name="BountyHunt3r" date="January 27, 2024" >}}
+Be EXTREMELY careful with EIP1153 Transient Storage
+
+Here is why 👇👇👇 https://t.co/eFPPyy6AIQ
+{{< /x >}}
 
 Since this is such a controversial topic, an easy-to-get-it-wrong implementation detail, we will explore some ways you can mess this up. By the end of this article, when you review code or build software yourself, you will identify when you fall into one of these traps and should be able to correct them.
 

@@ -16,7 +16,11 @@ silently, because Hugo builds green either way:
 * heading links have accessible names, one per heading, and time elements have machine dates (#51)
 * feeds carry no heading permalinks (render-heading.rss.xml)
 * each math page has one configured KaTeX render pass (#62)
+* X embeds carry their tweet text, attribution and a named status link, and
+  embed pages load widgets.js once, async (#52)
 * primary navigation links and the mobile disclosure's source contract (#45)
+* posts link their older/newer published neighbour and end with the closing
+  CTA (X, RSS, contact); no other page has either block (#55)
 * every featured project in data/projects.toml is on the homepage band and
   has its own section on /projects/, each linking its repository
 
@@ -35,6 +39,7 @@ import sys
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlparse
 
 try:
     import tomllib
@@ -47,6 +52,9 @@ RFC3339 = re.compile(
 )
 HEADING_LABEL = "Link to this section"
 HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
+X_STATUS_URL = re.compile(r"^https://(?:twitter|x)\.com/[A-Za-z0-9_]{1,15}/status/\d+(?:[?#].*)?$")
+X_ATTRIBUTION = re.compile(r"\(@[A-Za-z0-9_]{1,15}\)")
+X_WIDGETS = re.compile(r"^(?:https:)?//platform\.twitter\.com/widgets\.js$")
 
 
 class HtmlSemantics(HTMLParser):
@@ -102,6 +110,101 @@ def check_html_semantics(markup: str) -> list[str]:
     checker.feed(markup)
     checker.close()
     return checker.failures
+
+
+class XEmbeds(HTMLParser):
+    """Collect each twitter-tweet blockquote and every widgets.js loader."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.cards: list[dict] = []
+        self.loaders: list[bool] = []  # one async flag per widgets.js script
+        self.is_post = False
+        self._card = None
+        self._depth = 0
+        self._in_p = False
+        self._link = None
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        classes = (attributes.get("class") or "").split()
+        if tag == "article" and "post" in classes:
+            self.is_post = True
+        if tag == "script" and X_WIDGETS.match(attributes.get("src") or ""):
+            self.loaders.append("async" in attributes)
+        if self._card is None:
+            if tag == "blockquote" and "twitter-tweet" in classes:
+                self._card = {"text": "", "attribution": "", "links": []}
+                self._depth = 1
+            return
+        if tag == "blockquote":
+            self._depth += 1
+        elif tag == "p" and not self._in_p:
+            self._in_p = True
+        elif tag == "a" and not self._in_p:
+            self._link = {"href": attributes.get("href") or "", "text": ""}
+
+    def handle_endtag(self, tag):
+        if self._card is None:
+            return
+        if tag == "p":
+            self._in_p = False
+        elif tag == "a" and self._link is not None:
+            self._card["links"].append(self._link)
+            self._link = None
+        elif tag == "blockquote":
+            self._depth -= 1
+            if not self._depth:
+                self.cards.append(self._card)
+                self._card = None
+
+    def handle_data(self, data):
+        if self._card is None:
+            return
+        if self._in_p:
+            self._card["text"] += data
+        elif self._link is not None:
+            self._link["text"] += data
+        else:
+            self._card["attribution"] += data
+
+
+def check_x_embed_markup(markup: str) -> list[str]:
+    """Return X embed failures in one HTML document.
+
+    widgets.js may never load (blockers, no JS), so the blockquote itself must
+    read as a quote: text, author, and a status link with a visible name.
+    """
+    parser = XEmbeds()
+    parser.feed(markup)
+    parser.close()
+    failures = []
+    for number, card in enumerate(parser.cards, 1):
+        if not card["text"].strip():
+            failures.append(f"X embed {number} has no tweet text")
+        if not X_ATTRIBUTION.search(card["attribution"]):
+            failures.append(f"X embed {number} has no (@handle) attribution")
+        if not any(X_STATUS_URL.match(link["href"]) and link["text"].strip()
+                   for link in card["links"]):
+            failures.append(f"X embed {number} has no named link to the tweet")
+    if len(parser.loaders) > 1:
+        failures.append(f"widgets.js loaded {len(parser.loaders)} times")
+    if not all(parser.loaders):
+        failures.append("widgets.js loaded without async")
+    # Lists with showFullContent may show a card without the page-level loader;
+    # the card still reads fine there, so only post pages must load it.
+    if parser.cards and parser.is_post and not parser.loaders:
+        failures.append("X embed page does not load widgets.js")
+    return failures
+
+
+def check_x_embeds(public: Path) -> list[str]:
+    """Check X embeds on every rendered page."""
+    failures = []
+    for page in sorted(public.rglob("*.html")):
+        rel = page.relative_to(public).as_posix()
+        failures.extend(f"{rel}: {failure}" for failure in check_x_embed_markup(page.read_text()))
+    return failures
 
 
 def check_html_pages(public: Path) -> list[str]:
@@ -383,6 +486,153 @@ def check_nav(root: Path, public: Path) -> list[str]:
     return failures
 
 
+class PostEndParser(HTMLParser):
+    """Collect a page's post date and its post-nav / post-cta blocks.
+
+    Link text skips aria-hidden glyphs, so it is the text a screen reader reads."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.refresh = False
+        self.article = False
+        self.date = None
+        self.ids = set()
+        self.navs = []
+        self.ctas = []
+        self.markers = 0
+        self.block = None
+        self.anchor = None
+        self.hidden = []  # open tags inside a link that are aria-hidden
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        classes = set((attributes.get("class") or "").split())
+        if self.anchor is not None and (self.hidden or attributes.get("aria-hidden") == "true"):
+            self.hidden.append(tag)
+        if attributes.get("id"):
+            self.ids.add(attributes["id"])
+        if tag == "meta" and (attributes.get("http-equiv") or "").lower() == "refresh":
+            self.refresh = True
+        if tag == "article" and "post--article" in classes:
+            self.article = True
+        if tag == "time" and "post-date" in classes and self.date is None:
+            self.date = attributes.get("datetime")
+        if classes & {"post-nav", "post-cta"}:
+            self.markers += 1
+        if tag == "nav" and "post-nav" in classes:
+            self.block = {"tag": tag, "label": attributes.get("aria-labelledby"), "links": []}
+            self.navs.append(self.block)
+        elif tag == "aside" and "post-cta" in classes:
+            self.block = {"tag": tag, "label": attributes.get("aria-labelledby"), "links": []}
+            self.ctas.append(self.block)
+        elif tag == "a" and self.block is not None:
+            self.anchor = {key: attributes.get(key) for key in ("href", "type", "data-direction")}
+            self.anchor["text"] = ""
+
+    def handle_data(self, data):
+        if self.anchor is not None and not self.hidden:
+            self.anchor["text"] += data
+
+    def handle_endtag(self, tag):
+        if self.hidden and tag == self.hidden[-1]:
+            self.hidden.pop()
+        elif tag == "a" and self.anchor is not None:
+            self.anchor["text"] = " ".join(self.anchor["text"].split())
+            self.block["links"].append(self.anchor)
+            self.anchor = None
+        elif self.block is not None and tag == self.block["tag"]:
+            self.block = None
+
+
+def check_post_navigation(root: Path, public: Path) -> list[str]:
+    """Posts link their older/newer neighbour and end with the CTA; no other page does (#55)."""
+    home = tomllib.loads((root / "data" / "home.toml").read_text())
+    x_url = next(link["url"] for link in home["connect"]["links"] if link["net"] == "x")
+    host = urlparse(tomllib.loads((root / "hugo.toml").read_text())["baseURL"]).netloc
+    failures = []
+    posts = {}
+    for path in sorted(public.rglob("*.html")):
+        rel = path.relative_to(public)
+        if (root / "static" / rel).is_file():
+            continue  # Hugo copies static HTML unchanged.
+        parser = PostEndParser()
+        parser.feed(path.read_text())
+        parser.close()
+        if parser.refresh:
+            continue
+        is_post = len(rel.parts) == 3 and rel.parts[0] == "posts" and rel.parts[1] != "page" and rel.name == "index.html"
+        if not is_post:
+            if parser.markers:
+                failures.append(f"{rel}: post-nav/post-cta outside a post")
+            continue
+        if not parser.article:
+            failures.append(f"{rel}: no article.post--article")
+        try:
+            date = datetime.fromisoformat((parser.date or "").replace("Z", "+00:00"))
+        except ValueError:
+            failures.append(f"{rel}: post date missing or invalid: {parser.date!r}")
+            continue
+        posts[f"/{rel.parent.as_posix()}/"] = (date, rel, parser)
+
+    if len(posts) < 2:
+        failures.append(f"expected at least 2 post pages under posts/, found {len(posts)}")
+
+    def internal(href):
+        url = urlparse(href or "")
+        return url.netloc in ("", host), url.path
+
+    def resolves(path):
+        target = public / path.lstrip("/")
+        return (target / "index.html").is_file() if path.endswith("/") else target.is_file()
+
+    order = sorted(posts, key=lambda key: (posts[key][0], key))
+    for i, key in enumerate(order):
+        _, rel, parser = posts[key]
+        want = {}
+        if i > 0:
+            want["older"] = order[i - 1]
+        if i < len(order) - 1:
+            want["newer"] = order[i + 1]
+        if len(parser.navs) != (1 if want else 0):
+            failures.append(f"{rel}: expected {1 if want else 0} nav.post-nav, got {len(parser.navs)}")
+        got = {}
+        for nav in parser.navs:
+            if not nav["label"] or nav["label"] not in parser.ids:
+                failures.append(f"{rel}: nav.post-nav needs aria-labelledby pointing at a heading")
+            for link in nav["links"]:
+                direction = link["data-direction"]
+                label = {"older": "Older post", "newer": "Newer post"}.get(direction)
+                if direction in got or label is None:
+                    failures.append(f"{rel}: unexpected or duplicate post-nav link {link}")
+                    continue
+                got[direction] = internal(link["href"])[1]
+                if not link["text"].startswith(label) or link["text"] == label:
+                    failures.append(f"{rel}: {direction} link text {link['text']!r} needs {label!r} and a title")
+        if got != want:
+            failures.append(f"{rel}: post-nav links {got} != chronological neighbours {want}")
+
+        if len(parser.ctas) != 1:
+            failures.append(f"{rel}: expected one aside.post-cta, got {len(parser.ctas)}")
+            continue
+        cta = parser.ctas[0]
+        if not cta["label"] or cta["label"] not in parser.ids:
+            failures.append(f"{rel}: aside.post-cta needs aria-labelledby pointing at a heading")
+        links = cta["links"]
+        checks = {
+            "X": any(link["href"] == x_url for link in links),
+            "RSS": any(internal(link["href"]) == (True, "/index.xml") and link["type"] == "application/rss+xml" for link in links),
+            "contact": any(internal(link["href"]) == (True, "/contact/") for link in links),
+        }
+        failures.extend(f"{rel}: post-cta has no {name} link" for name, ok in checks.items() if not ok)
+        for link in [link for nav in parser.navs for link in nav["links"]] + links:
+            local, path = internal(link["href"])
+            if not link["text"]:
+                failures.append(f"{rel}: post end link {link['href']!r} has no text")
+            if local and not resolves(path):
+                failures.append(f"{rel}: post end link {link['href']!r} does not resolve in the build")
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
@@ -400,8 +650,10 @@ def main() -> int:
         + check_removed_outputs(public)
         + check_profile_data(args.root, public)
         + check_html_pages(public)
+        + check_x_embeds(public)
         + check_math_rendering(public)
         + check_nav(args.root, public)
+        + check_post_navigation(args.root, public)
         + check_featured_projects(args.root, public)
     )
     for line in failures:

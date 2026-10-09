@@ -28,8 +28,9 @@
     {{- end -}}
   </div>
 
-  {{ if eq .Type $.Site.Params.contentTypeName }}
-    {{ partial "posts_pagination.html" . }}
+  {{ if eq .Type "posts" }}
+    {{ partial "post-nav.html" . }}
+    {{ partial "post-cta.html" . }}
   {{ end }}
 </article>
 {{ end }}

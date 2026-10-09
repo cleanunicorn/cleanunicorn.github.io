@@ -11,6 +11,11 @@
     crossorigin="anonymous"></script>
 {{- end }}
 
+{{- /* Once per page, however many embeds; layouts/shortcodes/x.html */ -}}
+{{- if .HasShortcode "x" }}
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+{{- end }}
+
 {{- if findRE "(?m)^```mermaid" .RawContent }}
 <script defer src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"
     integrity="sha384-rbtjAdnIQE/aQJGEgXrVUlMibdfTSa4PQju4HDhN3sR2PmaKFzhEafuePsl9H/9I"
