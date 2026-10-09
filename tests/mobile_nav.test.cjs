@@ -363,7 +363,14 @@ test("analytics consent banner defaults to denied and remembers a choice", { tim
       assert.equal(await opener.isVisible(), true);
       await opener.click();
       assert.equal(await next.locator("#consent-banner").isVisible(), true);
+      // gtag.js is stubbed, so seed the cookies GA would have set; Reject must clear them and only them.
+      await next.evaluate(() => {
+        document.cookie = "_ga=1; path=/";
+        document.cookie = "_ga_ABC123=1; path=/";
+        document.cookie = "theme_pref=1; path=/";
+      });
       await next.locator("#consent-banner").getByRole("button", { name: "Reject" }).click();
+      assert.equal(await next.evaluate(() => document.cookie), "theme_pref=1");
       assert.equal(await next.locator("#consent-banner").isVisible(), false);
       assert.equal(await next.evaluate(() => localStorage.getItem("consent.v1")), "denied");
       assert.deepEqual((await consentCalls(next)).at(-1).slice(1), ["update", { analytics_storage: "denied" }]);
