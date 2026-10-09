@@ -104,8 +104,19 @@ a.read-more:hover { color: var(--accent-bright); }
 .post--article .post-content h2 + h3,
 .post--article .post-content h3:first-child { margin-top: var(--sp-5); }
 
-/* Heading anchor (theme) — keep subtle. */
-.hanchor { color: var(--accent-line); }
+/* Heading anchor (theme) — keep subtle. The theme hides it with
+   visibility, which also drops it from the tab order; fade it instead so
+   keyboard users can reach it, and keep it visible where there is no hover. */
+.hanchor {
+  color: var(--accent-line);
+  visibility: visible;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+:is(h1, h2, h3, h4, h5, h6):hover .hanchor,
+.hanchor:focus-visible { opacity: 1; }
+@media (hover: none) { .hanchor { opacity: 0.6; } }
+:is(h1, h2, h3, h4, h5, h6)[id] { scroll-margin-top: var(--sp-5); }
 
 /* ---- Pagination ----------------------------------------------------------- */
 .pagination { margin-top: var(--sp-7); }

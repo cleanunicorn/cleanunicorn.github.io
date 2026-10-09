@@ -154,6 +154,21 @@ class HugoRenderFixtureTests(unittest.TestCase):
                     dates.feed((output / relative).read_text())
                     self.assertEqual([published], dates.values)
 
+    def test_markdown_headings_link_to_themselves(self):
+        """Posts and section pages (like About) both get heading permalinks."""
+        with tempfile.TemporaryDirectory() as directory:
+            section = Path(directory) / "content" / "notes"
+            section.mkdir(parents=True)
+            (section / "_index.md").write_text('+++\ntitle = "Notes"\n+++\n\n## Section heading\n')
+            output = render_fixture(directory, 'title = "Anchor fixture"\n')
+            for relative, anchor in (("posts/fixture/index.html", "fixture-heading"),
+                                     ("notes/index.html", "section-heading")):
+                with self.subTest(page=relative):
+                    markup = (output / relative).read_text()
+                    self.assertIn(f'id="{anchor}"', markup)
+                    self.assertIn(f'<a href="#{anchor}" class="hanchor" '
+                                  f'aria-label="Link to this section">#</a>', markup)
+
     def test_removed_theme_features_do_not_render(self):
         """Tags, TOC and the last-updated stamp stay off even when requested."""
         with tempfile.TemporaryDirectory() as directory:
