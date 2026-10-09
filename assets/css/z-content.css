@@ -72,6 +72,14 @@
   line-height: 1.6;
 }
 
+/* ---- About: fill the column ----------------------------------------------- */
+/* Like blog posts, About's long-form prose runs the full column so it lines up
+   with the headings and the multi-column Talks/Books lists. Direct children
+   only, so the .cols lists keep their own column geometry. */
+.index-content.index-content--about > p,
+.index-content.index-content--about > ul,
+.index-content.index-content--about > ol { max-width: 100%; }
+
 /* ---- Work: timeline ------------------------------------------------------- */
 .page-work .post-content { margin-top: var(--sp-6); }
 
