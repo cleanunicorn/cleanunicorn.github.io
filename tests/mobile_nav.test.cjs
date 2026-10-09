@@ -354,7 +354,8 @@ test("analytics consent banner defaults to denied and remembers a choice", { tim
       const next = await open(context, `${base}/about/`);
       assert.equal(await next.locator("#consent-banner").isVisible(), false);
       const restored = await next.evaluate(() => window.dataLayer.map(entry => Array.from(entry)[0] + ":" + Array.from(entry)[1]));
-      assert.deepEqual(restored.slice(0, 3), ["consent:default", "consent:update", "js:" + restored[2].slice(3)]);
+      assert.deepEqual(restored.slice(0, 2), ["consent:default", "consent:update"]);
+      assert.ok(restored[2].startsWith("js:"), `third dataLayer entry is ${restored[2]}`);
       assert.ok(restored.indexOf("consent:update") < restored.findIndex(entry => entry.startsWith("config")));
 
       // Cookie settings reopens the banner, and the choice flips.
