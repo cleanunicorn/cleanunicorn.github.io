@@ -82,6 +82,11 @@ class HtmlSemanticsTests(unittest.TestCase):
                   '<a class="x hanchor" aria-label="Anchor">#</a>')
         self.assertTrue(any("aria-label" in failure for failure in self.check(markup)))
 
+    def test_heading_with_two_links_fails(self):
+        link = '<a class=hanchor href=#x aria-label="Link to this section">#</a>'
+        self.assertEqual(["h2 has 2 heading links"], self.check(f"<h2 id=x>X{link}{link}</h2>"))
+        self.assertEqual([], self.check(f"<h2 id=x>X{link}</h2><h3 id=y>Y{link}</h3>"))
+
     def test_missing_heading_label(self):
         self.assertTrue(any("aria-label" in failure for failure in self.check('<a class=hanchor>#</a>')))
 
@@ -117,6 +122,22 @@ class HtmlSemanticsTests(unittest.TestCase):
             failures = check_build.check_html_pages(public)
             self.assertEqual(1, len(failures))
             self.assertIn("posts/example/index.html: time datetime", failures[0])
+
+
+class FeedTests(unittest.TestCase):
+    ITEM = "<rss><channel><item><link>https://x/posts/a/</link>{}</item></channel></rss>"
+
+    def check(self, description):
+        with tempfile.TemporaryDirectory() as directory:
+            (Path(directory) / "index.xml").write_text(self.ITEM.format(description))
+            return check_build.check_feeds(Path(directory))
+
+    def test_plain_heading_passes(self):
+        self.assertEqual([], self.check("<description>&lt;h2&gt;Intro&lt;/h2&gt;</description>"))
+
+    def test_heading_permalink_in_feed_fails(self):
+        self.assertEqual(["index.xml: heading permalinks leaked into the feed"], self.check(
+            '<description>&lt;a href="#intro" class="hanchor"&gt;#&lt;/a&gt;</description>'))
 
 
 TWEET = ('<blockquote class="twitter-tweet x-embed"><p lang="en" dir="ltr">Be careful &lt;b&gt;'
@@ -206,16 +227,18 @@ class XEmbedTests(unittest.TestCase):
             self.assertTrue(all(f.startswith("posts/example/index.html: X embed 1") for f in failures))
 
 
-def render_fixture(directory, front_matter=None, env=None, posts=None, pages=None, args=()):
+def render_fixture(directory, front_matter=None, env=None, posts=None, pages=None, args=(),
+                   body="## Fixture heading\n"):
     """Build the site from fixture content and return the output directory.
 
     `posts` maps post slugs to front matter (default: one "fixture" post with
-    `front_matter`); `pages` maps content-relative paths to whole files."""
+    `front_matter`) and Markdown `body`; `pages` maps content-relative paths
+    to whole files."""
     temporary = Path(directory)
     for slug, matter in (posts or {"fixture": front_matter}).items():
         post = temporary / "content" / "posts" / slug
         post.mkdir(parents=True)
-        (post / "index.md").write_text(f"+++\n{matter}+++\n\n## Fixture heading\n")
+        (post / "index.md").write_text(f"+++\n{matter}+++\n\n{body}")
     for relative, text in (pages or {}).items():
         (temporary / "content" / relative).write_text(text)
     output = temporary / "public"
@@ -247,6 +270,35 @@ class HugoRenderFixtureTests(unittest.TestCase):
                     dates = PostDates()
                     dates.feed((output / relative).read_text())
                     self.assertEqual([published], dates.values)
+
+    def test_markdown_headings_link_to_themselves(self):
+        """Posts and section pages (like About) both get heading permalinks."""
+        with tempfile.TemporaryDirectory() as directory:
+            section = Path(directory) / "content" / "notes"
+            section.mkdir(parents=True)
+            (section / "_index.md").write_text('+++\ntitle = "Notes"\n+++\n\n## Section heading\n')
+            output = render_fixture(directory, 'title = "Anchor fixture"\n')
+            for relative, anchor in (("posts/fixture/index.html", "fixture-heading"),
+                                     ("notes/index.html", "section-heading")):
+                with self.subTest(page=relative):
+                    markup = (output / relative).read_text()
+                    self.assertIn(f'id="{anchor}"', markup)
+                    self.assertIn(f'<a href="#{anchor}" class="hanchor" '
+                                  f'aria-label="Link to this section">#</a>', markup)
+            feed = (output / "posts/index.xml").read_text()
+            self.assertIn("Fixture heading", feed)
+            self.assertNotIn("hanchor", feed)
+
+    def test_heading_attributes_keep_one_id(self):
+        """A {#custom} id drives the permalink; other attributes pass through."""
+        with tempfile.TemporaryDirectory() as directory:
+            output = render_fixture(directory, 'title = "Attribute fixture"\n',
+                                    body="## Custom {#my-id}\n\n## Styled {.cls #styled}\n")
+            markup = (output / "posts/fixture/index.html").read_text()
+            self.assertEqual(1, markup.count('id="my-id"'))
+            self.assertIn('<a href="#my-id" class="hanchor"', markup)
+            self.assertEqual(1, markup.count('id="styled"'))
+            self.assertIn('<h2 id="styled" class="cls">', markup)
 
     def test_removed_theme_features_do_not_render(self):
         """Tags, TOC and the last-updated stamp stay off even when requested."""

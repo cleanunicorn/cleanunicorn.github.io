@@ -13,7 +13,8 @@ silently, because Hugo builds green either way:
 * the footer's profile links, the JSON-LD sameAs and the terminal's
   data-book-url match data/home.toml, and the footer location matches
   data/cv.toml (#60)
-* heading links have accessible names, and time elements have machine dates (#51)
+* heading links have accessible names, one per heading, and time elements have machine dates (#51)
+* feeds carry no heading permalinks (render-heading.rss.xml)
 * each math page has one configured KaTeX render pass (#62)
 * X embeds carry their tweet text, attribution and a named status link, and
   embed pages load widgets.js once, async (#52)
@@ -50,6 +51,7 @@ RFC3339 = re.compile(
     r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$"
 )
 HEADING_LABEL = "Link to this section"
+HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
 X_STATUS_URL = re.compile(r"^https://(?:twitter|x)\.com/[A-Za-z0-9_]{1,15}/status/\d+(?:[?#].*)?$")
 X_ATTRIBUTION = re.compile(r"\(@[A-Za-z0-9_]{1,15}\)")
 X_WIDGETS = re.compile(r"^(?:https:)?//platform\.twitter\.com/widgets\.js$")
@@ -62,9 +64,19 @@ class HtmlSemantics(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.failures: list[str] = []
         self.heading_links = 0
+        self.heading = None  # open h1-h6 tag and the permalinks inside it
+        self.heading_anchors = 0
 
     def handle_starttag(self, tag, attrs):
+        if tag in HEADINGS:
+            self.heading, self.heading_anchors = tag, 0
         self._check_tag(tag, attrs)
+
+    def handle_endtag(self, tag):
+        if tag == self.heading:
+            if self.heading_anchors > 1:
+                self.failures.append(f"{tag} has {self.heading_anchors} heading links")
+            self.heading = None
 
     def handle_startendtag(self, tag, attrs):
         self._check_tag(tag, attrs)
@@ -76,6 +88,8 @@ class HtmlSemantics(HTMLParser):
 
         if tag == "a" and "hanchor" in (attributes.get("class") or "").split():
             self.heading_links += 1
+            if self.heading:
+                self.heading_anchors += 1
             if attributes.get("aria-label") != HEADING_LABEL:
                 self.failures.append(f"heading link aria-label must be {HEADING_LABEL!r}")
 
@@ -210,14 +224,17 @@ def check_html_pages(public: Path) -> list[str]:
 
 
 def check_feeds(public: Path) -> list[str]:
-    """The home feed is posts only, and no feed is empty."""
+    """The home feed is posts only, no feed is empty, and none has heading links."""
     failures = []
     home_feed = public / "index.xml"
     for feed in sorted(public.rglob("index.xml")):
         rel = feed.relative_to(public).as_posix()
-        item_links = re.findall(r"<item>.*?<link>([^<]*)</link>", feed.read_text(), re.S)
+        text = feed.read_text()
+        item_links = re.findall(r"<item>.*?<link>([^<]*)</link>", text, re.S)
         if not item_links:
             failures.append(f"{rel}: feed has no items")
+        if "hanchor" in text:
+            failures.append(f"{rel}: heading permalinks leaked into the feed")
         if feed == home_feed:
             strays = [link for link in item_links if "/posts/" not in link]
             if strays:
