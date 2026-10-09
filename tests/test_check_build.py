@@ -81,6 +81,11 @@ class HtmlSemanticsTests(unittest.TestCase):
                   '<a class="x hanchor" aria-label="Anchor">#</a>')
         self.assertTrue(any("aria-label" in failure for failure in self.check(markup)))
 
+    def test_heading_with_two_links_fails(self):
+        link = '<a class=hanchor href=#x aria-label="Link to this section">#</a>'
+        self.assertEqual(["h2 has 2 heading links"], self.check(f"<h2 id=x>X{link}{link}</h2>"))
+        self.assertEqual([], self.check(f"<h2 id=x>X{link}</h2><h3 id=y>Y{link}</h3>"))
+
     def test_missing_heading_label(self):
         self.assertTrue(any("aria-label" in failure for failure in self.check('<a class=hanchor>#</a>')))
 
