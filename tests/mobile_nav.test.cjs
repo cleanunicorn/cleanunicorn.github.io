@@ -278,3 +278,103 @@ test("About prose fills the content column and no page scrolls sideways", { time
     await new Promise(resolve => server.close(resolve));
   }
 });
+
+// Analytics consent (#44): denied by default, explicit choice, reopenable.
+test("analytics consent banner defaults to denied and remembers a choice", { timeout: 60000 }, async () => {
+  const server = siteServer();
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  let browser;
+  const signals = ["analytics_storage", "ad_storage", "ad_user_data", "ad_personalization"];
+  // Reads dataLayer entries as [command, action, params] for consent calls.
+  const consentCalls = page => page.evaluate(() =>
+    window.dataLayer.map(entry => Array.from(entry)).filter(entry => entry[0] === "consent"));
+  try {
+    browser = await chromium.launch({ executablePath: browserPath(), headless: true, args: ["--no-sandbox"] });
+    const base = `http://127.0.0.1:${server.address().port}`;
+    const open = async (context, url) => {
+      const page = await context.newPage();
+      // Keep the test offline: gtag.js never loads, so only the queue is observable.
+      await page.route("https://www.googletagmanager.com/**", route =>
+        route.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
+      await page.goto(url);
+      return page;
+    };
+
+    for (const width of [390, 1300]) {
+      const context = await browser.newContext({ viewport: { width, height: 800 } });
+      const page = await open(context, `${base}/`);
+      const banner = page.locator("#consent-banner");
+      const accept = banner.getByRole("button", { name: "Accept analytics" });
+      const reject = banner.getByRole("button", { name: "Reject" });
+
+      // First visit: banner shown, default denied before anything else, no _ga cookie.
+      assert.equal(await banner.isVisible(), true);
+      const first = await consentCalls(page);
+      assert.equal(first[0][1], "default");
+      for (const signal of signals) assert.equal(first[0][2][signal], "denied");
+      assert.equal(await page.evaluate(() => document.cookie.includes("_ga")), false);
+
+      // Fit and equal prominence.
+      const [a, r, box] = await Promise.all([accept.boundingBox(), reject.boundingBox(), banner.boundingBox()]);
+      assert.ok(a.height >= 44 && r.height >= 44, "buttons must be at least 44px high");
+      assert.ok(Math.abs(a.width - r.width) <= 2 && Math.abs(a.height - r.height) <= 2, "Accept and Reject must be the same size");
+      assert.ok(box.height <= 800 / 2, `banner covers ${box.height}px of 800 at ${width}px`);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+      assert.equal(await banner.getAttribute("aria-labelledby"), "consent-title");
+
+      // Keyboard: Tab reaches Accept then Reject, Enter chooses.
+      await page.locator("#consent-title").focus();
+      await page.keyboard.press("Tab");
+      assert.equal(await accept.evaluate(el => el === document.activeElement), true);
+      await page.keyboard.press("Tab");
+      assert.equal(await reject.evaluate(el => el === document.activeElement), true);
+      await accept.focus();
+      await page.keyboard.press("Enter");
+      assert.equal(await banner.isVisible(), false);
+      assert.equal(await page.evaluate(() => localStorage.getItem("consent.v1")), "granted");
+      const accepted = await consentCalls(page);
+      assert.deepEqual(accepted.at(-1).slice(1), ["update", { analytics_storage: "granted" }]);
+
+      // The choice survives navigation: no banner, granted restored before config.
+      const next = await open(context, `${base}/about/`);
+      assert.equal(await next.locator("#consent-banner").isVisible(), false);
+      const restored = await next.evaluate(() => window.dataLayer.map(entry => Array.from(entry)[0] + ":" + Array.from(entry)[1]));
+      assert.deepEqual(restored.slice(0, 3), ["consent:default", "consent:update", "js:" + restored[2].slice(3)]);
+      assert.ok(restored.indexOf("consent:update") < restored.findIndex(entry => entry.startsWith("config")));
+
+      // Cookie settings reopens the banner, and the choice flips.
+      const opener = next.locator("#consent-open");
+      assert.equal(await opener.isVisible(), true);
+      await opener.click();
+      assert.equal(await next.locator("#consent-banner").isVisible(), true);
+      await next.locator("#consent-banner").getByRole("button", { name: "Reject" }).click();
+      assert.equal(await next.locator("#consent-banner").isVisible(), false);
+      assert.equal(await next.evaluate(() => localStorage.getItem("consent.v1")), "denied");
+      assert.deepEqual((await consentCalls(next)).at(-1).slice(1), ["update", { analytics_storage: "denied" }]);
+      assert.equal(await opener.evaluate(el => el === document.activeElement), true);
+      await context.close();
+    }
+
+    // Storage that throws must not break the page or the banner.
+    const broken = await browser.newContext({ viewport: { width: 390, height: 800 } });
+    await broken.addInitScript(() => {
+      Object.defineProperty(window, "localStorage", { get() { throw new Error("blocked"); } });
+    });
+    const blocked = await open(broken, `${base}/`);
+    assert.equal(await blocked.locator("#consent-banner").isVisible(), true);
+    await blocked.getByRole("button", { name: "Accept analytics" }).click();
+    assert.equal(await blocked.locator("#consent-banner").isVisible(), false);
+    await broken.close();
+
+    // Without JS nothing is shown and nothing can be granted.
+    const noJs = await browser.newContext({ viewport: { width: 390, height: 800 }, javaScriptEnabled: false });
+    const plain = await noJs.newPage();
+    await plain.goto(`${base}/`);
+    assert.equal(await plain.locator("#consent-banner").isVisible(), false);
+    assert.equal(await plain.locator("#consent-open").isVisible(), false);
+    await noJs.close();
+  } finally {
+    if (browser) await browser.close();
+    await new Promise(resolve => server.close(resolve));
+  }
+});

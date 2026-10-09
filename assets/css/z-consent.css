@@ -55,4 +55,5 @@
   font: inherit;
   cursor: pointer;
 }
+.consent-open[hidden] { display: none; }
 .consent-open:hover { color: var(--accent); }
