@@ -118,12 +118,12 @@ class HtmlSemanticsTests(unittest.TestCase):
             self.assertIn("posts/example/index.html: time datetime", failures[0])
 
 
-def render_fixture(directory, front_matter, env=None):
+def render_fixture(directory, front_matter, env=None, body="## Fixture heading\n"):
     """Build the site with one fixture post and return the output directory."""
     temporary = Path(directory)
     post = temporary / "content" / "posts" / "fixture"
     post.mkdir(parents=True)
-    (post / "index.md").write_text(f"+++\n{front_matter}+++\n\n## Fixture heading\n")
+    (post / "index.md").write_text(f"+++\n{front_matter}+++\n\n{body}")
     output = temporary / "public"
     subprocess.run(
         ["hugo", "--source", str(ROOT), "--contentDir", str(temporary / "content"),
@@ -168,6 +168,17 @@ class HugoRenderFixtureTests(unittest.TestCase):
                     self.assertIn(f'id="{anchor}"', markup)
                     self.assertIn(f'<a href="#{anchor}" class="hanchor" '
                                   f'aria-label="Link to this section">#</a>', markup)
+
+    def test_heading_attributes_keep_one_id(self):
+        """A {#custom} id drives the permalink; other attributes pass through."""
+        with tempfile.TemporaryDirectory() as directory:
+            output = render_fixture(directory, 'title = "Attribute fixture"\n',
+                                    body="## Custom {#my-id}\n\n## Styled {.cls #styled}\n")
+            markup = (output / "posts/fixture/index.html").read_text()
+            self.assertEqual(1, markup.count('id="my-id"'))
+            self.assertIn('<a href="#my-id" class="hanchor"', markup)
+            self.assertEqual(1, markup.count('id="styled"'))
+            self.assertIn('<h2 id="styled" class="cls">', markup)
 
     def test_removed_theme_features_do_not_render(self):
         """Tags, TOC and the last-updated stamp stay off even when requested."""
