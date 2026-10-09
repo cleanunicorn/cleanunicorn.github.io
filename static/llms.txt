@@ -16,6 +16,9 @@ pages it links to. Prose for humans starts at /about/.
 - [drove](https://github.com/cleanunicorn/drove): local LLM infrastructure in one tool — llama.cpp server manager, chat interface, observability proxy and model manager.
 - [Karl](https://github.com/cleanunicorn/karl): monitors live Ethereum smart contracts and tests them against vulnerabilities with Mythril, forking the chain to confirm real exploits.
 - [RL-Swarm Smart Contracts](https://github.com/gensyn-ai/rl-swarm-contracts): the contracts powering Gensyn's RL Swarm, built for their first public launch.
+- [dispatch](https://github.com/cleanunicorn/dispatch): orchestrates coding agents from Slack — a Go binary that runs each task as a Claude Code session locally, in Docker or over SSH, with permission prompts as buttons and an event log that survives restarts.
+- [Quill](https://github.com/cleanunicorn/quill): command-line transcription of audio files, YouTube videos and podcasts with faster-whisper, on your own machine.
+- The featured projects — Earheart, drove, Agents Library, dispatch and Quill — are the ones he spends most of his time on: https://cleanunicorn.github.io/projects/
 - More: https://github.com/cleanunicorn
 
 ## Roles
@@ -30,7 +33,8 @@ pages it links to. Prose for humans starts at /about/.
 
 ## Pages
 
-- https://cleanunicorn.github.io/about/ — bio, highlights, projects, talks, podcasts, books.
+- https://cleanunicorn.github.io/projects/ — the featured tools, Earheart, drove, Agents Library, dispatch and Quill: why to use them, why they are cool, how to install.
+- https://cleanunicorn.github.io/about/ — bio, highlights, the full project list, talks, podcasts, books.
 - https://cleanunicorn.github.io/work/ — the full role history with dates.
 - https://cleanunicorn.github.io/posts/ — essays on security, EVM internals and applied AI.
 - https://cleanunicorn.github.io/cv.pdf — CV, generated from the pages above.

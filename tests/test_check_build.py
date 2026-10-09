@@ -1,5 +1,6 @@
 """Regression tests for built HTML semantics and primary navigation."""
 
+import os
 import shutil
 import subprocess
 import sys
@@ -23,6 +24,45 @@ class PostDates(HTMLParser):
         attributes = dict(attrs)
         if tag == "time" and "post-date" in (attributes.get("class") or "").split():
             self.values.append(attributes.get("datetime"))
+
+
+class FeaturedProjectsTests(unittest.TestCase):
+    """A featured project must be on both pages, each linking its repo."""
+
+    REPO = "https://github.com/cleanunicorn/earheart"
+    HOME = '<article class=featured__card id=featured-earheart><a href="https://github.com/cleanunicorn/earheart">GitHub</a></article>'
+    PAGE = '<section class="project" id="earheart"><a href="https://github.com/cleanunicorn/earheart">GitHub</a></section>'
+
+    def check(self, home=HOME, page=PAGE):
+        return check_build.featured_project_violations("earheart", self.REPO, home, page)
+
+    def test_both_pages_render_the_project(self):
+        self.assertEqual([], self.check())
+
+    def test_missing_homepage_card(self):
+        self.assertEqual(["index.html: no featured card for 'earheart'"], self.check(home="<main></main>"))
+
+    def test_missing_projects_section(self):
+        self.assertEqual(["projects/index.html: no section #earheart"], self.check(page="<main></main>"))
+
+    def test_card_without_repo_link(self):
+        got = self.check(home="<article id=featured-earheart></article>")
+        self.assertEqual([f"index.html: featured card for 'earheart' does not link {self.REPO}"], got)
+
+    def test_repo_link_outside_the_section_does_not_count(self):
+        page = ('<section class="project" id="quill"><pre>git clone https://github.com/cleanunicorn/earheart</pre></section>'
+                '<section id="earheart"></section><a href="https://github.com/cleanunicorn/earheart">x</a>')
+        self.assertEqual([f"projects/index.html: section #earheart does not link {self.REPO}"], self.check(page=page))
+
+    def test_minified_unquoted_href_counts(self):
+        page = '<section id=earheart><a href=https://github.com/cleanunicorn/earheart target=_blank>GitHub</a></section>'
+        self.assertEqual([], self.check(page=page))
+
+    def test_slug_is_not_a_prefix_match(self):
+        self.assertEqual(
+            ["projects/index.html: no section #earheart"],
+            self.check(page='<section id="earheart-legacy"></section>'),
+        )
 
 
 class HtmlSemanticsTests(unittest.TestCase):
@@ -163,33 +203,58 @@ class XEmbedTests(unittest.TestCase):
             failures = check_build.check_x_embeds(public)
             self.assertEqual(3, len(failures))
             self.assertTrue(all(f.startswith("posts/example/index.html: X embed 1") for f in failures))
+def render_fixture(directory, front_matter, env=None):
+    """Build the site with one fixture post and return the output directory."""
+    temporary = Path(directory)
+    post = temporary / "content" / "posts" / "fixture"
+    post.mkdir(parents=True)
+    (post / "index.md").write_text(f"+++\n{front_matter}+++\n\n## Fixture heading\n")
+    output = temporary / "public"
+    subprocess.run(
+        ["hugo", "--source", str(ROOT), "--contentDir", str(temporary / "content"),
+         "--destination", str(output), "--cleanDestinationDir"],
+        check=True, capture_output=True, text=True,
+        env=None if env is None else {**os.environ, **env},
+    )
+    return output
+
+
+FIXTURE_PAGES = ("index.html", "posts/index.html", "posts/fixture/index.html")
 
 
 @unittest.skipUnless(shutil.which("hugo") and (ROOT / "themes/terminal/layouts").is_dir(),
                      "Hugo and the theme submodule are required for the render fixture")
-class HugoDateSourceTests(unittest.TestCase):
+class HugoRenderFixtureTests(unittest.TestCase):
     def test_home_list_and_single_use_publication_date(self):
         published = "2024-02-29T14:23:45+01:00"
         updated = "2025-06-01T09:08:07-04:00"
         with tempfile.TemporaryDirectory() as directory:
-            temporary = Path(directory)
-            post = temporary / "content" / "posts" / "date-source-fixture"
-            post.mkdir(parents=True)
-            (post / "index.md").write_text(
-                f'+++\ntitle = "Date source fixture"\ndate = {published}\n'
-                f'lastmod = {updated}\n+++\n\n## Fixture heading\n'
+            output = render_fixture(
+                directory,
+                f'title = "Date source fixture"\ndate = {published}\nlastmod = {updated}\n',
             )
-            output = temporary / "public"
-            subprocess.run(
-                ["hugo", "--source", str(ROOT), "--contentDir", str(temporary / "content"),
-                 "--destination", str(output), "--cleanDestinationDir"],
-                check=True, capture_output=True, text=True,
-            )
-            for relative in ("index.html", "posts/index.html", "posts/date-source-fixture/index.html"):
+            for relative in FIXTURE_PAGES:
                 with self.subTest(page=relative):
                     dates = PostDates()
                     dates.feed((output / relative).read_text())
                     self.assertEqual([published], dates.values)
+
+    def test_removed_theme_features_do_not_render(self):
+        """Tags, TOC and the last-updated stamp stay off even when requested."""
+        with tempfile.TemporaryDirectory() as directory:
+            output = render_fixture(
+                directory,
+                'title = "Feature fixture"\ndate = 2024-02-29T14:23:45+01:00\n'
+                'lastmod = 2025-06-01T09:08:07-04:00\ntags = ["fixture-tag"]\ntoc = true\n',
+                env={"HUGO_PARAMS_SHOWLASTUPDATED": "true", "HUGO_PARAMS_TOC": "true"},
+            )
+            # Markers: the tag/TOC classes and the theme post-lastmod prefix. The theme
+            # comments partial is only an HTML comment, which html/template strips.
+            for relative in FIXTURE_PAGES:
+                markup = (output / relative).read_text()
+                for marker in ("post-tags", "table-of-contents", "Updated:"):
+                    with self.subTest(page=relative, marker=marker):
+                        self.assertNotIn(marker, markup)
 
 
 

@@ -9,7 +9,6 @@ const { test } = require("node:test");
 const { chromium } = require("playwright-core");
 
 const publicDir = path.resolve(__dirname, "..", "public");
-const expected = ["About", "Work", "Posts", "Contact"];
 const tweets = [
   {
     path: "posts/the-right-way-to-use-transient-storage-eip-1153/",
@@ -26,6 +25,7 @@ const tweets = [
     href: "https://twitter.com/shadowxyz/status/1732049145140015142",
   },
 ];
+const expected = ["About", "Projects", "Work", "Posts", "Contact"];
 const mime = { ".css": "text/css", ".html": "text/html", ".js": "text/javascript" };
 
 function browserPath() {
