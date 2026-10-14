@@ -39,7 +39,8 @@ with tempfile.TemporaryDirectory() as directory:
         (root / "content/posts" / (name + ".md")).write_text(f'+++\ntitle = "{name}"\n{extra}\n+++\nShould not be narrated.\n')
 
     def build():
-        subprocess.run(["hugo", "--source", str(root), "--destination", str(root / "public"), "--minify", "--cleanDestinationDir"], check=True)
+        # The isolated fixture has no Git history; article dates remain in front matter.
+        subprocess.run(["hugo", "--source", str(root), "--destination", str(root / "public"), "--enableGitInfo=false", "--minify", "--cleanDestinationDir"], check=True)
 
     build()
     articles = json.loads((root / "public/narration.json").read_text())["articles"]

@@ -48,6 +48,12 @@ class ExtractionTests(unittest.TestCase):
         self.assertNotIn("still skip", text)
         self.assertIn("Keep\n\nthis.", text)
 
+    def test_escaped_dollars_inside_tex_do_not_leak_markup(self):
+        text = audio.narration_text("Title", r'<p>Cost is $\$1$.</p>')
+        self.assertIn("Cost is Equation omitted. .", text)
+        self.assertNotIn("$", text)
+        self.assertNotIn("\\", text)
+
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "requires ffmpeg and ffprobe")
 class GenerationTests(unittest.TestCase):

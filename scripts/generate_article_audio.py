@@ -74,7 +74,7 @@ def narration_text(title, html):
     parser = NarrationParser()
     # Goldmark passthrough leaves TeX delimiters in the rendered HTML.
     html = re.sub(r"\$\$.*?\$\$|\\\[.*?\\\]", " Equation omitted. ", html, flags=re.S)
-    html = re.sub(r"(?<!\\)\$[^$\n]+\$|\\\(.*?\\\)", " Equation omitted. ", html)
+    html = re.sub(r"(?<!\\)\$(?:\\.|[^$\\\n])+\$|\\\(.*?\\\)", " Equation omitted. ", html)
     parser.feed(html)
     parser.close()
     paragraphs = [re.sub(r"[ \t]+", " ", p).strip() for p in "".join(parser.parts).split("\n\n")]
