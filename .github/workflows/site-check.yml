@@ -50,7 +50,7 @@ jobs:
       - name: Install Chromium (for CV PDF and navigation checks)
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser
+          sudo apt-get install -y chromium-browser ffmpeg
       - name: Set up Node.js (for browser navigation check)
         uses: actions/setup-node@v7
         with:
@@ -61,6 +61,8 @@ jobs:
         run: make cv-pdf
       - name: Build the site
         run: hugo --minify
+      - name: Check article audio build and players (fixture audio, no models)
+        run: python3 tests/check_article_audio_build.py
       - name: Check build output
         run: make check-build
       - name: Check built metadata
@@ -84,3 +86,4 @@ jobs:
             --index-files index.html
             'public/**/*.html'
           fail: true
+

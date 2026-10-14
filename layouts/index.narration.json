@@ -1,0 +1,7 @@
+{{- $articles := slice -}}
+{{- range where .Site.RegularPages "Section" "posts" -}}
+  {{- $html := string .Content -}}
+  {{- $fingerprint := crypto.SHA256 (printf "%s\n%s" .Title $html) -}}
+  {{- $articles = $articles | append (dict "key" .File.Path "title" .Title "url" .RelPermalink "html" $html "fingerprint" $fingerprint) -}}
+{{- end -}}
+{{- dict "articles" $articles | jsonify -}}

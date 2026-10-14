@@ -7,6 +7,16 @@ disableKinds = ["taxonomy", "term"]
 enableRobotsTXT = true
 enableGitInfo = true
 
+# Hugo selects published articles and renders shortcodes before narration.
+[outputs]
+  home = ["HTML", "RSS", "Narration"]
+
+[outputFormats.Narration]
+  mediaType = "application/json"
+  baseName = "narration"
+  isPlainText = true
+  notAlternative = true
+
 [markup.goldmark.renderer]
   unsafe = true
     [markup.goldmark.extensions.passthrough]
@@ -90,3 +100,4 @@ enableGitInfo = true
         name = "Contact"
         url = "/contact/"
         weight = 40
+

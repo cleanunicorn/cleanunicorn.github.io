@@ -24,3 +24,9 @@ hugo.linux
 # Python bytecode and macOS Finder metadata
 __pycache__/
 .DS_Store
+
+# Generated audio is cached locally/in Actions and included in the Pages artifact.
+/.cache/article-audio/
+/static/audio/
+/data/article_audio.json
+

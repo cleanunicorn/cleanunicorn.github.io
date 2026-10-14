@@ -61,6 +61,56 @@ example with no browser on `PATH` or an empty output file.
 
 ## CI and deploy
 
+### Article audio
+
+Every published post gets a narrated MP3 generated with
+[Cathy](https://github.com/cleanunicorn/cathy). The deployment workflow backfills
+existing posts and generates audio for new or changed posts. MP3s are part of the
+GitHub Pages artifact; they are not committed to Git. Article pages show a native
+player and download link, with no autoplay or audio preloading.
+
+Hugo first exports published articles to `public/narration.json`, with rendered
+shortcodes and without front matter or site navigation. The generator keeps prose,
+headings, link labels, inline code, image descriptions, and captions. It omits
+code blocks, TeX equations, diagrams, scripts, embedded media UI, and footnote
+navigation. Code and equation omissions are announced in the narration. Drafts
+and future posts are excluded by Hugo's normal publication rules.
+
+`scripts/article_audio.toml` pins the Cathy commit and selects Kokoro's `af_heart`
+voice at normal speed. Change that file to choose another Kokoro voice or speed,
+or upgrade Cathy. CI uses Python 3.12 and CPU PyTorch wheels; synthesis needs
+`espeak-ng` and MP3 encoding/validation needs `ffmpeg` and `ffprobe`.
+
+To generate locally, install those system dependencies and [uv](https://docs.astral.sh/uv/), then run:
+
+```sh
+uv tool install --python 3.12 "$(python3 scripts/generate_article_audio.py --print-cathy-source)"
+make audio-plan                 # report which published articles need generation
+make audio                      # export, generate audio, rebuild with players
+```
+
+The first run downloads Cathy's speech model and dependencies; subsequent runs
+reuse them. Generated MP3s are cached in `.cache/article-audio/`, keyed by rendered
+article content, title, Cathy commit, voice, speed, and generator code. CI restores
+that cache plus model/dependency downloads. Cache eviction causes regeneration,
+so the first deployment takes longer than later ones. The build job allows up to
+120 minutes; a failed narration blocks deployment and leaves the live site intact.
+
+The generator checks each MP3 with `ffprobe`, regenerates corrupt entries, writes
+`static/audio/` plus `data/article_audio.json`, and prunes unused generated MP3s.
+Players appear only when the manifest matches the current article and the MP3
+exists. Run `make audio` after editing an article to update local narration.
+
+`make test` covers extraction, cache reuse/invalidation, corrupt files, and failed
+generation. PR CI also runs `python3 tests/check_article_audio_build.py`: both Hugo
+passes use short fixture MP3s to check publication filtering, accessible players,
+download links, asset inclusion, and stale-audio suppression, without downloading
+speech models. Fixture audio is isolated in a temporary site and never deployed.
+Changes to the generator, Cathy settings, or deployment workflow also run a real
+CPU narration smoke test in PR CI, synthesizing and validating a short article.
+
+### Workflows
+
 - **Pull requests** run two workflows:
   - *Check positioning* (`.github/workflows/positioning.yml`) runs
     `make check-positioning` and `make test`.
@@ -76,3 +126,4 @@ example with no browser on `PATH` or an empty output file.
   GitHub Actions and the theme submodule.
 
 To move to a new Hugo version, change `.hugo-version`. Both workflows read it.
+
