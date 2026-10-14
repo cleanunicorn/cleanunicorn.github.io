@@ -10,13 +10,18 @@
       <span>{{ site.Data.cv.location }}</span>
       <span class="colophon__sep" aria-hidden="true">·</span>
       <a href="https://github.com/cleanunicorn/cleanunicorn.github.io" target="_blank" rel="noopener">Source</a>
+      <span class="colophon__sep" aria-hidden="true">·</span>
+      <button type="button" class="consent-open" id="consent-open" hidden>Cookie settings</button>
     </p>
   </div>
 </footer>
 
+{{ partial "consent.html" . }}
+
 {{ $menu := resources.Get "js/menu.js" | js.Build }}
 {{ $cp := resources.Get "js/code.js" | js.Build }}
-{{ $bundle := slice $menu $cp | resources.Concat "bundle.js" | resources.Minify }}
+{{ $consent := resources.Get "js/consent.js" | js.Build }}
+{{ $bundle := slice $menu $cp $consent | resources.Concat "bundle.js" | resources.Minify }}
 <script type="text/javascript" src="{{ $bundle.RelPermalink }}"></script>
 
 {{ partial "extended_footer.html" . }}

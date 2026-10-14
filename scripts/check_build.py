@@ -21,6 +21,8 @@ silently, because Hugo builds green either way:
 * primary navigation links and the mobile disclosure's source contract (#45)
 * posts link their older/newer published neighbour and end with the closing
   CTA (X, RSS, contact); no other page has either block (#55)
+* GA4 consent is denied by default before config and the gtag.js request, and
+  every page carries the hidden consent banner and a Cookie settings control (#44)
 * every featured project in data/projects.toml is on the homepage band and
   has its own section on /projects/, each linking its repository
 
@@ -204,6 +206,120 @@ def check_x_embeds(public: Path) -> list[str]:
     for page in sorted(public.rglob("*.html")):
         rel = page.relative_to(public).as_posix()
         failures.extend(f"{rel}: {failure}" for failure in check_x_embed_markup(page.read_text()))
+    return failures
+
+
+GA_ID = "G-42RTQLDG4M"
+CONSENT_SIGNALS = ("analytics_storage", "ad_storage", "ad_user_data", "ad_personalization")
+
+
+class ConsentMarkup(HTMLParser):
+    """Collect script order, the consent banner and the reopen control."""
+
+    def __init__(self):
+        super().__init__()
+        self.events = []  # ("inline", text) / ("loader", src) in document order
+        self.ids = set()
+        self.banner = None
+        self.banner_buttons = 0
+        self.opener = False
+        self._script = None
+        self._in_banner = False
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if attributes.get("id"):
+            self.ids.add(attributes["id"])
+        if tag == "script":
+            src = attributes.get("src") or ""
+            if "googletagmanager.com/gtag/js" in src:
+                self.events.append(("loader", src))
+            elif not src:
+                self._script = []
+        elif attributes.get("id") == "consent-banner":
+            self.banner = attributes
+            self._in_banner = True
+        elif tag == "button" and self._in_banner:
+            self.banner_buttons += 1
+        elif tag == "button" and attributes.get("id") == "consent-open":
+            self.opener = True
+
+    def handle_endtag(self, tag):
+        if tag == "script" and self._script is not None:
+            self.events.append(("inline", "".join(self._script)))
+            self._script = None
+        elif tag == "section":
+            self._in_banner = False
+
+    def handle_data(self, data):
+        if self._script is not None:
+            self._script.append(data)
+
+
+def consent_violations(markup: str) -> list[str]:
+    """Return consent failures in one HTML document.
+
+    Hugo builds green whether or not the default-denied call precedes the
+    config call and the gtag.js request, so the order is asserted here.
+    """
+    parser = ConsentMarkup()
+    parser.feed(markup)
+    parser.close()
+    failures = []
+    default = config = loader = None  # (script position, offset) in document order
+    for position, (kind, text) in enumerate(parser.events):
+        if kind == "loader" and loader is None:
+            loader = (position, 0)
+        elif kind == "inline":
+            found = re.search(r"gtag\(\s*['\"]consent['\"]\s*,\s*['\"]default['\"]", text)
+            if found and default is None:
+                default = (position, found.start())
+            found = re.search(r"gtag\(\s*['\"]config['\"]\s*,\s*['\"]" + GA_ID, text)
+            if found and config is None:
+                config = (position, found.start())
+    configs = sum(len(re.findall(r"gtag\(\s*['\"]config['\"]", text))
+                  for kind, text in parser.events if kind == "inline")
+    if configs != 1:
+        failures.append(f"expected exactly one gtag config, found {configs}")
+    if default is None:
+        failures.append("no gtag consent default")
+    else:
+        call = re.search(r"\{(.*?)\}", parser.events[default[0]][1][default[1]:], re.S)
+        text = call.group(1) if call else ""
+        for signal in CONSENT_SIGNALS:
+            if not re.search(signal + r"\s*:\s*['\"]denied['\"]", text):
+                failures.append(f"consent default does not deny {signal}")
+        if re.search(r"['\"]granted['\"]", text):
+            failures.append("consent default grants a signal")
+        if config is not None and default > config:
+            failures.append("gtag config runs before the consent default")
+        if loader is not None and default > loader:
+            failures.append("gtag.js is requested before the consent default")
+    if loader is None:
+        failures.append("gtag.js loader missing")
+    if parser.banner is None:
+        failures.append("no #consent-banner")
+    else:
+        if "hidden" not in parser.banner:
+            failures.append("consent banner is not hidden by default")
+        if parser.banner.get("aria-labelledby") not in parser.ids:
+            failures.append("consent banner aria-labelledby does not name an element")
+        if parser.banner_buttons != 2:
+            failures.append(f"consent banner has {parser.banner_buttons} buttons, expected 2")
+    if not parser.opener:
+        failures.append("no Cookie settings button")
+    return failures
+
+
+def check_consent(public: Path) -> list[str]:
+    """Check analytics consent on every rendered page."""
+    failures = []
+    for page in sorted(public.rglob("*.html")):
+        markup = page.read_text()
+        if re.search(r"http-equiv=[\"']?refresh", markup):
+            continue  # Hugo's redirect stubs render no page
+        rel = page.relative_to(public).as_posix()
+        failures.extend(f"{rel}: {failure}" for failure in consent_violations(markup))
     return failures
 
 
@@ -651,6 +767,7 @@ def main() -> int:
         + check_profile_data(args.root, public)
         + check_html_pages(public)
         + check_x_embeds(public)
+        + check_consent(public)
         + check_math_rendering(public)
         + check_nav(args.root, public)
         + check_post_navigation(args.root, public)

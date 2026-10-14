@@ -46,9 +46,9 @@ project list stays in `content/about/_index.md`.
 | `make test` | Runs the Python unit tests in `tests/` (including navigation, KaTeX, and built-HTML semantic guards, positioning rules, CV tools, and cv-pdf failure paths) |
 | `make check-alt-text` | Fails if a post image has placeholder alt text ("Untitled", "image 2", a filename) |
 | `make build` | Runs `check-positioning` and `check-alt-text`, builds the site into a clean `public/`, then runs `check-build`, `check-built-meta`, and the Chromium navigation check |
-| `make check-build` | Checks the built site in `public/`: feeds, removed outputs, profile data, primary navigation markup, post older/newer links and closing CTA, one configured KaTeX render pass per math page, accessible heading links, and machine-readable dates |
+| `make check-build` | Checks the built site in `public/`: feeds, removed outputs, profile data, primary navigation markup, post older/newer links and closing CTA, one configured KaTeX render pass per math page, accessible heading links, machine-readable dates, and that GA consent is denied before `config` and the gtag.js request on every page |
 | `make check-built-meta` | Checks the built site's search and social metadata: descriptions, Open Graph image, JSON-LD, robots.txt |
-| `make check-browser-nav` | Uses Chromium to check the mobile Menu state, Tab order, desktop links, the no-JS fallback, and that post navigation and the closing CTA fit at 390px and 1300px against `public/`; installs the pinned `playwright-core` package with npm if needed |
+| `make check-browser-nav` | Uses Chromium to check the mobile Menu state, Tab order, desktop links, the no-JS fallback, and that post navigation and the closing CTA fit at 390px and 1300px, and that the analytics consent banner defaults to denied, remembers Accept/Reject, reopens from the footer and is hidden without JS, against `public/`; installs the pinned `playwright-core` package with npm if needed |
 | `make cv` | Writes the CV as HTML to `static/cv.html`, generated from the About and Work pages |
 | `make cv-pdf` | Runs `make cv`, then prints `static/cv.pdf` with headless Chromium or Chrome (`CHROME=<path>` picks the browser) |
 | `make books` | Refreshes the About page's Books list from Goodreads |
@@ -58,6 +58,10 @@ project list stays in `content/about/_index.md`.
 `static/cv.html` and `static/cv.pdf` are gitignored. CI generates them before
 every build. `make cv-pdf` exits non-zero when it cannot produce the PDF, for
 example with no browser on `PATH` or an empty output file.
+
+## Analytics and consent
+
+Google Analytics 4 (`G-42RTQLDG4M`, set in `layouts/partials/analytics.html`) runs under Consent Mode v2. Every consent signal is denied by default, before `config` and the gtag.js request. A first-visit banner (`layouts/partials/consent.html`, `assets/js/consent.js`) offers Accept analytics or Reject, and the footer's "Cookie settings" button reopens it. Accept grants `analytics_storage` only; the site runs no ads. The choice is kept in `localStorage` under `consent.v1`; bump the key to ask everyone again. With JS off the banner stays hidden and consent stays denied. While denied, Google Analytics may still receive cookieless pings. `make check-build` and `make check-browser-nav` guard this behavior.
 
 ## CI and deploy
 
