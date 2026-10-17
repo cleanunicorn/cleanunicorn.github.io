@@ -48,20 +48,21 @@ with tempfile.TemporaryDirectory() as directory:
     assert all("audio-test" not in a["key"] for a in articles), "Draft/future content was exported"
     fixture = root / "fixture.mp3"
     subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "sine=frequency=440:duration=0.1", "-y", str(fixture)], check=True)
-    real_run = subprocess.run
     calls = []
 
-    def synthesize(command, **kwargs):
-        if command[0] != "cathy":
-            return real_run(command, **kwargs)
-        calls.append(command)
-        shutil.copyfile(fixture, command[command.index("-o") + 1])
-        return subprocess.CompletedProcess(command, 0)
+    def respond(text, settings, output):
+        calls.append(text)
+        shutil.copyfile(fixture, output)
 
-    with patch.object(audio.subprocess, "run", side_effect=synthesize):
-        manifest = audio.generate(articles, audio.load_settings(), root)
-        audio.generate(articles, audio.load_settings(), root)
-    assert len(calls) == len(articles), "Unchanged articles were regenerated"
+    # Fixture settings never contact a speech service or load a developer's .env.
+    settings = {"endpoint": "http://unused.invalid/v1/audio/speech", "api_key": "",
+                "model": "fixture", "voice": "fixture", "speed": 1.0,
+                "timeout": 1.0, "max_chars": 3500, "extra": {}}
+    with patch.object(audio, "speech_request", side_effect=respond):
+        manifest = audio.generate(articles, settings, root)
+        first_calls = len(calls)
+        audio.generate(articles, settings, root)
+    assert len(calls) == first_calls, "Unchanged articles were regenerated"
     build()
     for item in articles:
         parser = PlayerParser()

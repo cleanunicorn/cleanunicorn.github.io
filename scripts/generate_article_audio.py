@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
-"""Generate article MP3s from Hugo's published-content export using Cathy."""
+"""Generate article MP3s from Hugo's published-content export using an OpenAI-compatible speech API."""
 
 import argparse
 import hashlib
 from html.parser import HTMLParser
 import json
+import math
+import os
 from pathlib import Path
 import re
 import shutil
+import shlex
 import subprocess
 import sys
 import tempfile
-import tomllib
+from urllib import error, parse, request
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "scripts/article_audio.toml"
+ENV_FILE = ROOT / ".env"
 BLOCKS = {"p", "div", "blockquote", "li", "h1", "h2", "h3", "h4", "h5", "h6", "tr", "figcaption"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 SKIP = {"pre", "script", "style", "svg", "math", "sup", "audio", "video", "iframe"}
@@ -81,26 +84,83 @@ def narration_text(title, html):
     return title.strip() + "\n\n" + "\n\n".join(p for p in paragraphs if p) + "\n"
 
 
-def load_settings(path=CONFIG):
-    settings = tomllib.loads(path.read_text())
-    if not re.fullmatch(r"[0-9a-f]{40}", settings["cathy_ref"]):
-        raise ValueError("cathy_ref must be a full commit SHA")
-    if settings["engine"] != "kokoro" or not settings["voice"].strip() or settings["speed"] <= 0:
-        raise ValueError("Expected Kokoro, a voice, and a positive speed")
-    return settings
+def load_settings(path=ENV_FILE, environ=None):
+    """Read simple dotenv assignments without evaluating shell code."""
+    values = {}
+    if path.is_file():
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            match = re.fullmatch(r"(?:export\s+)?([A-Za-z_]\w*)\s*=(.*)", line)
+            if not match:
+                raise ValueError(f"{path.name}:{number}: expected KEY=value")
+            values[match[1]] = " ".join(shlex.split(match[2], comments=True))
+    values.update(os.environ if environ is None else environ)
+    endpoint = values.get("AUDIO_API_URL", "").strip()
+    url = parse.urlsplit(endpoint)
+    if url.scheme not in {"http", "https"} or not url.hostname or url.username or url.password or url.fragment:
+        raise ValueError("Set AUDIO_API_URL to a full HTTP(S) speech endpoint in .env")
+    model = values.get("AUDIO_MODEL", "").strip()
+    voice = values.get("AUDIO_VOICE", "").strip()
+    if not model or not voice:
+        raise ValueError("Set AUDIO_MODEL and AUDIO_VOICE in .env")
+    speed = float(values.get("AUDIO_SPEED", "1.0"))
+    timeout = float(values.get("AUDIO_TIMEOUT_SECONDS", "300"))
+    max_chars = int(values.get("AUDIO_MAX_INPUT_CHARS", "3500"))
+    if not math.isfinite(speed) or speed <= 0 or not math.isfinite(timeout) or timeout <= 0 or max_chars <= 0:
+        raise ValueError("Audio speed, timeout, and maximum input length must be positive")
+    extra = json.loads(values.get("AUDIO_EXTRA_PARAMS", "{}"))
+    if not isinstance(extra, dict) or extra.keys() & {"input", "model", "voice", "speed", "response_format"}:
+        raise ValueError("AUDIO_EXTRA_PARAMS must be a JSON object without reserved speech fields")
+    return {
+        "endpoint": endpoint, "api_key": values.get("AUDIO_API_KEY", ""),
+        "model": model, "voice": voice, "speed": speed,
+        "timeout": timeout, "max_chars": max_chars, "extra": extra,
+    }
 
 
 def fingerprint(article):
     return hashlib.sha256((article["title"] + "\n" + article["html"]).encode()).hexdigest()
 
 
+def synthesis_settings(settings):
+    # Rotating credentials or changing a timeout must not regenerate narration.
+    return {key: settings[key] for key in ("endpoint", "model", "voice", "speed", "max_chars", "extra")}
+
+
+def digest(payload):
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
 def cache_key(article, settings):
-    payload = {
-        "source": fingerprint(article),
-        "settings": settings,
+    return digest({
+        "source": fingerprint(article), "settings": synthesis_settings(settings),
         "generator": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-    }
-    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+    })
+
+
+def split_text(text, limit):
+    """Prefer paragraph/sentence/word boundaries; hard-split only oversized words."""
+    chunks = []
+    remaining = text.strip()
+    while len(remaining) > limit:
+        window = remaining[:limit + 1]
+        cut = window.rfind("\n\n", 0, limit + 1)
+        if cut < limit // 2:
+            boundaries = list(re.finditer(r"(?<=[.!?])\s+", window))
+            cut = boundaries[-1].start() if boundaries else -1
+        if cut <= 0:
+            cut = max(window.rfind(" ", 0, limit + 1), window.rfind("\n", 0, limit + 1))
+        if cut <= 0:
+            cut = limit
+        chunk = remaining[:cut].strip()
+        if chunk:
+            chunks.append(chunk)
+        remaining = remaining[cut:].strip()
+    if remaining:
+        chunks.append(remaining)
+    return chunks
 
 
 def valid_audio(path):
@@ -114,58 +174,117 @@ def valid_audio(path):
         return False
     try:
         info = json.loads(result.stdout)
-        return info["streams"][0]["codec_name"] == "mp3" and float(info["format"]["duration"]) > 0
+        duration = float(info["format"]["duration"])
+        return info["streams"][0]["codec_name"] == "mp3" and math.isfinite(duration) and duration > 0
     except (KeyError, IndexError, ValueError, TypeError):
         return False
 
 
+class NoRedirects(request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise ValueError("Speech API redirected the request; configure its final endpoint directly")
+
+
+def speech_request(text, settings, output):
+    payload = {
+        **settings["extra"], "model": settings["model"], "voice": settings["voice"],
+        "input": text, "speed": settings["speed"], "response_format": "mp3",
+    }
+    headers = {"Content-Type": "application/json", "Accept": "audio/mpeg"}
+    if settings["api_key"]:
+        headers["Authorization"] = "Bearer " + settings["api_key"]
+    req = request.Request(settings["endpoint"], data=json.dumps(payload).encode(), headers=headers, method="POST")
+    try:
+        with request.build_opener(NoRedirects()).open(req, timeout=settings["timeout"]) as response:
+            with output.open("wb") as target:
+                shutil.copyfileobj(response, target)
+    except error.HTTPError as failure:
+        # Server error bodies and URLs can contain credentials; keep errors terse.
+        raise ValueError(f"Speech API returned HTTP {failure.code}; check endpoint, credentials, model, and parameters") from None
+    except (error.URLError, TimeoutError, OSError):
+        raise ValueError("Speech API connection failed or timed out; check the endpoint and server") from None
+    if not valid_audio(output):
+        raise ValueError("Speech API did not return a valid MP3; check response_format support")
+
+
+def synthesize(text, settings, destination, cache):
+    chunks = split_text(text, settings["max_chars"])
+    chunk_dir = cache / "chunks"
+    chunk_dir.mkdir(parents=True, exist_ok=True)
+    paths = []
+    for index, chunk in enumerate(chunks, 1):
+        path = chunk_dir / (digest({"text": chunk, "settings": synthesis_settings(settings)}) + ".mp3")
+        if not valid_audio(path):
+            print(f"  Request chunk {index}/{len(chunks)}", flush=True)
+            with tempfile.TemporaryDirectory(dir=cache) as work:
+                temporary = Path(work) / "response.mp3"
+                speech_request(chunk, settings, temporary)
+                temporary.replace(path)
+        paths.append(path)
+    if len(paths) == 1:
+        shutil.copyfile(paths[0], destination)
+    else:
+        with tempfile.TemporaryDirectory(dir=cache) as work:
+            # Controlled relative filenames avoid quoting user paths in ffconcat.
+            work = Path(work)
+            for index, path in enumerate(paths):
+                shutil.copyfile(path, work / f"{index}.mp3")
+            playlist = work / "chunks.txt"
+            playlist.write_text("".join(f"file '{index}.mp3'\n" for index in range(len(paths))))
+            subprocess.run([
+                "ffmpeg", "-v", "error", "-f", "concat", "-safe", "1", "-i", str(playlist),
+                "-c:a", "copy", "-y", str(destination.resolve()),
+            ], check=True)
+    if not valid_audio(destination):
+        raise ValueError("Could not assemble a valid article MP3")
+
+
 def generate(articles, settings, root=ROOT, plan=False):
     cache = root / ".cache/article-audio"
+    output = root / "static/audio"
     manifest = {}
     pending = []
     seen = set()
-    # Validate the complete export before spending time synthesizing.
     for article in articles:
         key = article["key"]
         if key in seen or article["fingerprint"] != fingerprint(article):
             raise ValueError(f"Duplicate key or invalid fingerprint: {key}")
         seen.add(key)
-        digest = cache_key(article, settings)
-        path = cache / (digest + ".mp3")
+        filename = cache_key(article, settings) + ".mp3"
+        path = cache / filename
+        published = output / filename
+        # Committed files are reusable on a fresh checkout with no local cache.
+        if valid_audio(published):
+            path = published
         cached = valid_audio(path)
-        print(f"{'Reuse' if cached else 'Generate'}: {article['title']}", flush=True)
-        pending.append((article, path, cached))
-        manifest[key] = {"fingerprint": article["fingerprint"], "url": "/audio/" + path.name}
+        text = narration_text(article["title"], article["html"])
+        chunks = split_text(text, settings["max_chars"])
+        print(f"{'Reuse' if cached else 'Generate'}: {article['title']} ({len(chunks)} chunks)", flush=True)
+        pending.append((article, path, cached, text))
+        manifest[key] = {"fingerprint": article["fingerprint"], "url": "/audio/" + filename}
     if plan:
         return manifest
     cache.mkdir(parents=True, exist_ok=True)
-    for article, path, cached in pending:
+    for article, path, cached, text in pending:
         if cached:
             continue
-        # A failed Cathy run never becomes a reusable cache entry.
+        print(f"Narrating: {article['title']}", flush=True)
         with tempfile.TemporaryDirectory(dir=cache) as work:
-            text = Path(work) / "article.txt"
-            audio = Path(work) / "article.mp3"
-            text.write_text(narration_text(article["title"], article["html"]), encoding="utf-8")
-            subprocess.run([
-                "cathy", str(text), "-o", str(audio), "-e", settings["engine"],
-                "-v", settings["voice"], "-s", str(settings["speed"]), "--all",
-            ], check=True)
-            if not valid_audio(audio):
-                raise ValueError(f"Cathy did not produce a valid MP3 for {article['key']}")
-            audio.replace(path)
-    # Publish metadata only after every article succeeded. Files are content-addressed.
-    output = root / "static/audio"
+            temporary = Path(work) / "article.mp3"
+            synthesize(text, settings, temporary, cache)
+            temporary.replace(path)
+    # Publish metadata only after every article succeeded.
     output.mkdir(parents=True, exist_ok=True)
-    for _, path, _ in pending:
-        shutil.copyfile(path, output / path.name)
+    for _, path, _, _ in pending:
+        target = output / path.name
+        if path != target:
+            shutil.copyfile(path, target)
     data = root / "data"
     data.mkdir(parents=True, exist_ok=True)
     temporary = data / "article_audio.json.tmp"
     temporary.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     temporary.replace(data / "article_audio.json")
-    # Only generated MP3s are pruned, after the complete manifest is written.
-    current = {path.name for _, path, _ in pending}
+    current = {path.name for _, path, _, _ in pending}
     for path in output.glob("*.mp3"):
         if re.fullmatch(r"[0-9a-f]{64}\.mp3", path.name) and path.name not in current:
             path.unlink()
@@ -176,19 +295,15 @@ def generate(articles, settings, root=ROOT, plan=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=ROOT / "public/narration.json")
-    parser.add_argument("--config", type=Path, default=CONFIG)
-    parser.add_argument("--plan", action="store_true", help="report cache hits without generating or writing files")
-    parser.add_argument("--print-cathy-source", action="store_true")
+    parser.add_argument("--env-file", type=Path, default=ENV_FILE)
+    parser.add_argument("--plan", action="store_true", help="report cache hits without API requests or file writes")
     args = parser.parse_args()
     try:
-        settings = load_settings(args.config)
-        if args.print_cathy_source:
-            print("git+https://github.com/cleanunicorn/cathy@" + settings["cathy_ref"])
-            return 0
+        settings = load_settings(args.env_file)
         articles = json.loads(args.input.read_text(encoding="utf-8"))["articles"]
         generate(articles, settings, plan=args.plan)
-    except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as error:
-        print(f"article-audio: {error}", file=sys.stderr)
+    except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as failure:
+        print(f"article-audio: {failure}", file=sys.stderr)
         return 1
     return 0
 

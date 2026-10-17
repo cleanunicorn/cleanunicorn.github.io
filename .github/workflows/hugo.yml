@@ -17,7 +17,6 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
     env:
       TZ: Europe/Oslo
     steps:
@@ -75,46 +74,6 @@ jobs:
           hugo \
             --gc \
             --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/" \
-            --cacheDir "${{ runner.temp }}/hugo_cache"
-      # First Hugo pass exports only published article content to narration.json.
-      - name: Set up uv for Cathy
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: '0.10.2'
-      - name: Restore article audio and speech models
-        id: audio-cache
-        uses: actions/cache/restore@v6
-        with:
-          path: |
-            .cache/article-audio
-            ~/.cache/huggingface
-            ~/.cache/uv
-          key: article-audio-${{ runner.os }}-${{ hashFiles('content/posts/**', 'scripts/generate_article_audio.py', 'scripts/article_audio.toml', 'layouts/index.narration.json', 'hugo.toml') }}
-          restore-keys: |
-            article-audio-${{ runner.os }}-
-      - name: Install Cathy and audio dependencies
-        run: |
-          sudo apt-get install -y espeak-ng ffmpeg
-          CATHY_SOURCE="$(python3 scripts/generate_article_audio.py --print-cathy-source)"
-          uv tool install --python 3.12 --index https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match "$CATHY_SOURCE"
-          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-      - name: Generate article audio
-        env:
-          CUDA_VISIBLE_DEVICES: ''
-        run: python3 scripts/generate_article_audio.py
-      - name: Save article audio and speech models
-        if: steps.audio-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v6
-        with:
-          path: |
-            .cache/article-audio
-            ~/.cache/huggingface
-            ~/.cache/uv
-          key: ${{ steps.audio-cache.outputs.cache-primary-key }}
-      - name: Rebuild with article players and MP3s
-        run: |
-          hugo --gc --minify --cleanDestinationDir \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
             --cacheDir "${{ runner.temp }}/hugo_cache"
       - name: Check build output

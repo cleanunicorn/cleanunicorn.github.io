@@ -1,5 +1,0 @@
-# Pin Cathy so upgrades deliberately invalidate generated narration.
-cathy_ref = "db303bae77440f3adccb7345c592a67aad3522a1"
-engine = "kokoro"
-voice = "af_heart"
-speed = 1.0
