@@ -1,7 +1,7 @@
 {{- /* Footer. Overrides the theme partial to replace the "Powered by Hugo ::
    Theme made by panr" colophon (a credibility leak on a personal brand site)
    with a quiet, owned colophon. The bundle uses the site's mobile disclosure
-   script and the theme's code-copy script; the extended footer is preserved. */ -}}
+   script, the article audio player and the theme's code-copy script; the extended footer is preserved. */ -}}
 <footer class="footer">
   <div class="footer__inner">
     <p class="colophon">
@@ -16,7 +16,8 @@
 
 {{ $menu := resources.Get "js/menu.js" | js.Build }}
 {{ $cp := resources.Get "js/code.js" | js.Build }}
-{{ $bundle := slice $menu $cp | resources.Concat "bundle.js" | resources.Minify }}
+{{ $audio := resources.Get "js/audio.js" | js.Build }}
+{{ $bundle := slice $menu $cp $audio | resources.Concat "bundle.js" | resources.Minify }}
 <script type="text/javascript" src="{{ $bundle.RelPermalink }}"></script>
 
 {{ partial "extended_footer.html" . }}

@@ -1,21 +1,144 @@
+/* =============================================================================
+   z-audio.css — Article narration player
+   -----------------------------------------------------------------------------
+   A terminal-style transport: emerald hairline frame, square controls, a flat
+   progress rule. js/audio.js swaps the native <audio controls> (the no-JS
+   fallback) for these controls.
+   ========================================================================== */
+
 .article-audio {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  border: 1px solid var(--accent);
+  margin: 0 0 var(--sp-6);
+  padding: var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--accent);
 }
 
-.article-audio h2 {
-  margin-top: 0;
-  font-size: 1.1rem;
+.article-audio__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-4);
+  margin-bottom: var(--sp-3);
 }
-
-.article-audio p {
-  font-size: 0.9rem;
+.article-audio__title {
+  margin: 0;
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
 }
+.article-audio__download {
+  font-size: var(--fs-small);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--accent-line);
+}
+.article-audio__download:hover { color: var(--accent-bright); text-decoration-color: currentColor; }
 
-.article-audio audio {
+.article-audio__native {
   display: block;
   width: 100%;
-  max-width: 100%;
-  margin: 0.75rem 0;
+  margin: 0 0 var(--sp-3);
+}
+
+/* ---- Custom transport ----------------------------------------------------- */
+.article-audio__player {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+.article-audio__player[hidden] { display: none; }
+
+.article-audio__play,
+.article-audio__speed {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  font: inherit;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.article-audio__play:hover,
+.article-audio__speed:hover { border-color: var(--accent); background: var(--accent-wash); }
+.article-audio__play[aria-pressed="true"] {
+  color: var(--background);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.article-audio__play[aria-pressed="true"]:hover { background: var(--accent-bright); border-color: var(--accent-bright); }
+.article-audio__speed {
+  min-width: 4.5ch;
+  padding: 0 var(--sp-2);
+  font-size: var(--fs-small);
+}
+
+/* Flat 2px rule; the filled part is painted from --progress set by JS. */
+.article-audio__seek {
+  --progress: 0%;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0; /* the theme frames every input */
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.article-audio__seek::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(var(--accent), var(--accent)) 0 / var(--progress) 100% no-repeat,
+              var(--hairline-strong);
+}
+.article-audio__seek::-moz-range-track { height: 2px; background: var(--hairline-strong); }
+.article-audio__seek::-moz-range-progress { height: 2px; background: var(--accent); }
+.article-audio__seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 14px;
+  margin-top: -6px;
+  background: var(--accent);
+  border: 0;
+  border-radius: 0;
+}
+.article-audio__seek::-moz-range-thumb {
+  width: 10px;
+  height: 14px;
+  background: var(--accent);
+  border: 0;
+  border-radius: 0;
+}
+.article-audio__seek:hover::-webkit-slider-thumb { background: var(--accent-bright); }
+.article-audio__seek:hover::-moz-range-thumb { background: var(--accent-bright); }
+
+.article-audio__time {
+  flex: 0 0 auto;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+.article-audio__current { color: var(--text); }
+
+.article-audio__note {
+  margin: 0;
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+}
+
+/* Match the menu breakpoint (z-layout.css): time drops under the rule. */
+@media (max-width: 684px) {
+  .article-audio__player { flex-wrap: wrap; }
+  .article-audio__seek { order: 3; flex-basis: 100%; height: 28px; }
+  .article-audio__time { margin-right: auto; }
 }
