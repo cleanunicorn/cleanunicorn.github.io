@@ -1,0 +1,16 @@
+{{- with index .Site.Data "article_audio" -}}
+  {{- with index . $.File.Path -}}
+    {{- $fingerprint := crypto.SHA256 (printf "%s\n%s" $.Title (string $.Content)) -}}
+    {{- if and (eq .fingerprint $fingerprint) (fileExists (printf "static%s" .url)) -}}
+      <aside class="article-audio" aria-labelledby="article-audio-title">
+        <h2 id="article-audio-title">Listen to this article</h2>
+        <p>Audio narration. Code blocks and equations are omitted.</p>
+        <audio controls preload="none" aria-label="Audio version of {{ $.Title }}">
+          <source src="{{ .url | relURL }}" type="audio/mpeg">
+          Your browser does not support audio playback. Use the download link below.
+        </audio>
+        <a href="{{ .url | relURL }}" download>Download audio (MP3)</a>
+      </aside>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

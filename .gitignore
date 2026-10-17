@@ -24,3 +24,11 @@ hugo.linux
 # Python bytecode and macOS Finder metadata
 __pycache__/
 .DS_Store
+
+# Keep credentials and temporary API chunks local. Commit final MP3s and metadata.
+/.env
+/.env.*
+!/.env.example
+/.cache/article-audio/
+/data/article_audio.json.tmp
+

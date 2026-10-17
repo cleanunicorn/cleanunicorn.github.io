@@ -10,6 +10,17 @@ CHROME ?=
 
 .DEFAULT_GOAL := help
 
+.PHONY: audio audio-plan
+
+audio: ## Generate cached article MP3s locally via the speech API in .env
+	$(HUGO) --cleanDestinationDir --destination "$(PUBLIC_DIR)"
+	python3 scripts/generate_article_audio.py --input $(PUBLIC_DIR)/narration.json
+	$(HUGO) --cleanDestinationDir --destination "$(PUBLIC_DIR)"
+
+audio-plan: ## Preview published article generation without API requests
+	$(HUGO) --cleanDestinationDir --destination "$(PUBLIC_DIR)"
+	python3 scripts/generate_article_audio.py --input $(PUBLIC_DIR)/narration.json --plan
+
 .PHONY: help dev build build-drafts check-positioning check-alt-text check-build check-built-meta check-browser-nav test clean new update-theme submodules cv cv-pdf books og-image
 
 help: ## Show this help
@@ -87,3 +98,4 @@ books: ## Refresh the About page Books list: top 10 from Goodreads + existing, b
 
 og-image: ## Regenerate static/og-image.png, the social share card (needs Pillow: pip install -r requirements.txt)
 	python3 scripts/generate_og_image.py
+
