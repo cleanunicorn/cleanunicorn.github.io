@@ -20,13 +20,13 @@ serve-drafts: ## Run server including drafts and future posts
 	$(HUGO) server -D -F --disableFastRender
 
 build: ## Build production site into $(PUBLIC_DIR)
-	$(HUGO)
+	$(HUGO) --destination "$(PUBLIC_DIR)"
 
 build-drafts: ## Build site including drafts and future posts
-	$(HUGO) -D -F
+	$(HUGO) -D -F --destination "$(PUBLIC_DIR)"
 
 clean: ## Remove generated site
-	rm -rf $(PUBLIC_DIR)
+	rm -rf -- "$(PUBLIC_DIR)"
 
 new: ## Create a new post: make new POST="My Post Title"
 	@if [ -z "$(POST)" ]; then \
