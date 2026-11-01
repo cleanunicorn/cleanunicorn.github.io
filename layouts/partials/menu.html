@@ -1,0 +1,7 @@
+{{- /* Primary desktop navigation. Render every item inline so a fifth link
+   never creates an unfocusable overflow trigger. */ -}}
+<nav class="navigation-menu" aria-label="Primary">
+  <ul class="navigation-menu__inner menu--desktop">
+    {{ partial "nav-links.html" . }}
+  </ul>
+</nav>

@@ -1,0 +1,15 @@
+{{- /* Closing call to action on every post (#55): X from data/home.toml,
+   the site feed, and the contact page. */ -}}
+<aside class="post-cta" aria-labelledby="post-cta-title">
+  <h2 id="post-cta-title" class="post-cta__title">Thanks for reading</h2>
+  <p class="post-cta__text">New posts go out on X and the RSS feed. Building something this touches? I'd like to hear about it.</p>
+  <ul class="post-cta__links">
+    {{- with index (where site.Data.home.connect.links "net" "x") 0 }}
+    <li><a href="{{ .url }}" target="_blank" rel="me noopener">Follow {{ .sub }} on X</a></li>
+    {{- end }}
+    {{- with site.Home.OutputFormats.Get "rss" }}
+    <li><a href="{{ .Permalink }}" type="application/rss+xml">Subscribe via RSS</a></li>
+    {{- end }}
+    <li><a href="{{ "contact/" | absLangURL }}">Get in touch</a></li>
+  </ul>
+</aside>

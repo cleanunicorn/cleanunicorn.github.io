@@ -1,0 +1,230 @@
+/* =============================================================================
+   z-content.css — Long-form pages: About, Work, prose
+   -----------------------------------------------------------------------------
+   Turns dense walls of monospace into scannable, hierarchical documents while
+   keeping the terminal voice. Scoped to .index-content (About) and the per-page
+   classes (.page-work) so blog-post bodies are unaffected.
+   ========================================================================== */
+
+/* ---- Section headings in prose -------------------------------------------- */
+/* A quiet emerald tick marks top-level sections — a single, consistent device. */
+.content h2:not(.page-title):not(.post-title)::before {
+  content: "";
+  display: inline-block;
+  width: 0.85em;
+  height: 0.14em;
+  margin-right: 0.55em;
+  vertical-align: 0.22em;
+  background: var(--accent);
+}
+.section-head__more::before { content: none !important; }
+
+/* ---- Generic prose page --------------------------------------------------- */
+.index-content { margin: 0; }
+.index-content > p,
+.index-content > ul,
+.index-content > ol { max-width: var(--measure); }
+.index-content > p:first-child { font-size: 1.08rem; line-height: 1.7; color: var(--text); }
+
+/* ---- About: highlights ---------------------------------------------------- */
+/* The four headline credibility lines — give them weight and breathing room. */
+.index-content--about h2 + ul {
+  max-width: var(--measure);
+  list-style: none;
+  margin-left: 0;
+}
+.index-content--about h2 + ul > li {
+  position: relative;
+  padding-left: 1.4em;
+  margin: var(--sp-3) 0;
+  line-height: 1.6;
+}
+.index-content--about h2 + ul > li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+/* ---- Multi-column lists (Talks, Books) ------------------------------------ */
+.cols ul {
+  column-width: 20rem;
+  column-gap: var(--sp-7);
+  margin-top: var(--sp-3);
+  max-width: none;
+}
+.cols li { break-inside: avoid; }
+
+/* ---- About: projects ------------------------------------------------------ */
+/* Featured projects read as a clean, editorial register — accent name, then a
+   tight description — like well-kept `ls` output. */
+.index-content--about h3 {
+  margin: var(--sp-5) 0 var(--sp-1);
+  font-size: 1.05rem;
+}
+.index-content--about h3 a { color: var(--accent); text-decoration: none; }
+.index-content--about h3 a:hover { color: var(--accent-bright); }
+.index-content--about h3 + p {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+/* ---- About: fill the column ----------------------------------------------- */
+/* Like blog posts, About's long-form prose runs the full column so it lines up
+   with the headings and the multi-column Talks/Books lists. Direct children
+   only, so the .cols lists keep their own column geometry. */
+.index-content.index-content--about > p,
+.index-content.index-content--about > ul,
+.index-content.index-content--about > ol { max-width: 100%; }
+
+/* ---- Work: timeline ------------------------------------------------------- */
+.page-work .post-content { margin-top: var(--sp-6); }
+
+/* Continuous rail down the experience. */
+.page-work .post-content > div {
+  position: relative;
+  padding-left: var(--sp-6);
+  border-left: 1px solid var(--hairline);
+}
+.page-work hr { display: none; }      /* role headings provide the rhythm */
+
+/* Each role = a node on the rail. */
+.page-work .post-content h2 {
+  position: relative;
+  margin-top: var(--sp-7);
+  font-size: 1.18rem;
+}
+.page-work .post-content h2:first-child { margin-top: 0; }
+.page-work .post-content h2::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--sp-6) * -1 - 0.5px);
+  top: 0.5em;
+  width: 9px; height: 9px;
+  margin: 0;
+  transform: translateX(-50%);
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--background);
+}
+
+/* The italic date line directly under a role → a quiet meta label. */
+.page-work .post-content h2 + p > em:only-child {
+  display: inline-block;
+  margin: 0.1rem 0 var(--sp-2);
+  font-style: normal;
+  font-size: var(--fs-small);
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+.page-work .post-content p,
+.page-work .post-content ul { max-width: var(--measure); color: var(--text-body); }
+.page-work .post-content ul { margin-top: var(--sp-2); }
+
+/* ---- Contact -------------------------------------------------------------- */
+.page-contact .post-content { margin-top: var(--sp-5); }
+.page-contact .post-content h2 { margin-top: var(--sp-7); }
+.page-contact .post-content h3 {
+  margin: var(--sp-5) 0 var(--sp-2);
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.page-contact .post-content h3 + p { max-width: var(--measure); color: var(--text-body); }
+
+/* The "→ Best via …" routing line. */
+.page-contact .post-content p:has(a) + p { margin-top: var(--sp-1); }
+
+/* "Find me" link list → quiet, tappable rows. */
+.page-contact .post-content h2:last-of-type + ul {
+  list-style: none;
+  margin-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-5);
+}
+.page-contact .post-content h2:last-of-type + ul li { margin: 0; }
+.page-contact .post-content h2:last-of-type + ul a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--hairline-strong);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.page-contact .post-content h2:last-of-type + ul a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Terminal recordings (layouts/shortcodes/asciinema.html) */
+figure.asciinema {
+  margin: 25px 0;
+}
+
+figure.asciinema figcaption {
+  margin-top: 8px;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+/* The theme's `pre` background and radius would tint and round the terminal */
+figure.asciinema pre.ap-terminal {
+  background: transparent !important;
+  border-radius: 0;
+}
+
+figure.asciinema-pending pre {
+  margin: 0;
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px dashed currentColor;
+  opacity: 0.7;
+}
+
+/* Mermaid diagrams (layouts/_default/_markup/render-codeblock-mermaid.html) */
+figure.diagram {
+  margin: 25px 0;
+  overflow-x: auto;
+}
+
+figure.diagram .mermaid {
+  min-width: 640px;
+  text-align: center;
+}
+
+figure.diagram figcaption {
+  margin-top: 8px;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+/* X embeds (layouts/shortcodes/x.html): the quote widgets.js upgrades when it
+   loads, and the whole embed when it doesn't. Keeps the theme's "> From X:"
+   label (blockquote.twitter-tweet::before) and overrides the italic base
+   blockquote. */
+blockquote.x-embed {
+  max-width: var(--measure);
+  min-width: 0;
+  margin: var(--sp-5) 0;
+  padding: calc(var(--sp-4) + 1.75em) var(--sp-4) var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--hairline-strong);
+  border-left: 2px solid var(--accent);
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  font-style: normal;
+  overflow-wrap: anywhere;
+}
+
+blockquote.x-embed::before {
+  top: var(--sp-4);
+  left: var(--sp-4);
+}
+
+blockquote.x-embed p {
+  margin: 0 0 var(--sp-3);
+  color: var(--text);
+  font-size: var(--font-size);
+  line-height: var(--leading-prose);
+}

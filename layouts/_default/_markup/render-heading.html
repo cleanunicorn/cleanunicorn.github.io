@@ -1,0 +1,7 @@
+{{- /* Every Markdown heading gets a "#" permalink to itself, on any layout
+     (posts, section pages like About, the homepage). Styled in z-posts.css. */ -}}
+<h{{ .Level }} id="{{ .Anchor }}"
+  {{- range $k, $v := .Attributes }}{{ if ne $k "id" }} {{ $k }}="{{ $v }}"{{ end }}{{ end }}>
+  {{- .Text -}}
+  <a href="#{{ .Anchor }}" class="hanchor" aria-label="Link to this section">#</a>
+</h{{ .Level }}>

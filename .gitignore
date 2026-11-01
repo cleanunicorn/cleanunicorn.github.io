@@ -1,6 +1,7 @@
 # Generated files by hugo
 /public/
 /resources/_gen/
+/node_modules/
 /assets/jsconfig.json
 hugo_stats.json
 
@@ -11,3 +12,23 @@ hugo.linux
 
 # Temporary lock file while building
 /.hugo_build.lock
+
+# Editor swap/backup files
+*.swp
+*.swo
+*~
+
+# Generated CV (built by `make cv-pdf` before Hugo build)
+/static/cv.html
+/static/cv.pdf
+# Python bytecode and macOS Finder metadata
+__pycache__/
+.DS_Store
+
+# Keep credentials and temporary API chunks local. Commit final MP3s and metadata.
+/.env
+/.env.*
+!/.env.example
+/.cache/article-audio/
+/data/article_audio.json.tmp
+

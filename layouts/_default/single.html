@@ -1,0 +1,41 @@
+{{ define "main" }}
+<article class="post{{ if eq .Section "posts" }} post--article{{ end }}{{ with .Params.class }} {{ . }}{{ end }}">
+  <header class="page-head">
+    <h1 class="page-title">{{ .Title | markdownify }}</h1>
+    <div class="post-meta">
+      {{- if and .Date (eq .Type "posts") -}}
+        <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+          {{- partial "post-date" . -}}
+        </time>
+      {{- end -}}
+      {{- if eq .Type "posts" -}}
+        <span class="post-readtime">{{ .ReadingTime }} min read</span>
+      {{- end -}}
+      {{- with .Params.Author -}}
+        <span class="post-author">{{ . }}</span>
+      {{- end -}}
+    </div>
+    {{ with .Params.lede }}<p class="page-lede">{{ . | markdownify }}</p>{{ end }}
+  </header>
+
+  {{ partial "cover.html" . }}
+
+  {{ if eq .Section "posts" }}
+    {{ partial "article-audio.html" . }}
+  {{ end }}
+
+  <div class="post-content">
+    {{- with .Content -}}
+      <div>
+        {{ . }}
+      </div>
+    {{- end -}}
+  </div>
+
+  {{ if eq .Type "posts" }}
+    {{ partial "post-nav.html" . }}
+    {{ partial "post-cta.html" . }}
+  {{ end }}
+</article>
+{{ end }}
+

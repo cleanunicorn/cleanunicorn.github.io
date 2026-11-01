@@ -1,0 +1,51 @@
+{{- /*
+  Embed an asciinema recording stored next to the post (page bundle).
+
+    {{< asciinema src="demo.cast" title="What the recording shows" >}}
+
+  Optional: speed (default 1.5), idle (idle-time limit in seconds, default 2),
+  rows, cols, poster (the frame shown before play, e.g. "npt:1:30").
+  Until the .cast file exists, the shortcode renders a labelled
+  placeholder so a draft still builds. The player itself is loaded once per
+  page by layouts/partials/extended_head.html.
+*/ -}}
+{{- $src := .Get "src" -}}
+{{- $title := .Get "title" | default $src -}}
+{{- $cast := .Page.Resources.GetMatch $src -}}
+{{- if $cast -}}
+<figure class="asciinema" aria-labelledby="asciinema-cap-{{ .Ordinal }}">
+  <div id="asciinema-{{ .Ordinal }}"></div>
+  <figcaption id="asciinema-cap-{{ .Ordinal }}">{{ $title }}</figcaption>
+</figure>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var el = document.getElementById("asciinema-{{ .Ordinal }}");
+    AsciinemaPlayer.create({{ $cast.RelPermalink }}, el, {
+      speed: {{ .Get "speed" | default 1.5 | float }},
+      idleTimeLimit: {{ .Get "idle" | default 2 | float }},
+      {{- with .Get "rows" }}rows: {{ . | int }},{{ end }}
+      {{- with .Get "cols" }}cols: {{ . | int }},{{ end }}
+      {{- with .Get "start" }}startAt: {{ . | float }},{{ end }}
+      {{- with .Get "poster" }}poster: {{ . }},{{ end }}
+      fit: "width",
+      preload: true
+    });
+    // The theme sets `pre { font-size: … !important }`, which beats the inline
+    // size the player uses to fit the terminal. Re-apply the player's size as
+    // important whenever it changes.
+    var keepSize = function () {
+      var term = el.querySelector(".ap-terminal");
+      if (term && term.style.fontSize && term.style.getPropertyPriority("font-size") !== "important") {
+        term.style.setProperty("font-size", term.style.fontSize, "important");
+      }
+    };
+    new MutationObserver(keepSize).observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ["style"] });
+    keepSize();
+  });
+</script>
+{{- else -}}
+<figure class="asciinema asciinema-pending">
+  <pre>▶ recording pending: {{ $src }}</pre>
+  <figcaption>{{ $title }}</figcaption>
+</figure>
+{{- end -}}

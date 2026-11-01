@@ -1,0 +1,70 @@
+{{- /*
+  Schema.org JSON-LD structured data.
+  - WebSite (every page)
+  - Person + ProfilePage (home and /about/)
+  - BlogPosting (single posts)
+  Improves how Google/LinkedIn/X interpret the site and enables rich results.
+  Note: jsonify output must be piped through safeJS, otherwise html/template
+  re-encodes it as a JS string inside the <script> element.
+*/ -}}
+
+{{- $site := .Site -}}
+{{- $author := $site.Params.author | default $site.Title -}}
+{{- $baseURL := $site.BaseURL | absURL -}}
+
+{{- /* sameAs: the profile links from data (partials/profile-links.html), then
+       any extra profiles from hugo.toml `sameAsExtra`. */ -}}
+{{- $sameAs := slice -}}
+{{- range partial "profile-links.html" . }}{{ $sameAs = $sameAs | append .url }}{{ end -}}
+{{- range $site.Params.sameAsExtra }}{{ $sameAs = $sameAs | append . }}{{ end -}}
+
+{{- /* Person object reused by Person/ProfilePage and as article author.
+       Descriptive metadata lives in hugo.toml [languages.en.params]. */ -}}
+{{- $person := dict
+  "@type" "Person"
+  "name" $author
+  "alternateName" ($site.Params.alternateName | default $author)
+  "url" $baseURL
+  "image" ("/images/me.png" | absURL)
+  "jobTitle" $site.Params.jobTitle
+  "description" $site.Params.personDescription
+  "knowsAbout" $site.Params.knowsAbout
+  "sameAs" $sameAs -}}
+
+{{- /* WebSite — every page */ -}}
+{{- $website := dict
+  "@context" "https://schema.org"
+  "@type" "WebSite"
+  "name" $site.Title
+  "url" $baseURL
+  "description" $site.Params.subtitle
+  "inLanguage" $site.Language.Lang
+  "author" $person -}}
+<script type="application/ld+json">{{ $website | jsonify | safeJS }}</script>
+
+{{- if or .IsHome (eq .RelPermalink "/about/") }}
+  {{- $profile := dict
+    "@context" "https://schema.org"
+    "@type" "ProfilePage"
+    "url" .Permalink
+    "mainEntity" $person -}}
+  <script type="application/ld+json">{{ $profile | jsonify | safeJS }}</script>
+{{- end }}
+
+{{- if and .IsPage (eq .Type "posts") }}
+  {{- $img := (partialCached "share-image.html" . .RelPermalink).url -}}
+  {{- $posting := dict
+    "@context" "https://schema.org"
+    "@type" "BlogPosting"
+    "headline" .Title
+    "url" .Permalink
+    "mainEntityOfPage" .Permalink
+    "datePublished" (.Date.Format "2006-01-02")
+    "description" (.Description | default (.Summary | plainify))
+    "image" $img
+    "author" $person
+    "publisher" $person -}}
+  {{- with .Params.keywords }}{{ $posting = merge $posting (dict "keywords" (delimit . ", ")) }}{{ end -}}
+  {{- if not .Lastmod.IsZero }}{{ $posting = merge $posting (dict "dateModified" (.Lastmod.Format "2006-01-02")) }}{{ end -}}
+  <script type="application/ld+json">{{ $posting | jsonify | safeJS }}</script>
+{{- end }}

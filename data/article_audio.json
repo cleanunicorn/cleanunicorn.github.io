@@ -1,0 +1,42 @@
+{
+  "posts/one-prompt-a-whole-team/index.md": {
+    "fingerprint": "0d9f83ea02937d4a1d9079df52cc9fb870a0a527c0f2087e0f5b7abff291ae7a",
+    "url": "/audio/55c9c78a8d8744345ca666c6af89306284a4c97a9131c476ed50bcbde46f00d0.mp3"
+  },
+  "posts/an-extension-of-the-self/index.md": {
+    "fingerprint": "0fb85cb042123a8e20ab98b37592a8ae78e2991669f08a9210f8a8d39389132c",
+    "url": "/audio/948e5baa2a29707b8dec870e7dfc2c2d53b6235a8bf79b883c80458d8d03f59f.mp3"
+  },
+  "posts/the-hard-truth---why-distribution-trumps-innovation/index.md": {
+    "fingerprint": "e4bda4ac08ba4bc7bba4d90a6d33c39bdc179d94ee33165724fb2c55a21d42ca",
+    "url": "/audio/738a2b2e52563a7cf7df3631efa97f915e3352f01497b1ebd3e50660e6d3f9bd.mp3"
+  },
+  "posts/authenticating-ai-models-in-decentralized-networks-a-practical-approach/index.md": {
+    "fingerprint": "3fc6eae440373ff0b0bd9f30fb89a0be57e170188c75c030370e5f9e0df9588a",
+    "url": "/audio/b659b10b1b4590cb8443f46c3253efa23df3e85e8915fd630dcc3028a25ec521.mp3"
+  },
+  "posts/the-inception-of-doppelganger-networks/index.md": {
+    "fingerprint": "141ae87d9ba9bea6cdd78d499392ab19b092f4861422ec92b470e77c5d11940d",
+    "url": "/audio/cdf6c77c2bd7352c85b1bc72884edc735f2f4b3364e26a028bdd4eab5a80ff9f.mp3"
+  },
+  "posts/the-right-way-to-use-transient-storage-eip-1153/index.md": {
+    "fingerprint": "b5446253e6bdffbff81167f676d002882a4113c56b7f677171365c63de87ae04",
+    "url": "/audio/9ccfba54c8e6ec93b35b03d782d9bdbf4f66fea471aa6ed17c70b6d41adc4c7c.mp3"
+  },
+  "posts/the-next-blockchain-bull-run-user-intents-paving-the-way-for-mass-adoption/index.md": {
+    "fingerprint": "783b916fa47fb7a0ed934fb1f9f9e4be3f8b35da906db603b0059cdbcd400caa",
+    "url": "/audio/4953166f6f99dc3f2d7ef52e95a8058981c5edc343775a7ba78f2cbba4b4080a.mp3"
+  },
+  "posts/eip-7514-balancing-urgency-with-long-term-vision/index.md": {
+    "fingerprint": "9eb1a5d1e387b720d5b29f8821f037da541d309ffb6d49456cd414a6c8f8c9ae",
+    "url": "/audio/b95a92c72ec2c94b3b56feed34bb1f8d0d7057c90aced35a343075376dc06cf8.mp3"
+  },
+  "posts/poison-block-explorer-byte-code/index.md": {
+    "fingerprint": "f6da6022da046ca48d05f5466bd2a70acb7f6de84af939501a63bb791d01f8b4",
+    "url": "/audio/6b730c1da56ba8b779f45d840cf64ec888a62e18c0b93d2ce1a8a81db0030698.mp3"
+  },
+  "posts/how-to-exploit-ethereum-in-a-virtual-environment/index.md": {
+    "fingerprint": "e95bb3c915b8065575dd833ab41117f59d59146ac50cce2ea8f0511176e16dae",
+    "url": "/audio/cde7e7c1cb0bedb3988fe55834bb3d5a7920c77d822c521e5204cbd2a87211c0.mp3"
+  }
+}

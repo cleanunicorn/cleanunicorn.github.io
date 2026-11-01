@@ -1,0 +1,195 @@
+/* =============================================================================
+   z-posts.css — Post list, single post, page headers
+   -----------------------------------------------------------------------------
+   Replaces the theme's busy double-dotted post-title rule with a calmer,
+   higher-craft treatment and gives list/section pages a real <h1>.
+   ========================================================================== */
+
+/* ---- Page header (section list + single pages) ---------------------------- */
+.page-head { margin: var(--sp-3) 0 var(--sp-7); }
+.page-title { margin: 0; font-size: var(--fs-h1); }
+.page-lede {
+  margin: var(--sp-3) 0 0;
+  max-width: var(--measure);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.page-feed {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+/* ---- Post list ------------------------------------------------------------ */
+.post { padding: var(--sp-6) 0; }
+.post.on-list { padding: var(--sp-5) 0; }
+.post:not(:last-of-type) { border-bottom: 1px solid var(--hairline); }
+
+/* Calm, single-rule title. Kills the theme's 3px dotted border + ::after. */
+.post-title {
+  position: relative;
+  margin: 0 0 var(--sp-2) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  font-size: var(--fs-h3);
+  line-height: 1.3;
+}
+.post-title::after { content: none !important; }
+.post-title a {
+  color: var(--text);
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size var(--dur) var(--ease), color var(--dur-fast) var(--ease);
+}
+.post-title a:hover { color: var(--accent); background-size: 100% 1px; }
+
+/* Single post gets a larger title. */
+.post > .post-title { font-size: var(--fs-h1); margin-bottom: var(--sp-3) !important; }
+.post > .post-title a:hover { background-size: 0 1px; color: var(--text); } /* no underline on its own page */
+
+/* ---- Meta ----------------------------------------------------------------- */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: var(--sp-4);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+.post-meta > *:not(:first-child)::before {
+  content: "·";
+  margin: 0 0.7ch;
+  color: var(--hairline-strong);
+}
+.post-date, .post-readtime, .post-author { color: var(--text-muted); }
+
+/* ---- Read-more ------------------------------------------------------------ */
+a.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4ch;
+  margin-top: var(--sp-3);
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+a.read-more:hover { color: var(--accent-bright); }
+
+/* ---- Single post body ----------------------------------------------------- */
+.post-content { margin-top: var(--sp-5); }
+.post-content > div > * { max-width: var(--measure); }
+.post-content figure, .post-content img, .post-content pre,
+.post-content .__h_video, .post-content iframe { max-width: 100%; }
+/* Blog posts fill the column, so prose lines up with code, figures and tables.
+   About does the same (z-content.css); Work and Contact keep --measure. */
+.post--article .post-content > div > * { max-width: 100%; }
+/* A long post title fills the column like the body; balanced wrapping would
+   break it into short lines that look narrower than the text below. */
+.post--article .page-title { text-wrap: pretty; }
+
+/* Sub-sections in a blog post. The h2 has an emerald tick; the h3 gets an
+   emerald bar down its left edge, so the two read as different levels at a
+   glance and an h3 never looks like a smaller h2. */
+.post--article .post-content h3 {
+  margin: var(--sp-7) 0 var(--sp-4);
+  padding: 0.15em 0 0.15em var(--sp-4);
+  border-left: 3px solid var(--accent);
+  font-size: var(--fs-h3);
+  line-height: 1.3;
+}
+.post--article .post-content h2 + h3,
+.post--article .post-content h3:first-child { margin-top: var(--sp-5); }
+
+/* Wide display math (KaTeX, layouts/partials/math.html) scrolls in its own
+   box instead of widening the page on phones. */
+.post-content .katex-display { overflow-x: auto; overflow-y: hidden; }
+
+/* Heading anchor (theme). The theme hides it with visibility, which also
+   drops it from the tab order; fade it instead so keyboard users can reach
+   it, and keep it visible where there is no hover. --accent keeps even the
+   touch state above 3:1 (4.2:1 at 0.6); --accent-line was 1.6:1. */
+.hanchor {
+  color: var(--accent);
+  visibility: visible;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+:is(h1, h2, h3, h4, h5, h6):hover .hanchor,
+.hanchor:focus-visible { opacity: 1; }
+.hanchor:hover,
+.hanchor:focus-visible { color: var(--accent-bright); }
+@media (hover: none) { .hanchor { opacity: 0.6; } }
+:is(h1, h2, h3, h4, h5, h6)[id] { scroll-margin-top: var(--sp-5); }
+
+/* ---- Pagination ----------------------------------------------------------- */
+.pagination { margin-top: var(--sp-7); }
+
+/* ---- Post end: older/newer posts and closing CTA (#55) -------------------- */
+.post-nav__title,
+.post-cta__title {
+  margin: 0 0 var(--sp-4);
+  font-size: var(--fs-h3);
+}
+
+.post-nav { margin-top: var(--sp-7); }
+.post-nav__links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+  margin: 0; padding: 0;
+  list-style: none;
+}
+/* Drop the theme's "-" bullets (post.css) and .content li margins. */
+.post ul.post-nav__links > li::before,
+.post ul.post-cta__links > li::before { content: none; }
+.post-nav__links > li,
+.post-cta__links > li { margin: 0; }
+.post-nav__item { min-width: 0; }
+.post-nav__item--newer { grid-column: 2; text-align: right; }
+.post-nav__item a {
+  display: block;
+  height: 100%;
+  padding: var(--sp-4);
+  border: 1px solid var(--hairline);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.post-nav__item a:hover,
+.post-nav__item a:focus-visible { border-color: var(--accent); }
+.post-nav__dir {
+  display: block;
+  margin-bottom: var(--sp-1);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+.post-nav__name { overflow-wrap: anywhere; }
+
+.post-cta {
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--hairline);
+}
+.post-cta__text {
+  max-width: var(--measure);
+  margin: 0 0 var(--sp-4);
+  color: var(--text-muted);
+}
+.post-cta__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-5);
+  margin: 0; padding: 0;
+  list-style: none;
+}
+
+/* Match the menu breakpoint (z-layout.css): one column on narrow screens. */
+@media (max-width: 684px) {
+  .post-nav__links { grid-template-columns: minmax(0, 1fr); }
+  .post-nav__item--newer { grid-column: auto; text-align: left; }
+}

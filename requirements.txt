@@ -1,0 +1,4 @@
+# Only `make og-image` (scripts/generate_og_image.py) needs a package outside
+# the Python standard library. The other scripts, the guard and the tests are
+# stdlib-only (Python 3.11+).
+Pillow>=10

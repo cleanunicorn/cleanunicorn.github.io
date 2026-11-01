@@ -2,6 +2,20 @@ baseURL = 'https://cleanunicorn.github.io/'
 languageCode = 'en-us'
 theme = "terminal"
 pagination.pagerSize = 5
+# No post uses tags or categories; drop the empty taxonomy pages and feeds.
+disableKinds = ["taxonomy", "term"]
+enableRobotsTXT = true
+enableGitInfo = true
+
+# Hugo selects published articles and renders shortcodes before narration.
+[outputs]
+  home = ["HTML", "RSS", "Narration"]
+
+[outputFormats.Narration]
+  mediaType = "application/json"
+  baseName = "narration"
+  isPlainText = true
+  notAlternative = true
 
 [markup.goldmark.renderer]
   unsafe = true
@@ -14,12 +28,18 @@ pagination.pagerSize = 5
 [markup.highlight]
   noClasses = false
 
+# Keep processed post images (render-image hook) in --cacheDir so the CI
+# cache step reuses them instead of re-encoding every image on each deploy.
+[caches.images]
+  dir = ':cacheDir/images'
+
 [params]
   contentTypeName = "about"
-  showMenuItems = 2
-  fullWidthTheme = false
   centerTheme = true
   autoCover = true
+  # Optional lede for the custom 404 page (layouts/404.html). Falls back to a
+  # built-in message when unset.
+  # missingContentMessage = "The page you're looking for isn't on this chain."
 
 [languages]
   [languages.en]
@@ -27,10 +47,28 @@ pagination.pagerSize = 5
     languageName = "English"
 
     [languages.en.params]
-      subtitle = "Security Researcher | Investor | Builder"
-      owner = "Daniel Luca"
-      menuMore = "Show more"
-      readMore = "Read more"
+      # WHAT he does — roles and output. Rendered under the name in the hero, as the
+      # CV subtitle and as the homepage meta description. WHO he is lives in
+      # data/home.toml `whoami`.
+      subtitle = "CTO @ Stealth Startup | Technical Partner @ Eden Block | Open-source projects"
+      keywords = "Daniel Luca, CleanUnicorn, builder, hacker, extropian, software engineer, CTO, open source, developer tools, AI agents, local LLM, smart contract audit, Ethereum security, blockchain security researcher, EVM, Solidity, DeFi, decentralized AI, venture capital"
+
+      # Schema.org Person metadata — consumed by partials/structured_data.html.
+      alternateName = "CleanUnicorn"
+      jobTitle = "CTO & Technical Partner"
+      personDescription = "Builder, hacker and extropian — open-source tools like Earheart and the Agents Library, plus Ethereum smart contracts and security research since 2017. CTO at a stealth startup and Technical Partner at Eden Block."
+      # Profiles beyond the X / LinkedIn / GitHub links, which come from
+      # data/home.toml `connect.links` via partials/profile-links.html.
+      sameAsExtra = ["https://www.imdb.com/title/tt35931420/"]
+      knowsAbout = [
+        "Software Engineering", "Open Source", "Developer Tooling", "LLM Engineering",
+        "Smart Contract Security", "Ethereum", "Solidity", "EVM Internals",
+        "DeFi", "Blockchain Security", "Decentralized AI", "Venture Capital",
+      ]
+
+      [languages.en.params.twitter]
+        site = "@cleanunicorn"
+        creator = "@cleanunicorn"
 
       [languages.en.params.logo]
         logoText = "Daniel Luca"
@@ -43,6 +81,11 @@ pagination.pagerSize = 5
         url = "/about/"
         weight = 10
       [[languages.en.menu.main]]
+        identifier = "projects"
+        name = "Projects"
+        url = "/projects/"
+        weight = 15
+      [[languages.en.menu.main]]
         identifier = "work"
         name = "Work"
         url = "/work/"
@@ -52,3 +95,9 @@ pagination.pagerSize = 5
         name = "Posts"
         url = "/posts/"
         weight = 30
+      [[languages.en.menu.main]]
+        identifier = "contact"
+        name = "Contact"
+        url = "/contact/"
+        weight = 40
+

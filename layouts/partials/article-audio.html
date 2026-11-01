@@ -1,0 +1,28 @@
+{{- /* Article narration. The native <audio controls> is the no-JS fallback;
+   js/audio.js hides it and reveals the terminal-style controls below. */ -}}
+{{- with index .Site.Data "article_audio" -}}
+  {{- with index . $.File.Path -}}
+    {{- $fingerprint := crypto.SHA256 (printf "%s\n%s" $.Title (string $.Content)) -}}
+    {{- if and (eq .fingerprint $fingerprint) (fileExists (printf "static%s" .url)) -}}
+      <aside class="article-audio" aria-labelledby="article-audio-title">
+        <div class="article-audio__head">
+          <h2 class="article-audio__title" id="article-audio-title">Listen to this article</h2>
+          <a class="article-audio__download" href="{{ .url | relURL }}" download>Download MP3</a>
+        </div>
+        <audio class="article-audio__native" controls preload="none" aria-label="Audio version of {{ $.Title }}">
+          <source src="{{ .url | relURL }}" type="audio/mpeg">
+          Your browser does not support audio playback. Use the download link above.
+        </audio>
+        <div class="article-audio__player" hidden>
+          <button class="article-audio__play" type="button" aria-label="Play">
+            <span class="article-audio__icon" aria-hidden="true">▶</span>
+          </button>
+          <input class="article-audio__seek" type="range" min="0" max="0" step="1" value="0" aria-label="Seek" aria-valuetext="0:00 of unknown">
+          <span class="article-audio__time" aria-hidden="true"><span class="article-audio__current">0:00</span> / <span class="article-audio__duration">--:--</span></span>
+          <button class="article-audio__speed" type="button" aria-label="Playback speed 1×">1×</button>
+        </div>
+        <p class="article-audio__note">AI narration · code blocks and equations omitted</p>
+      </aside>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

@@ -1,0 +1,136 @@
+{{ define "main" }}
+  {{ $home := $.Site.Data.home }}
+
+  {{/* ---- POSTER HERO: iOS-18 "Contact Poster" for the web ----------------- */}}
+  <section class="poster" aria-label="Daniel Luca — contact">
+    <div class="poster__frame">
+      {{ with $home.photo }}
+        <img class="poster__photo" src="{{ . | relURL }}" alt="{{ $home.photoAlt | default $.Site.Title }}" width="400" height="400" loading="eager" fetchpriority="high">
+      {{ end }}
+      <div class="poster__wash" aria-hidden="true"></div>
+      <div class="poster__scrim" aria-hidden="true"></div>
+
+      {{/* The frame bleeds full-width; this inner column stays pinned to the
+           53rem content grid so the name aligns with the header and board. */}}
+      <div class="poster__inner">
+        {{/* A <div>, not a <p>: terminal.js appends the interactive prompt
+             (block elements) inside this chip. data-book-url hands terminal.js
+             the booking link from data/home.toml so the URL lives in one place. */}}
+        {{ $book := index (where $home.connect.links "net" "calendar") 0 -}}
+        <div class="poster__eyebrow"{{ with $book }} data-book-url="{{ .url }}"{{ end }}>
+          <span class="poster__prompt" aria-hidden="true">~$ whoami</span>
+          {{ $answer := $home.whoami | default "cleanunicorn" }}
+          {{ if and $home.whoamiLink $home.whoamiURL }}
+            {{ $attrs := cond (hasPrefix $home.whoamiURL "http") ` target="_blank" rel="noopener"` "" }}
+            {{ $link := printf `<a class="poster__answer-link" href="%s"%s>$1</a>` $home.whoamiURL $attrs }}
+            {{ $answer = replaceRE (printf `(%s)` $home.whoamiLink) $link $answer }}
+          {{ end }}
+          <span class="poster__answer" data-typewriter>{{ $answer | safeHTML }}</span><span class="poster__cursor" aria-hidden="true"></span>
+        </div>
+
+        <div class="poster__id">
+          <h1 class="poster__name">{{ $home.name | default $.Site.Title }}</h1>
+          {{ with $home.nickname }}<span class="poster__alias">“{{ . }}”</span>{{ end }}
+          {{ with $.Site.Params.Subtitle }}<p class="poster__roles">{{ . }}</p>{{ end }}
+          {{ with $home.connect.tagline }}<p class="poster__tagline">{{ . }}</p>{{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* ---- BOARD PANEL: bordered, columnar channel table -------------------- */}}
+  {{ with $home.connect }}
+    <section class="board" aria-labelledby="connect-head">
+      <h2 class="board__head-label" id="connect-head">{{ .label }}</h2>
+      {{ with .note }}<p class="board__note board__note--lead">{{ . }}</p>{{ end }}
+
+      {{ partial "connect-board.html" . }}
+    </section>
+  {{ end }}
+
+  {{ with $home.proof }}
+    <section class="proof" aria-label="Track record">
+      <span class="proof__label">{{ .label | default "Selected work" }}</span>
+      <ul class="proof__items">
+        {{ range .items }}
+          <li>{{ . }}</li>
+        {{ end }}
+      </ul>
+    </section>
+  {{ end }}
+
+  {{ with $home.stats }}
+    <section class="stats" aria-label="Track record by the numbers">
+      {{ range . }}
+        {{ $tag := cond (not (not .url)) "a" "div" }}
+        {{ if eq $tag "a" }}<a class="stats__item stats__item--link" href="{{ .url }}">{{ else }}<div class="stats__item">{{ end }}
+          <span class="sr-only">{{ .label }}: {{ .value }}</span>
+          <span class="stats__value" aria-hidden="true">{{ .value }}</span>
+          <span class="stats__label" aria-hidden="true">{{ .label }}</span>
+        {{ if eq $tag "a" }}</a>{{ else }}</div>{{ end }}
+      {{ end }}
+    </section>
+  {{ end }}
+
+  {{/* ---- FEATURED PROJECTS: compact cards from data/projects.toml ---------- */}}
+  {{ with $.Site.Data.projects }}
+    <section class="featured" aria-labelledby="featured-head">
+      <div class="section-head section-head--row">
+        <h2 id="featured-head">{{ .label | default "Featured projects" }}</h2>
+        <a class="section-head__more" href="{{ "projects/" | relLangURL }}">All about them <span aria-hidden="true">→</span></a>
+      </div>
+      {{ with .note }}<p class="featured__note">{{ . }}</p>{{ end }}
+      <div class="featured__grid">
+        {{ range .featured }}
+          <article class="featured__card" id="featured-{{ .slug }}">
+            <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
+            <p class="featured__tagline">{{ .tagline }}</p>
+            <p class="featured__summary">{{ .summary | markdownify }}</p>
+            <p class="featured__links">
+              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Why it's cool <span aria-hidden="true">→</span></a>
+              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+            </p>
+          </article>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+  {{ with $home.cta }}
+    <section class="offer" aria-label="Ways to work together">
+      <div class="section-head section-head--row">
+        <h2>How I can help</h2>
+        {{ with $home.cvURL }}<a class="section-head__more" href="{{ . }}">{{ $home.cvLabel | default "Download CV (PDF)" }} <span aria-hidden="true">→</span></a>{{ end }}
+      </div>
+      <div class="offer__grid">
+        {{ range . }}
+          <a class="offer__card{{ if .primary }} offer__card--primary{{ end }}" href="{{ .url }}">
+            <h3 class="offer__title">{{ .title }}</h3>
+            <p class="offer__text">{{ .text }}</p>
+            <span class="offer__link">{{ .label }} <span aria-hidden="true">→</span></span>
+          </a>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+  {{ if .Content }}
+    <div class="index-content">{{ .Content }}</div>
+  {{ end }}
+
+  <section class="writing">
+    <div class="section-head section-head--row">
+      <h2>Latest writing</h2>
+      <a class="section-head__more" href="{{ "posts/" | absLangURL }}">All posts <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="posts">
+      {{ $posts := where $.Site.RegularPages "Type" "posts" }}
+      {{ range first 3 $posts }}
+        {{ partial "post-card.html" (dict "page" . "heading" "h3" "compact" true) }}
+      {{ end }}
+    </div>
+  </section>
+
+  <script src="{{ "js/hero-type.js" | relURL }}" defer></script>
+  <script src="{{ "js/terminal.js" | relURL }}" defer></script>
+{{ end }}

@@ -2,59 +2,67 @@
 title = "Work"
 draft = false
 slug = "work"
+class = "page-work"
+lede = "Shipping since 2008 — file-sharing infrastructure, consumer and fintech products, Ethereum's early analytics pipeline, and the open-source tools I use every day — plus auditing the protocols millions rely on, and backing the teams building what's next."
+description = "Daniel Luca's work as a builder: CTO at a stealth startup, Technical Partner at Eden Block, founder of Akira Tech, audits at ConsenSys Diligence."
 +++
 
-### Technical Partner, Eden Block
+**[Download my CV (PDF)](/cv.pdf)**
 
-Technical Partner at [Eden Block](https://edenblock.com) an early-stage venture capital firm focused on blockchain, Web3 infrastructure and Decentralized AI. Provided technical diligence and research for investment decisions, advised portfolio companies on product strategy, software architecture, and security best practices. Collaborated with founders and teams across the portfolio to address technical challenges and drive technology adoption. Helped shape Eden Block’s research-driven investment approach and supported the growth of startups building the foundational layers of the decentralized internet.
+## CTO, Stealth Startup
+
+*August 2026 – Present*
+
+A startup that has not announced itself yet — details once it launches.
+
+---
+
+## Technical Partner, Eden Block
+
+*November 2022 – Present*
+
+Technical diligence and research partner at [Eden Block](https://edenblock.com), an early-stage VC backing blockchain, Web3 infrastructure and decentralized AI. I run the technical evaluation behind investment decisions and work hands-on with founders on architecture, security and product — from first check through scaling — helping shape the firm's research-driven approach.
 
 Worked closely with portfolio companies such as:
 
-- [Gensyn](https://www.gensyn.ai/)
+- [Gensyn](https://www.gensyn.ai/) — helped launch their testnet
 - [Biconomy](https://www.biconomy.io/)
 - [Fair](https://fair.xyz/)
 - [Hypurrfi](https://app.hypurr.fi/)
 - [Novel Labs](https://www.novellabs.xyz/)
 - [Nym](https://nym.com/)
-- [Vega Protocol](https://vega.xyz/)
+- [Vega Protocol](https://web.archive.org/web/20230106143424/https://vega.xyz/)
 
-* **Company** Eden Block
-* **Since** November 2022
 
 ---
 
-### Co-Founder, FiatDAO
+## Co-Founder, FiatDAO
 
-Co-founded and built [FiatDAO](https://fiatdao.com), a decentralized autonomous organization (DAO) focused on DeFi tools for fixed-income assets on Ethereum. Helped design and build the platform, letting users use their fixed-income positions as collateral to access liquidity and mint stablecoins. Worked on protocol development, governance, and smart contract security, partnering with a global team to launch and improve the product.
+*November 2021 · Deployed April 2022*
 
-* **Company** FiatDAO
-* **Since** November 2021
-* **Deployed** April 2022
+Co-founded and built [FiatDAO](https://web.archive.org/web/20230203135338/https://fiatdao.com/), a decentralized autonomous organization (DAO) focused on DeFi tools for fixed-income assets on Ethereum. Helped design and build the platform, letting users use their fixed-income positions as collateral to access liquidity and mint stablecoins. Worked on protocol development, governance, and smart contract security, partnering with a global team to launch and improve the product.
 
 ---
 
-### Founder, Security Researcher, Akira Tech
+## Founder, Security Researcher, Akira Tech
+
+*October 2020 – Present*
 
 Founded [Akira Tech](https://github.com/akiratechhq) as a specialized security shop with a focus on comprehensive security audits, code reviews, and cyber risk assessments for blockchain and software projects. Led technical engagements with clients, identifying vulnerabilities and recommending actionable solutions to improve system security. Delivered security reports and collaborated with development teams to implement best practices for secure smart contract development.
 
-* **Company** Akira Tech
-* **Since** October 2020
-
 ---
 
-### Security Researcher, ConsenSys Diligence
+## Security Researcher, ConsenSys Diligence
 
-[ConsenSys Diligence](https://diligence.consensys.net/) does smart contract audits and Ethereum blockchain security. I am part of the team doing security audits and consulting. I also do security research and speak whenever I get the chance.
+*November 2018 – August 2020*
 
-* **Company** ConsenSys Diligence
-* **Since** November 2018
-* **Until** August 2020
+As part of [ConsenSys Diligence](https://diligence.security/) — a leading smart-contract audit and Ethereum security team — I delivered security audits and consulting for some of the most widely used protocols on Ethereum, and pursued security research and conference talks alongside the engagements.
 
-Audited:
+Selected audits:
 - [Uniswap](https://uniswap.org/) - popular DEX (decentralized exchange) platform written in Vyper
 - [Aave](https://aave.com/) - governance and token issuance
 - [Aragon](https://aragon.org/) - multiple apps reviewed
-- [OmiseGo](https://omg.network/) - plasma implementation
+- [OmiseGo](https://web.archive.org/web/20200612070604/https://omg.network/) - plasma implementation
 - [Matic/Polygon](https://polygon.technology/) - PoS blockchain (geth fork) and migration mechanism
 - [Filecoin](https://filecoin.io/) - decentralized storage network
 - [Shell Protocol](https://shellprotocol.io/) - stable coin DeFi
@@ -62,61 +70,51 @@ Audited:
 
 ---
 
-### Developer, Alethio
+## Developer, Alethio
 
-Alethio is a ConsenSys spoke which creates analytics for the Ethereum blockchain. I've built most of the data pipeline from that extracts the blockchain data, applied an [ontology](https://ethon.consensys.net/) and imported into multiple databases.
+*February 2017 – November 2018 · ConsenSys*
 
-* **Company** ConsenSys
-* **Since** February 2017
-* **Until** November 2018
+Alethio was a ConsenSys spoke building analytics for the Ethereum blockchain. I built most of the data pipeline that extracts on-chain data, applies an [ontology](https://web.archive.org/web/20231202140732/https://ethon.consensys.net/) and imports it into multiple databases — the foundation powering Alethio's analytics products.
+
 
 ---
 
-### Blockchain Workshops, Bucharest
+## Blockchain Workshops, Bucharest
 
-* **Since** 2018
+*Since 2018*
 
 Developed and held a series of long format workshops which cover the basics of blockchain, Solidity, EVM, private chains setup, consensus algorithms, smart contract design and other related topics.
 
 ---
 
-### Cofounder / CTO, Fitpass
+## Cofounder / CTO, Fitpass
+
+*May 2016 – December 2017*
 
 Fitpass is platform for fitness studios and classes based in Bucharest, Romania. Cofounded and built the product, backend and frontend.
 
-* **Company** Fitpass
-* **Since** May 2016
-* **Until** December 2017
-
 ---
 
-### Cofounder / CTO, Lendia
+## Cofounder / CTO, Lendia
+
+*February 2015 – December 2016*
 
 Lendia was a company aggregating lending offers from multiple banks. Cofounded and built the product.
 
-* **Company** Lendia
-* **Since** February 2015
-* **Until** December 2016
-
 ---
 
-### Owner, ElasticOrange
+## Owner, ElasticOrange
+
+*October 2014 – January 2017*
 
 ElasticOrange was a software company that developed products for international clients.
 
-* **Company** ElasticOrange
-* **Since** October 2014
-* **Until** January 2017
-
 ---
 
-### Developer, Filebox
+## Developer, Filebox
 
-Filebox was one of the biggest file sharing websites in Romania having 100k uniques per day.
+*May 2008 – September 2010 · Synco Telecom*
 
-* **Company** Synco Telecom
-* **Since** May 2008
-* **Until** September 2010
+Filebox was one of the biggest file sharing websites in Romania having 100k uniques per day. We designed the complete software stack, as well as maintained the hardware powering all of it.
 
 ---
-

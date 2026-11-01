@@ -1,0 +1,26 @@
+{{ define "main" }}
+  {{ if not .IsHome }}
+    <header class="page-head">
+      <h1 class="page-title">{{ .Title }}</h1>
+      {{ with .Params.lede }}<p class="page-lede">{{ . | markdownify }}</p>{{ end }}
+      {{- if eq .Section "posts" }}{{ with site.Home.OutputFormats.Get "rss" }}
+      <p class="page-feed"><a href="{{ .Permalink }}" type="application/rss+xml">Subscribe via RSS</a></p>
+      {{- end }}{{ end }}
+    </header>
+  {{ end }}
+
+  {{ $section := .Section }}
+  {{ with .Content }}
+    <div class="index-content index-content--{{ $section }}">
+      {{ . }}
+    </div>
+  {{ end }}
+
+  <div class="posts">
+    {{ range .Paginator.Pages }}
+      {{ partial "post-card.html" (dict "page" . "heading" "h2" "compact" false) }}
+    {{ end }}
+
+    {{ partial "pagination.html" . }}
+  </div>
+{{ end }}

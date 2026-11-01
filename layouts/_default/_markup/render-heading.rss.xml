@@ -1,0 +1,3 @@
+{{- /* Feeds get plain headings: a "#" permalink (render-heading.html) points
+     nowhere in a feed reader. */ -}}
+<h{{ .Level }}>{{ .Text }}</h{{ .Level }}>
