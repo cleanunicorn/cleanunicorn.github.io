@@ -30,16 +30,16 @@ dev: ## Run server (drafts+future). For remote access set HOST=<lan-ip>, e.g. ma
 	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender --ignoreCache --gc --noHTTPCache $(if $(HOST),--baseURL http://$(HOST))
 
 build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check output, metadata, and browser navigation
-	$(HUGO) --cleanDestinationDir
+	$(HUGO) --cleanDestinationDir --destination "$(PUBLIC_DIR)"
 	$(MAKE) --no-print-directory check-build
 	$(MAKE) --no-print-directory check-built-meta
 	$(MAKE) --no-print-directory check-browser-nav
 
 build-drafts: ## Build site including drafts and future posts
-	$(HUGO) -D -F
+	$(HUGO) -D -F --destination "$(PUBLIC_DIR)"
 
 clean: ## Remove generated site
-	rm -rf $(PUBLIC_DIR)
+	rm -rf -- "$(PUBLIC_DIR)"
 
 new: ## Create a new post: make new POST="My Post Title"
 	@if [ -z "$(POST)" ]; then \
@@ -61,13 +61,13 @@ check-positioning: ## Assert the identity copy leads builder-first, llms.txt sti
 	python3 scripts/check_positioning.py
 
 check-build: ## Assert feeds, removed outputs, profile data, navigation, KaTeX, heading links, and time dates
-	python3 scripts/check_build.py --public $(PUBLIC_DIR)
+	python3 scripts/check_build.py --public "$(PUBLIC_DIR)"
 
 node_modules/.package-lock.json: package-lock.json
 	npm ci --ignore-scripts --no-audit --no-fund
 
 check-browser-nav: node_modules/.package-lock.json ## Exercise mobile and desktop navigation in Chromium against the built site
-	CHROME="$(CHROME)" node --test tests/mobile_nav.test.cjs
+	PUBLIC_DIR="$(PUBLIC_DIR)" CHROME="$(CHROME)" node --test tests/mobile_nav.test.cjs
 
 check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image 2", "alt text", or a filename)
 	@if grep -rniE '!\[((untitled|image|alt text)([ _-]?[0-9]+)?|[^]]*\.(png|jpe?g|gif|webp|svg))\]\(' content; then \
@@ -77,7 +77,7 @@ check-alt-text: ## Fail if an image has placeholder alt text ("Untitled", "image
 	echo "check-alt-text: no placeholder alt text"
 
 check-built-meta: ## Assert the built site's search and social metadata (run after a build)
-	python3 scripts/check_built_meta.py $(PUBLIC_DIR)
+	python3 scripts/check_built_meta.py "$(PUBLIC_DIR)"
 
 test: ## Run Python unit tests for navigation, positioning, CV tools, KaTeX, and built HTML semantics
 	python3 -m unittest discover -s tests -v
@@ -98,4 +98,3 @@ books: ## Refresh the About page Books list: top 10 from Goodreads + existing, b
 
 og-image: ## Regenerate static/og-image.png, the social share card (needs Pillow: pip install -r requirements.txt)
 	python3 scripts/generate_og_image.py
-

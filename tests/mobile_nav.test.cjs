@@ -8,7 +8,7 @@ const path = require("node:path");
 const { test } = require("node:test");
 const { chromium } = require("playwright-core");
 
-const publicDir = path.resolve(__dirname, "..", "public");
+const publicDir = path.resolve(__dirname, "..", process.env.PUBLIC_DIR || "public");
 const tweets = [
   {
     path: "posts/the-right-way-to-use-transient-storage-eip-1153/",
