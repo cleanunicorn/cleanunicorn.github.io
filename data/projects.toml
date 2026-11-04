@@ -22,9 +22,10 @@ note = "The tools I use every day and keep improving: local-first voice and LLM 
 
 [[featured]]
 slug = "earheart"
+decision = "Transcription and cleanup run in-process by default, avoiding a separate model server. The tradeoff is downloading and running the models on your own hardware; hosted providers remain optional."
 name = "Earheart"
 tagline = "Talk to your coding agents."
-summary = "Press a hotkey, say what you want, press again — the prompt lands in Claude Code, Codex, Cursor or whatever has focus. Speech-to-text and cleanup run inside the app, so your voice, your code and your unshipped ideas never leave your machine."
+summary = "Press a hotkey, say what you want, press again — the prompt lands in Claude Code, Codex, Cursor or whatever has focus. With the default local models, transcription and cleanup stay on your machine."
 repo = "https://github.com/cleanunicorn/earheart"
 meta = ["Windows · macOS · Linux", "Parakeet + Qwen3 on-device", "MIT"]
 image = "/images/projects/earheart-overlay.png"
@@ -33,7 +34,7 @@ imageHeight = 152
 imageAlt = "Earheart's overlay bar transcribing a spoken coding-agent prompt live, with a status dot, waveform and timer"
 why = [
   "The prompts that work with an agent are long — context, constraints, the three things you tried. Speaking them is faster than typing, so you send the whole thought instead of a one-liner and three corrections.",
-  "Nothing leaves your machine: no account, no telemetry, no cloud. What you say to an agent is your architecture and your unreleased work, and it stays on your disk.",
+  "With the default local models, audio and text stay on your machine. If you configure a hosted provider, the data for that stage goes to that provider.",
   "Works in any app with no integration — a terminal running Claude Code, Cursor's chat, a GitHub issue, an email. It pastes; you review and press Enter.",
   "Cleanup made for spoken prompts: ums and false starts go, your wording and intent stay. A dictionary teaches it `pnpm`, `kubectl`, `useEffect` and your teammates' names.",
   "Install and go — a wizard downloads the models once; after that transcription runs faster than realtime, even on CPU.",
@@ -56,6 +57,7 @@ links = [
 
 [[featured]]
 slug = "drove"
+decision = "Idle models unload to free memory while their prompt cache survives sleep. This trades an always-ready model for shared GPU capacity: the next request must wait for the model to wake."
 name = "drove"
 tagline = "Local models on demand."
 summary = "One OpenAI-compatible endpoint in front of llama.cpp and a built-in ONNX speech worker. drove wakes a model on the first request, streams the answer, and puts it back to sleep when it goes idle — so your GPU is never pinned by something you used an hour ago."
@@ -86,6 +88,7 @@ links = [
 
 [[featured]]
 slug = "agents-library"
+decision = "Agents hand work back as reviewable pull requests with lint and test results. Human review remains part of the workflow; passing checks alone does not establish that a change is correct."
 name = "Agents Library"
 tagline = "Coding agents that open reviewable pull requests."
 summary = "Eight single-purpose agents and ten orchestrator skills for Claude Code, Codex, opencode and Kilo Code. Each agent picks one problem, fixes every instance of it in the repository, runs the linter and tests, and opens a pull request — never a commit to main."

@@ -3,7 +3,7 @@ title = "Connect"
 draft = false
 slug = "contact"
 class = "page-contact"
-lede = "I'm always happy to talk to people building serious things in software, security and AI — whether that's an open-source tool of mine you want to use, a system you want audited, or a round you're raising. Pick whatever channel you already live in — or just book time directly."
+lede = "Working on coding agents, local inference, or smart-contract security? Send me a repository, a technical question, or a problem you’re trying to solve. For tool feedback, use the relevant project’s repository; for collaboration, pick a channel below."
 description = "Get in touch with Daniel Luca — open-source tools and coding agents, smart-contract audits, technical diligence, investment, speaking and collaboration."
 showFullContent = true
 +++
@@ -15,7 +15,7 @@ showFullContent = true
 ### You use something I built — or want to
 [Earheart](https://github.com/cleanunicorn/earheart) for private, on-device dictation, [Agents Library](https://github.com/cleanunicorn/agents-library) for coding agents that open reviewable pull requests, [drove](https://github.com/cleanunicorn/drove) for running local LLMs, [Karl](https://github.com/cleanunicorn/karl) for hunting live smart-contract exploits. Bug reports, questions and "could it also do X" are all welcome.
 
-→ Best via [GitHub](https://github.com/cleanunicorn) or [X / Twitter](https://x.com/cleanunicorn).
+→ Find the relevant repository on the [projects page](/projects/), then open an issue or discussion there.
 
 ### You need a security review
 You're shipping a smart-contract system and want an experienced adversarial eye on it before it holds real value. I've audited protocols including [Uniswap](https://uniswap.org/), [Aave](https://aave.com/), [Filecoin](https://filecoin.io/) and [Polygon](https://polygon.technology/).

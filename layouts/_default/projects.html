@@ -35,6 +35,8 @@
 
         <p class="project__summary">{{ .summary | markdownify }}</p>
 
+        {{ with .decision }}<p><strong>Engineering decision:</strong> {{ . }}</p>{{ end }}
+
         {{ $p := . }}
         {{ with .image }}
           <figure class="project__figure">

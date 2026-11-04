@@ -31,20 +31,39 @@
         <div class="poster__id">
           <h1 class="poster__name">{{ $home.name | default $.Site.Title }}</h1>
           {{ with $home.nickname }}<span class="poster__alias">“{{ . }}”</span>{{ end }}
-          {{ with $.Site.Params.Subtitle }}<p class="poster__roles">{{ . }}</p>{{ end }}
+          {{ with $home.headline }}<p class="poster__headline">{{ . }}</p>{{ end }}
           {{ with $home.connect.tagline }}<p class="poster__tagline">{{ . }}</p>{{ end }}
+          <p class="poster__actions"><a href="/projects/">Explore my tools →</a> <a href="/posts/">Read my research →</a></p>
+          {{ with $.Site.Params.Subtitle }}<p class="poster__roles">{{ . }}</p>{{ end }}
         </div>
       </div>
     </div>
   </section>
 
-  {{/* ---- BOARD PANEL: bordered, columnar channel table -------------------- */}}
-  {{ with $home.connect }}
-    <section class="board" aria-labelledby="connect-head">
-      <h2 class="board__head-label" id="connect-head">{{ .label }}</h2>
-      {{ with .note }}<p class="board__note board__note--lead">{{ . }}</p>{{ end }}
-
-      {{ partial "connect-board.html" . }}
+  {{/* ---- FEATURED PROJECTS: compact cards from data/projects.toml ---------- */}}
+  {{ with $.Site.Data.projects }}
+    <section class="featured" aria-labelledby="featured-head">
+      <div class="section-head section-head--row">
+        <h2 id="featured-head">{{ .label | default "Featured projects" }}</h2>
+        <a class="section-head__more" href="{{ "projects/" | relLangURL }}">All about them <span aria-hidden="true">→</span></a>
+      </div>
+      {{ with .note }}<p class="featured__note">{{ . }}</p>{{ end }}
+      <div class="featured__grid">
+        {{ range $i, $project := .featured }}
+        {{ if eq $i 3 }}</div><details class="featured__more"><summary>More developer tools</summary><div class="featured__grid">{{ end }}
+          <article class="featured__card" id="featured-{{ .slug }}">
+            <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
+            <p class="featured__tagline">{{ .tagline }}</p>
+            <p class="featured__summary">{{ .summary | markdownify }}</p>
+            {{ with .decision }}<p class="featured__summary"><strong>Engineering decision:</strong> {{ . }}</p>{{ end }}
+            <p class="featured__links">
+              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Engineering details <span aria-hidden="true">→</span></a>
+              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+            </p>
+          </article>
+        {{ end }}
+      </div>
+      {{ if gt (len .featured) 3 }}</details>{{ end }}
     </section>
   {{ end }}
 
@@ -53,7 +72,7 @@
       <span class="proof__label">{{ .label | default "Selected work" }}</span>
       <ul class="proof__items">
         {{ range .items }}
-          <li>{{ . }}</li>
+          <li><a href="{{ .url }}">{{ .text }}</a></li>
         {{ end }}
       </ul>
     </section>
@@ -72,34 +91,30 @@
     </section>
   {{ end }}
 
-  {{/* ---- FEATURED PROJECTS: compact cards from data/projects.toml ---------- */}}
-  {{ with $.Site.Data.projects }}
-    <section class="featured" aria-labelledby="featured-head">
-      <div class="section-head section-head--row">
-        <h2 id="featured-head">{{ .label | default "Featured projects" }}</h2>
-        <a class="section-head__more" href="{{ "projects/" | relLangURL }}">All about them <span aria-hidden="true">→</span></a>
-      </div>
-      {{ with .note }}<p class="featured__note">{{ . }}</p>{{ end }}
-      <div class="featured__grid">
-        {{ range .featured }}
-          <article class="featured__card" id="featured-{{ .slug }}">
-            <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
-            <p class="featured__tagline">{{ .tagline }}</p>
-            <p class="featured__summary">{{ .summary | markdownify }}</p>
-            <p class="featured__links">
-              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Why it's cool <span aria-hidden="true">→</span></a>
-              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
-            </p>
-          </article>
-        {{ end }}
-      </div>
-    </section>
+
+  {{ if .Content }}
+    <div class="index-content">{{ .Content }}</div>
   {{ end }}
+
+  <section class="writing">
+    <div class="section-head section-head--row">
+      <h2>Selected technical writing</h2>
+      <a class="section-head__more" href="{{ "posts/" | absLangURL }}">All posts <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="posts">
+      {{ $posts := where $.Site.RegularPages "Type" "posts" }}
+      {{ $selected := where $posts "Params.homeFeatured" true }}
+      {{ if not $selected }}{{ $selected = first 3 $posts }}{{ end }}
+      {{ range $selected }}
+        {{ partial "post-card.html" (dict "page" . "heading" "h3" "compact" true) }}
+      {{ end }}
+    </div>
+  </section>
 
   {{ with $home.cta }}
     <section class="offer" aria-label="Ways to work together">
       <div class="section-head section-head--row">
-        <h2>How I can help</h2>
+        <h2>Let’s build something useful</h2>
         {{ with $home.cvURL }}<a class="section-head__more" href="{{ . }}">{{ $home.cvLabel | default "Download CV (PDF)" }} <span aria-hidden="true">→</span></a>{{ end }}
       </div>
       <div class="offer__grid">
@@ -114,22 +129,15 @@
     </section>
   {{ end }}
 
-  {{ if .Content }}
-    <div class="index-content">{{ .Content }}</div>
-  {{ end }}
+  {{/* ---- BOARD PANEL: bordered, columnar channel table -------------------- */}}
+  {{ with $home.connect }}
+    <section class="board" aria-labelledby="connect-head">
+      <h2 class="board__head-label" id="connect-head">{{ .label }}</h2>
+      {{ with .note }}<p class="board__note board__note--lead">{{ . }}</p>{{ end }}
 
-  <section class="writing">
-    <div class="section-head section-head--row">
-      <h2>Latest writing</h2>
-      <a class="section-head__more" href="{{ "posts/" | absLangURL }}">All posts <span aria-hidden="true">→</span></a>
-    </div>
-    <div class="posts">
-      {{ $posts := where $.Site.RegularPages "Type" "posts" }}
-      {{ range first 3 $posts }}
-        {{ partial "post-card.html" (dict "page" . "heading" "h3" "compact" true) }}
-      {{ end }}
-    </div>
-  </section>
+      {{ partial "connect-board.html" . }}
+    </section>
+  {{ end }}
 
   <script src="{{ "js/hero-type.js" | relURL }}" defer></script>
   <script src="{{ "js/terminal.js" | relURL }}" defer></script>
