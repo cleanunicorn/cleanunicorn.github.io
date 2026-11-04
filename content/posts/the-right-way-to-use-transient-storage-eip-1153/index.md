@@ -1,4 +1,5 @@
 +++
+homeFeatured = true
 date = '2024-02-29T14:23:45+01:00'
 draft = false
 title = 'The Right Way to Use Transient Storage (EIP 1153)'

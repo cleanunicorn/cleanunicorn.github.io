@@ -1,4 +1,5 @@
 +++
+homeFeatured = true
 title = "My Agents Prompt Each Other More Than I Prompt Them"
 date = "2026-10-06T14:00:00+03:00"
 draft = false

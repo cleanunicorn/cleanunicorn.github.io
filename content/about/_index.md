@@ -44,7 +44,7 @@ Whether I'm writing a contract, breaking one or evaluating a seed round, **the l
 I build and ship — here are a few things I'm proud of. [The ones I work on most have their own page](/projects/) with why to use them and why they are cool. There's more on [GitHub](https://github.com/cleanunicorn).
 
 ### [Earheart](https://github.com/cleanunicorn/earheart)
-Private, hotkey-driven voice dictation for Windows, macOS and Linux — speech-to-text and LLM cleanup run in-process on your own machine, so nothing ever leaves it.
+Private, hotkey-driven voice dictation for Windows, macOS and Linux — with the default local models, speech-to-text and LLM cleanup run in-process on your own machine. Hosted providers are optional.
 
 ### [Agents Library](https://github.com/cleanunicorn/agents-library)
 Stack-agnostic coding agents and review skills for Claude Code and Codex — each one makes a single focused change per run and opens a reviewable pull request.

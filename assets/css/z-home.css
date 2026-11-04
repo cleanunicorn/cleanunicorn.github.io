@@ -136,3 +136,23 @@
   .stats { grid-template-columns: 1fr 1fr; }
   .stats__value { font-size: 1.6rem; }
 }
+
+.poster__headline {
+  font-size: clamp(1.15rem, 2.5vw, 1.6rem);
+  line-height: 1.3;
+  max-width: 36ch;
+  margin: var(--sp-3) 0;
+}
+.poster__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-5); }
+.poster__actions a { color: inherit; text-underline-offset: 0.2em; }
+.featured__more { margin-top: var(--sp-5); }
+.featured__more summary { cursor: pointer; margin-bottom: var(--sp-4); }
+
+/* Let the longer introduction determine its height on small screens. */
+.poster__frame { height: auto; min-height: clamp(440px, 60vh, 620px); }
+.poster__inner { min-height: inherit; }
+.proof__items li { white-space: normal; }
+.offer .section-head { flex-wrap: wrap; }
+@media (max-width: 640px) {
+  .poster__frame { height: auto; min-height: 560px; }
+}
