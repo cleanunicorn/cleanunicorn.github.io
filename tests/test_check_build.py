@@ -1,6 +1,7 @@
 """Regression tests for built HTML semantics and primary navigation."""
 
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -257,6 +258,22 @@ FIXTURE_PAGES = ("index.html", "posts/index.html", "posts/fixture/index.html")
 @unittest.skipUnless(shutil.which("hugo") and (ROOT / "themes/terminal/layouts").is_dir(),
                      "Hugo and the theme submodule are required for the render fixture")
 class HugoRenderFixtureTests(unittest.TestCase):
+    def test_featured_project_order_on_both_pages(self):
+        expected = ["earheart", "drove", "agents-library", "power-mode",
+                    "chief-of-staff", "dispatch", "quill"]
+        with tempfile.TemporaryDirectory() as directory:
+            output = render_fixture(
+                directory, 'title = "Project order fixture"\n',
+                pages={"projects.md": (ROOT / "content/projects.md").read_text()},
+            )
+            home = (output / "index.html").read_text()
+            projects = (output / "projects/index.html").read_text()
+            self.assertEqual(expected, re.findall(r'<article\b[^>]*id="featured-([^"]+)"', home))
+            self.assertIn('Power Mode, Chief of Staff, dispatch, Quill</span>', home)
+            self.assertEqual(expected, re.findall(r'<section class="project" id="([^"]+)"', projects))
+            toc = re.search(r'<nav class="projects-toc".*?</nav>', projects, re.S).group()
+            self.assertEqual(expected, re.findall(r'href="#([^"]+)"', toc))
+
     def test_home_list_and_single_use_publication_date(self):
         published = "2024-02-29T14:23:45+01:00"
         updated = "2025-06-01T09:08:07-04:00"
