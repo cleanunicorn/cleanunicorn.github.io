@@ -57,6 +57,10 @@
 .featured__link { text-decoration: none; }
 .featured__link--repo { color: var(--text-muted); }
 .featured__link--repo:hover { color: var(--accent); }
+.featured__collapse { display: none; }
+.featured__more[open] .featured__expand { display: none; }
+.featured__more[open] .featured__collapse { display: inline; }
+.featured__more-names { display: block; margin-top: var(--sp-2); color: var(--text-muted); font-size: var(--fs-small); line-height: 1.6; }
 
 /* ---- /projects/ ----------------------------------------------------------- */
 .page-projects .post-content { margin-top: var(--sp-6); }

@@ -48,9 +48,19 @@
         <a class="section-head__more" href="{{ "projects/" | relLangURL }}">All about them <span aria-hidden="true">→</span></a>
       </div>
       {{ with .note }}<p class="featured__note">{{ . }}</p>{{ end }}
+      {{ $moreProjects := after 3 .featured }}
       <div class="featured__grid">
         {{ range $i, $project := .featured }}
-        {{ if eq $i 3 }}</div><details class="featured__more"><summary>More developer tools</summary><div class="featured__grid">{{ end }}
+        {{ if eq $i 3 }}
+          </div>
+          <details class="featured__more">
+            <summary>
+              <span class="featured__expand">Show {{ len $moreProjects }} more {{ if eq (len $moreProjects) 1 }}project{{ else }}projects{{ end }}</span>
+              <span class="featured__collapse">Hide additional projects</span>
+              <span class="featured__more-names">{{ range $j, $more := $moreProjects }}{{ if $j }}, {{ end }}{{ $more.name }}{{ end }}</span>
+            </summary>
+            <div class="featured__grid">
+        {{ end }}
           <article class="featured__card" id="featured-{{ .slug }}">
             <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
             <p class="featured__tagline">{{ .tagline }}</p>
