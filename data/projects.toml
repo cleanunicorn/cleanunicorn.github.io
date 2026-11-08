@@ -10,6 +10,10 @@
 #   meta        short chips under the name: platforms, stack, license
 #   image       optional screenshot in static/, with imageAlt and its pixel
 #               imageWidth / imageHeight so the page does not shift while it loads
+#   imageCaption  optional source/context below the screenshot
+#   screenshots   extra screenshots with src, alt, width, height and caption
+#   video       optional local MP4; image becomes its poster, with videoWidth,
+#               videoHeight and videoCaption describing the demo
 #   why         "Why you'd use it" — the user's reasons, one sentence each
 #   cool        "Why it's cool" — the engineering, one sentence each
 #   install     a copy-pasteable quick start, shown in a code block
@@ -18,7 +22,7 @@
 # `make check-build` fails if a featured project is missing from either page.
 
 label = "Featured projects"
-note = "The tools I use every day and keep improving: local-first voice and LLM tooling, and coding agents that show their work."
+note = "The tools I use every day and keep improving: local-first voice and LLM tooling, coding-agent workflows, and a little typing joy."
 
 [[featured]]
 slug = "earheart"
@@ -57,6 +61,11 @@ links = [
 
 [[featured]]
 slug = "drove"
+image = "/images/projects/drove-status.svg"
+imageWidth = 994
+imageHeight = 343
+imageAlt = "drove terminal status showing model lifecycle, memory use and idle timers"
+imageCaption = "Terminal status exported by drove."
 decision = "Idle models unload to free memory while their prompt cache survives sleep. This trades an always-ready model for shared GPU capacity: the next request must wait for the model to wake."
 name = "drove"
 tagline = "Local models on demand."
@@ -88,6 +97,11 @@ links = [
 
 [[featured]]
 slug = "agents-library"
+image = "/images/projects/agents-library-workflow.png"
+imageWidth = 1536
+imageHeight = 1024
+imageAlt = "Agents Library manager workflow with parallel coordinators planning, building, reviewing and testing pull requests"
+imageCaption = "Manager workflow from the Agents Library documentation."
 decision = "Agents hand work back as reviewable pull requests with lint and test results. Human review remains part of the workflow; passing checks alone does not establish that a change is correct."
 name = "Agents Library"
 tagline = "Coding agents that open reviewable pull requests."
@@ -122,6 +136,11 @@ links = [
 
 [[featured]]
 slug = "dispatch"
+image = "/images/projects/dispatch-permission.svg"
+imageWidth = 1200
+imageHeight = 760
+imageAlt = "dispatch Slack thread asking permission to run a shell command, with Allow and Deny buttons"
+imageCaption = "Sanitized Slack permission flow from the dispatch documentation."
 name = "dispatch"
 tagline = "Orchestrate coding agents from Slack."
 summary = "A single Go binary that turns Slack messages into tasks, runs each one as a Claude Code session in a local folder, a Docker container or an SSH host, relays permission prompts back as buttons, and keeps every event in SQLite so a restarted dispatch resumes the work it cut short."
@@ -150,6 +169,11 @@ links = [
 
 [[featured]]
 slug = "quill"
+image = "/images/projects/quill-demo.png"
+imageWidth = 886
+imageHeight = 403
+imageAlt = "Quill terminal demo transcribing audio from the command line"
+imageCaption = "Still from the Quill terminal demo."
 name = "Quill"
 tagline = "Transcribe anything from the command line."
 summary = "One command turns an audio file, a YouTube link or a podcast URL into a transcript, on your own machine with faster-whisper. CPU by default so it works everywhere; CUDA when you have an NVIDIA GPU and want it fast."
@@ -171,3 +195,59 @@ install = """git clone https://github.com/cleanunicorn/quill && cd quill
 uv sync
 uv run quill "https://youtube.com/watch?v=..."   # a video, by title
 uv run quill talk.mp3 notes.txt --timestamps     # a file, with timestamps"""
+
+
+[[featured]]
+slug = "power-mode"
+name = "Power Mode"
+tagline = "Make every keystroke an event."
+summary = "A bb plugin that adds caret particles, typing combos, screen shake and themed paste explosions. Agent replies get their own streaming effects and a turn-complete finale."
+repo = "https://github.com/cleanunicorn/bb-plugin-power-mode"
+meta = ["bb plugin", "TypeScript", "Six visual themes"]
+image = "/images/projects/power-mode.jpg"
+imageWidth = 960
+imageHeight = 600
+imageAlt = "Power Mode paste explosions and typing effects around the bb composer"
+video = "/videos/power-mode-demo.mp4"
+videoWidth = 1280
+videoHeight = 800
+videoCaption = "84-second demo: enable Power Mode, build typing combos, paste explosions, switch themes, and watch an agent reply. No audio."
+why = [
+  "Turn everyday prompting into something playful, with particles, combos and a live words-per-minute gauge.",
+  "Choose Neon, Inferno, Matrix, Sakura, Cyberpunk or Retro 8-bit, then tune particles, glow, shake and sound in Settings.",
+  "Follow personal stats and achievements locally, with reduced-motion controls and no remote achievement analytics.",
+]
+cool = [
+  "Paste effects scale from small firecrackers to a singularity, with each theme supplying its own visuals.",
+  "Agent effects follow the visible thread, building a word combo as a reply streams and finishing with a turn-complete finale.",
+]
+install = """bb plugin install git:github.com/cleanunicorn/bb-plugin-power-mode --yes
+# Toggle with the lightning button or Ctrl/Cmd + Alt + P."""
+
+[[featured]]
+slug = "chief-of-staff"
+name = "Chief of Staff"
+tagline = "Keep your coding agents moving."
+summary = "An engineering chief of staff for bb that takes GitHub issues or tasks through workflows you define. Track the agent roster, review progress and approvals, and see who holds the next action across repositories."
+repo = "https://github.com/cleanunicorn/bb-plugin-chief-of-staff"
+meta = ["bb plugin", "GitHub issues → pull requests", "Visual workflows"]
+image = "/images/projects/chief-of-staff-pipeline.png"
+imageWidth = 1280
+imageHeight = 800
+imageAlt = "Chief of Staff pipeline dashboard showing agent work, workflow stages and task status"
+imageCaption = "Chief of Staff's live pipeline dashboard in bb."
+screenshots = [
+  { src = "/images/projects/chief-of-staff-workflow.png", width = 1280, height = 1100, alt = "Chief of Staff visual workflow editor connecting planning, review, build and ship steps with retry paths", caption = "The workflow canvas with agent steps and failure paths." },
+]
+why = [
+  "Turn filtered GitHub issues or a task description into agent work in isolated worktrees.",
+  "See running steps, stalled work and questions that need your answer in one dashboard.",
+  "Define workflows with agent, check, model and ship steps, including approvals and bounded retries.",
+]
+cool = [
+  "Edit the workflow as a canvas or a list; independent read-only steps can run in parallel.",
+  "Each step receives earlier reports, and work advances when its agent reports the step result.",
+]
+install = """bb plugin install git:github.com/cleanunicorn/bb-plugin-chief-of-staff --yes
+# Open Chief of Staff in the sidebar, or inspect it from the CLI:
+bb cos status"""

@@ -54,6 +54,12 @@
           <article class="featured__card" id="featured-{{ .slug }}">
             <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
             <p class="featured__tagline">{{ .tagline }}</p>
+            {{ with .image }}
+              <a class="featured__preview" href="{{ printf "projects/#%s" $project.slug | relLangURL }}" aria-label="{{ if $project.video }}Watch the {{ $project.name }} demo{{ else }}See {{ $project.name }} in detail{{ end }}">
+                <img src="{{ . | relURL }}" alt="{{ $project.imageAlt }}" width="{{ $project.imageWidth }}" height="{{ $project.imageHeight }}" loading="lazy">
+                {{ if $project.video }}<span class="featured__play">▶ Watch demo</span>{{ end }}
+              </a>
+            {{ end }}
             <p class="featured__summary">{{ .summary | markdownify }}</p>
             {{ with .decision }}<p class="featured__summary"><strong>Engineering decision:</strong> {{ . }}</p>{{ end }}
             <p class="featured__links">

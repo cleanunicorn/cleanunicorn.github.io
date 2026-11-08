@@ -38,9 +38,27 @@
         {{ with .decision }}<p><strong>Engineering decision:</strong> {{ . }}</p>{{ end }}
 
         {{ $p := . }}
+        {{ if .video }}
+          <figure class="project__figure">
+            <video controls playsinline preload="none" poster="{{ .image | relURL }}" width="{{ .videoWidth }}" height="{{ .videoHeight }}" aria-label="{{ .name }} demo" aria-describedby="{{ .slug }}-video-caption">
+              <source src="{{ .video | relURL }}" type="video/mp4">
+              Your browser does not support embedded video. <a href="{{ .video | relURL }}">Watch the {{ .name }} demo</a>.
+            </video>
+            <figcaption id="{{ .slug }}-video-caption">{{ .videoCaption }} <a href="{{ .video | relURL }}">Open video</a></figcaption>
+          </figure>
+        {{ else }}
         {{ with .image }}
           <figure class="project__figure">
             <img src="{{ . | relURL }}" alt="{{ $p.imageAlt }}"{{ with $p.imageWidth }} width="{{ . }}"{{ end }}{{ with $p.imageHeight }} height="{{ . }}"{{ end }} loading="lazy">
+            {{ with $p.imageCaption }}<figcaption>{{ . }}</figcaption>{{ end }}
+          </figure>
+        {{ end }}
+        {{ end }}
+
+        {{ range .screenshots }}
+          <figure class="project__figure">
+            <img src="{{ .src | relURL }}" alt="{{ .alt }}" width="{{ .width }}" height="{{ .height }}" loading="lazy">
+            {{ with .caption }}<figcaption>{{ . }}</figcaption>{{ end }}
           </figure>
         {{ end }}
 
