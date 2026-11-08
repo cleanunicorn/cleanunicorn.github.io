@@ -5,7 +5,7 @@
 #
 # Each [[featured]] entry:
 #   slug        anchor on /projects/#<slug>; also the homepage card's id
-#   name, tagline, summary
+#   name, tagline, summary; shortSummary is the concise homepage benefit
 #   repo        the GitHub URL (also the canonical link everywhere)
 #   meta        short chips under the name: platforms, stack, license
 #   image       optional screenshot in static/, with imageAlt and its pixel
@@ -26,6 +26,7 @@ note = "The tools I use every day and keep improving: local-first voice and LLM 
 
 [[featured]]
 slug = "earheart"
+shortSummary = "Dictate prompts into any app, with transcription and cleanup on your machine by default."
 decision = "Transcription and cleanup run in-process by default, avoiding a separate model server. The tradeoff is downloading and running the models on your own hardware; hosted providers remain optional."
 name = "Earheart"
 tagline = "Talk to your coding agents."
@@ -61,6 +62,7 @@ links = [
 
 [[featured]]
 slug = "drove"
+shortSummary = "Use one local AI endpoint that loads models on demand and frees memory when they are idle."
 image = "/images/projects/drove-status.svg"
 imageWidth = 994
 imageHeight = 343
@@ -97,6 +99,7 @@ links = [
 
 [[featured]]
 slug = "agents-library"
+shortSummary = "Give your coding agents focused skills that deliver reviewable pull requests."
 image = "/images/projects/agents-library-workflow.png"
 imageWidth = 1536
 imageHeight = 1024
@@ -136,6 +139,7 @@ links = [
 
 [[featured]]
 slug = "dispatch"
+shortSummary = "Send tasks from Slack and approve commands in-thread, with agents running locally, in Docker or over SSH."
 image = "/images/projects/dispatch-permission.svg"
 imageWidth = 1200
 imageHeight = 760
@@ -169,6 +173,7 @@ links = [
 
 [[featured]]
 slug = "quill"
+shortSummary = "Turn audio files, YouTube videos and podcasts into local transcripts with one command."
 image = "/images/projects/quill-demo.png"
 imageWidth = 886
 imageHeight = 403
@@ -199,6 +204,7 @@ uv run quill talk.mp3 notes.txt --timestamps     # a file, with timestamps"""
 
 [[featured]]
 slug = "power-mode"
+shortSummary = "Add particles, typing combos and themed explosions to bb, with effects for agent replies too."
 name = "Power Mode"
 tagline = "Make every keystroke an event."
 summary = "A bb plugin that adds caret particles, typing combos, screen shake and themed paste explosions. Agent replies get their own streaming effects and a turn-complete finale."
@@ -226,6 +232,7 @@ install = """bb plugin install git:github.com/cleanunicorn/bb-plugin-power-mode 
 
 [[featured]]
 slug = "chief-of-staff"
+shortSummary = "Move GitHub issues through agent workflows and see which tasks need your attention."
 name = "Chief of Staff"
 tagline = "Keep your coding agents moving."
 summary = "An engineering chief of staff for bb that takes GitHub issues or tasks through workflows you define. Track the agent roster, review progress and approvals, and see who holds the next action across repositories."

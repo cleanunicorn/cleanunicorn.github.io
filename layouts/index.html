@@ -60,11 +60,10 @@
                 {{ if $project.video }}<span class="featured__play">▶ Watch demo</span>{{ end }}
               </a>
             {{ end }}
-            <p class="featured__summary">{{ .summary | markdownify }}</p>
-            {{ with .decision }}<p class="featured__summary"><strong>Engineering decision:</strong> {{ . }}</p>{{ end }}
+            <p class="featured__summary">{{ (.shortSummary | default .summary) | markdownify }}</p>
             <p class="featured__links">
-              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Engineering details <span aria-hidden="true">→</span></a>
-              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Project details <span aria-hidden="true">→</span></a>
+              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a>
             </p>
           </article>
         {{ end }}
