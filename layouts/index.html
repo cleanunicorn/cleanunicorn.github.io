@@ -48,17 +48,32 @@
         <a class="section-head__more" href="{{ "projects/" | relLangURL }}">All about them <span aria-hidden="true">→</span></a>
       </div>
       {{ with .note }}<p class="featured__note">{{ . }}</p>{{ end }}
+      {{ $moreProjects := after 3 .featured }}
       <div class="featured__grid">
         {{ range $i, $project := .featured }}
-        {{ if eq $i 3 }}</div><details class="featured__more"><summary>More developer tools</summary><div class="featured__grid">{{ end }}
+        {{ if eq $i 3 }}
+          </div>
+          <details class="featured__more">
+            <summary>
+              <span class="featured__expand">Show {{ len $moreProjects }} more {{ if eq (len $moreProjects) 1 }}project{{ else }}projects{{ end }}</span>
+              <span class="featured__collapse">Hide additional projects</span>
+              <span class="featured__more-names">{{ range $j, $more := $moreProjects }}{{ if $j }}, {{ end }}{{ $more.name }}{{ end }}</span>
+            </summary>
+            <div class="featured__grid">
+        {{ end }}
           <article class="featured__card" id="featured-{{ .slug }}">
             <h3 class="featured__name"><a href="{{ printf "projects/#%s" .slug | relLangURL }}">{{ .name }}</a></h3>
             <p class="featured__tagline">{{ .tagline }}</p>
-            <p class="featured__summary">{{ .summary | markdownify }}</p>
-            {{ with .decision }}<p class="featured__summary"><strong>Engineering decision:</strong> {{ . }}</p>{{ end }}
+            {{ with .image }}
+              <a class="featured__preview" href="{{ printf "projects/#%s" $project.slug | relLangURL }}" aria-label="{{ if $project.video }}Watch the {{ $project.name }} demo{{ else }}See {{ $project.name }} in detail{{ end }}">
+                <img src="{{ . | relURL }}" alt="{{ $project.imageAlt }}" width="{{ $project.imageWidth }}" height="{{ $project.imageHeight }}" loading="lazy">
+                {{ if $project.video }}<span class="featured__play">▶ Watch demo</span>{{ end }}
+              </a>
+            {{ end }}
+            <p class="featured__summary">{{ (.shortSummary | default .summary) | markdownify }}</p>
             <p class="featured__links">
-              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Engineering details <span aria-hidden="true">→</span></a>
-              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+              <a class="featured__link" href="{{ printf "projects/#%s" .slug | relLangURL }}">Project details <span aria-hidden="true">→</span></a>
+              <a class="featured__link featured__link--repo" href="{{ .repo }}" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a>
             </p>
           </article>
         {{ end }}
