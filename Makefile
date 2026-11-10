@@ -5,6 +5,8 @@ THEME ?= themes/terminal
 PUBLIC_DIR ?= public
 STATIC_DIR ?= static
 POSTS_DIR ?= content/posts
+# Keep the dev image cache writable and separate from other checkouts/builds.
+HUGO_DEV_CACHE ?= $(CURDIR)/.cache/hugo-dev
 # Browser for cv-pdf and check-browser-nav; empty picks one from PATH.
 CHROME ?=
 
@@ -27,7 +29,7 @@ help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 dev: ## Run server (drafts+future). For remote access set HOST=<lan-ip>, e.g. make dev HOST=192.168.1.50
-	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender --ignoreCache --gc --noHTTPCache $(if $(HOST),--baseURL http://$(HOST))
+	$(HUGO) server -D -F --bind 0.0.0.0 --disableFastRender --cacheDir "$(HUGO_DEV_CACHE)" --noHTTPCache $(if $(HOST),--baseURL http://$(HOST))
 
 build: check-positioning check-alt-text ## Build production site into $(PUBLIC_DIR), then check output, metadata, and browser navigation
 	$(HUGO) --cleanDestinationDir --destination "$(PUBLIC_DIR)"

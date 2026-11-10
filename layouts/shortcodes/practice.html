@@ -1,0 +1,10 @@
+{{- /*
+  Marks the text that follows, up to the next heading or principle, as a
+  practice: what I do today, expected to change.
+
+    {{< practice >}}
+    {{< practice "Practice · my week" >}}
+
+  The optional argument replaces the label. Styled in z-content.css.
+*/ -}}
+<p class="pp pp--practice"><span class="pp__label">{{ .Get 0 | default "Practice · what I do today" }}</span></p>

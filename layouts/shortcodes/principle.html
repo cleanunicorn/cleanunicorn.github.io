@@ -1,0 +1,10 @@
+{{- /*
+  A principle: a sentence meant to stay true after the tools change.
+
+    {{< principle >}}One writer per branch.{{< /principle >}}
+    {{< principle "Principle 1" >}}Every change walks the same lifecycle.{{< /principle >}}
+
+  The optional argument replaces the label. Pair with {{< practice >}}, which
+  marks what follows as today's way of doing it. Styled in z-content.css.
+*/ -}}
+<p class="pp pp--principle"><span class="pp__label">{{ .Get 0 | default "Principle" }}</span> {{ .Inner | markdownify }}</p>
