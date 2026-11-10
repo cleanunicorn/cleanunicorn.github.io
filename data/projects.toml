@@ -138,6 +138,63 @@ links = [
 ]
 
 [[featured]]
+slug = "power-mode"
+shortSummary = "Add particles, typing combos and themed explosions to bb, with effects for agent replies too."
+name = "Power Mode"
+tagline = "Make every keystroke an event."
+summary = "A bb plugin that adds caret particles, typing combos, screen shake and themed paste explosions. Agent replies get their own streaming effects and a turn-complete finale."
+repo = "https://github.com/cleanunicorn/bb-plugin-power-mode"
+meta = ["bb plugin", "TypeScript", "Six visual themes"]
+image = "/images/projects/power-mode.jpg"
+imageWidth = 960
+imageHeight = 600
+imageAlt = "Power Mode paste explosions and typing effects around the bb composer"
+video = "/videos/power-mode-demo.mp4"
+videoWidth = 1280
+videoHeight = 800
+videoCaption = "84-second demo: enable Power Mode, build typing combos, paste explosions, switch themes, and watch an agent reply. No audio."
+why = [
+  "Turn everyday prompting into something playful, with particles, combos and a live words-per-minute gauge.",
+  "Choose Neon, Inferno, Matrix, Sakura, Cyberpunk or Retro 8-bit, then tune particles, glow, shake and sound in Settings.",
+  "Follow personal stats and achievements locally, with reduced-motion controls and no remote achievement analytics.",
+]
+cool = [
+  "Paste effects scale from small firecrackers to a singularity, with each theme supplying its own visuals.",
+  "Agent effects follow the visible thread, building a word combo as a reply streams and finishing with a turn-complete finale.",
+]
+install = """bb plugin install git:github.com/cleanunicorn/bb-plugin-power-mode --yes
+# Toggle with the lightning button or Ctrl/Cmd + Alt + P."""
+
+[[featured]]
+slug = "chief-of-staff"
+shortSummary = "Move GitHub issues through agent workflows and see which tasks need your attention."
+name = "Chief of Staff"
+tagline = "Keep your coding agents moving."
+summary = "An engineering chief of staff for bb that takes GitHub issues or tasks through workflows you define. Track the agent roster, review progress and approvals, and see who holds the next action across repositories."
+repo = "https://github.com/cleanunicorn/bb-plugin-chief-of-staff"
+meta = ["bb plugin", "GitHub issues → pull requests", "Visual workflows"]
+image = "/images/projects/chief-of-staff-pipeline.png"
+imageWidth = 1280
+imageHeight = 800
+imageAlt = "Chief of Staff pipeline dashboard showing agent work, workflow stages and task status"
+imageCaption = "Chief of Staff's live pipeline dashboard in bb."
+screenshots = [
+  { src = "/images/projects/chief-of-staff-workflow.png", width = 1280, height = 1100, alt = "Chief of Staff visual workflow editor connecting planning, review, build and ship steps with retry paths", caption = "The workflow canvas with agent steps and failure paths." },
+]
+why = [
+  "Turn filtered GitHub issues or a task description into agent work in isolated worktrees.",
+  "See running steps, stalled work and questions that need your answer in one dashboard.",
+  "Define workflows with agent, check, model and ship steps, including approvals and bounded retries.",
+]
+cool = [
+  "Edit the workflow as a canvas or a list; independent read-only steps can run in parallel.",
+  "Each step receives earlier reports, and work advances when its agent reports the step result.",
+]
+install = """bb plugin install git:github.com/cleanunicorn/bb-plugin-chief-of-staff --yes
+# Open Chief of Staff in the sidebar, or inspect it from the CLI:
+bb cos status"""
+
+[[featured]]
 slug = "dispatch"
 shortSummary = "Send tasks from Slack and approve commands in-thread, with agents running locally, in Docker or over SSH."
 image = "/images/projects/dispatch-permission.svg"
@@ -200,61 +257,3 @@ install = """git clone https://github.com/cleanunicorn/quill && cd quill
 uv sync
 uv run quill "https://youtube.com/watch?v=..."   # a video, by title
 uv run quill talk.mp3 notes.txt --timestamps     # a file, with timestamps"""
-
-
-[[featured]]
-slug = "power-mode"
-shortSummary = "Add particles, typing combos and themed explosions to bb, with effects for agent replies too."
-name = "Power Mode"
-tagline = "Make every keystroke an event."
-summary = "A bb plugin that adds caret particles, typing combos, screen shake and themed paste explosions. Agent replies get their own streaming effects and a turn-complete finale."
-repo = "https://github.com/cleanunicorn/bb-plugin-power-mode"
-meta = ["bb plugin", "TypeScript", "Six visual themes"]
-image = "/images/projects/power-mode.jpg"
-imageWidth = 960
-imageHeight = 600
-imageAlt = "Power Mode paste explosions and typing effects around the bb composer"
-video = "/videos/power-mode-demo.mp4"
-videoWidth = 1280
-videoHeight = 800
-videoCaption = "84-second demo: enable Power Mode, build typing combos, paste explosions, switch themes, and watch an agent reply. No audio."
-why = [
-  "Turn everyday prompting into something playful, with particles, combos and a live words-per-minute gauge.",
-  "Choose Neon, Inferno, Matrix, Sakura, Cyberpunk or Retro 8-bit, then tune particles, glow, shake and sound in Settings.",
-  "Follow personal stats and achievements locally, with reduced-motion controls and no remote achievement analytics.",
-]
-cool = [
-  "Paste effects scale from small firecrackers to a singularity, with each theme supplying its own visuals.",
-  "Agent effects follow the visible thread, building a word combo as a reply streams and finishing with a turn-complete finale.",
-]
-install = """bb plugin install git:github.com/cleanunicorn/bb-plugin-power-mode --yes
-# Toggle with the lightning button or Ctrl/Cmd + Alt + P."""
-
-[[featured]]
-slug = "chief-of-staff"
-shortSummary = "Move GitHub issues through agent workflows and see which tasks need your attention."
-name = "Chief of Staff"
-tagline = "Keep your coding agents moving."
-summary = "An engineering chief of staff for bb that takes GitHub issues or tasks through workflows you define. Track the agent roster, review progress and approvals, and see who holds the next action across repositories."
-repo = "https://github.com/cleanunicorn/bb-plugin-chief-of-staff"
-meta = ["bb plugin", "GitHub issues → pull requests", "Visual workflows"]
-image = "/images/projects/chief-of-staff-pipeline.png"
-imageWidth = 1280
-imageHeight = 800
-imageAlt = "Chief of Staff pipeline dashboard showing agent work, workflow stages and task status"
-imageCaption = "Chief of Staff's live pipeline dashboard in bb."
-screenshots = [
-  { src = "/images/projects/chief-of-staff-workflow.png", width = 1280, height = 1100, alt = "Chief of Staff visual workflow editor connecting planning, review, build and ship steps with retry paths", caption = "The workflow canvas with agent steps and failure paths." },
-]
-why = [
-  "Turn filtered GitHub issues or a task description into agent work in isolated worktrees.",
-  "See running steps, stalled work and questions that need your answer in one dashboard.",
-  "Define workflows with agent, check, model and ship steps, including approvals and bounded retries.",
-]
-cool = [
-  "Edit the workflow as a canvas or a list; independent read-only steps can run in parallel.",
-  "Each step receives earlier reports, and work advances when its agent reports the step result.",
-]
-install = """bb plugin install git:github.com/cleanunicorn/bb-plugin-chief-of-staff --yes
-# Open Chief of Staff in the sidebar, or inspect it from the CLI:
-bb cos status"""
