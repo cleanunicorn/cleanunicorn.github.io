@@ -228,3 +228,31 @@ blockquote.x-embed p {
   font-size: var(--font-size);
   line-height: var(--leading-prose);
 }
+
+/* ---- Principle / practice labels (shortcodes principle, practice) ----------
+   A principle is a boxed sentence in the accent colour; a practice is a small
+   amber label over the text it introduces. The two colours match the lines of
+   the half-life chart in the post that introduced them. */
+.pp { --practice: #e6c384; }
+.pp__label {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.pp--principle {
+  padding: var(--sp-3) var(--sp-4);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-wash);
+  color: var(--text);
+  font-weight: 600;
+}
+.pp--principle .pp__label { display: block; margin-bottom: 0.2em; color: var(--accent); }
+.pp--practice {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+.pp--practice .pp__label { color: var(--practice); white-space: nowrap; }
+.pp--practice::after { content: ""; flex: 1; height: 1px; background: color-mix(in srgb, var(--practice) 35%, transparent); }

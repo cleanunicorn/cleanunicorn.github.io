@@ -113,6 +113,12 @@ a.read-more:hover { color: var(--accent-bright); }
    it, and keep it visible where there is no hover. --accent keeps even the
    touch state above 3:1 (4.2:1 at 0.6); --accent-line was 1.6:1. */
 .hanchor {
+  /* The theme positions the "#" absolutely. When a heading wraps, every line
+     is full, so the "#" lands on a line of its own, overlapping the text
+     below. In the flow it is one more word of the heading: balanced wrapping
+     keeps it on the last line, and the heading's box includes it. */
+  position: static;
+  margin-left: 0.35em;
   color: var(--accent);
   visibility: visible;
   opacity: 0;
@@ -192,4 +198,14 @@ a.read-more:hover { color: var(--accent-bright); }
 @media (max-width: 684px) {
   .post-nav__links { grid-template-columns: minmax(0, 1fr); }
   .post-nav__item--newer { grid-column: auto; text-align: left; }
+}
+
+/* Phones: a wide table scrolls sideways in its own box instead of widening the
+   page. Diagrams switch to a portrait drawing (layouts/shortcodes/diagram.html). */
+@media (max-width: 684px) {
+  .post-content table { display: block; max-width: 100%; overflow-x: auto; }
+}
+.post-content figure.diagram-img img { display: block; width: 100%; }
+@media (max-width: 684px) {
+  .post-content figure.diagram-img img { max-width: 420px; }
 }

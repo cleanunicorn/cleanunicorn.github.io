@@ -185,6 +185,13 @@ pre code { border: 0; background: none; padding: 0; }
 table { border-collapse: collapse; width: 100%; }
 th, td { border: 1px solid var(--hairline); padding: var(--sp-2) var(--sp-3); text-align: left; }
 thead th { background: var(--accent-wash); letter-spacing: 0.03em; }
+/* The theme breaks words anywhere (* { word-break: break-word }, on every
+   element, so bold text and links in a cell need the reset too), which lets
+   auto table layout squeeze a short column down to two or three letters per
+   line ("ST / AG / E"). Cells break between words only; inline code in a cell
+   (a command, a skill name) stays on one line. */
+th, td, th *, td * { word-break: normal; overflow-wrap: normal; }
+td code, th code { white-space: nowrap; }
 
 /* ---- Accessibility & utilities -------------------------------------------- */
 .sr-only {

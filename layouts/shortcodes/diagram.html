@@ -1,0 +1,27 @@
+{{- /*
+  An SVG diagram stored next to the post (page bundle), with a portrait
+  version for phones.
+
+    {{< diagram src="loop.svg" alt="What the diagram shows" >}}
+
+  If "loop-m.svg" exists beside "loop.svg", screens up to 684px wide get it:
+  a wide diagram scaled down to a phone is too small to read. `alt` is
+  required and describes the whole diagram. Optional: caption.
+*/ -}}
+{{- $src := .Get "src" -}}
+{{- $alt := .Get "alt" -}}
+{{- if not $alt }}{{ errorf "%s: diagram %q needs alt text" .Page.File.Path $src }}{{ end -}}
+{{- $img := .Page.Resources.GetMatch $src -}}
+{{- if not $img }}{{ errorf "%s: diagram %q is not in the page bundle" .Page.File.Path $src }}{{ end -}}
+{{- $narrow := .Page.Resources.GetMatch (replace $src ".svg" "-m.svg") -}}
+<figure class="diagram-img">
+  <picture>
+    {{- with $narrow }}
+    <source media="(max-width: 684px)" srcset="{{ .RelPermalink }}">
+    {{- end }}
+    <img src="{{ $img.RelPermalink }}" alt="{{ $alt }}" loading="lazy" decoding="async">
+  </picture>
+  {{- with .Get "caption" }}
+  <figcaption>{{ . }}</figcaption>
+  {{- end }}
+</figure>

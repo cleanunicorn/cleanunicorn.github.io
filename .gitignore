@@ -32,3 +32,5 @@ __pycache__/
 /.cache/article-audio/
 /data/article_audio.json.tmp
 
+# Local Hugo development server cache
+/.cache/hugo-dev/
