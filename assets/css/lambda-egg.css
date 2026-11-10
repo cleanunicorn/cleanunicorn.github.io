@@ -1,0 +1,69 @@
+.lambda-trigger {
+  display: inline-block;
+  padding: 0 .08em;
+  border: 0;
+  border-radius: .1em;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  vertical-align: baseline;
+  touch-action: manipulation;
+}
+.lambda-trigger:hover { color: #ff9b31; }
+.lambda-trigger:focus-visible { outline: 2px solid #ff9b31; outline-offset: 4px; }
+.lambda-trigger--pulse { animation: lambda-charge .7s ease-out; }
+.lambda-hud[hidden] { display: none; }
+.lambda-hud {
+  position: fixed;
+  z-index: 1000;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  right: 24px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 18px;
+  width: min(480px, calc(100vw - 32px));
+  padding: 24px 40px 24px 20px;
+  border: 1px solid #ff9b31;
+  border-left: 4px solid #ff9b31;
+  background: repeating-linear-gradient(0deg, #ff9b3105 0 1px, transparent 1px 4px), #17120af5;
+  color: #ffe1b9;
+  box-shadow: 0 0 40px #ff8a0026;
+  font: 14px/1.6 ui-monospace, monospace;
+}
+.lambda-hud--arrive { animation: lambda-arrive 1s ease-out; }
+.lambda-hud__symbol { color: #ff9b31; font-size: 56px; line-height: 1.1; }
+.lambda-hud__message strong { color: #ffad52; font-size: 12px; letter-spacing: .12em; }
+.lambda-hud__message p { margin: 12px 0; }
+.lambda-hud__message small { color: #d4b78f; }
+.lambda-hud__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: #ffad52;
+  font: 24px/1 monospace;
+  cursor: pointer;
+}
+.lambda-hud__close:focus-visible { outline: 2px solid #ff9b31; outline-offset: -5px; }
+@keyframes lambda-charge {
+  0% { color: #fff1c5; text-shadow: 0 0 6px #ff9b31, 0 0 24px #ff8a00; }
+  100% { color: inherit; text-shadow: 0 0 0 transparent; }
+}
+@keyframes lambda-arrive {
+  0% { opacity: 0; transform: translateY(12px); box-shadow: 0 0 80px #ff8a0066; }
+  35% { opacity: 1; }
+  100% { transform: translateY(0); }
+}
+@media (max-width: 520px) {
+  .lambda-hud { right: 16px; gap: 12px; padding-left: 16px; }
+  .lambda-hud__symbol { font-size: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lambda-trigger--pulse, .lambda-hud--arrive { animation: none; }
+  .lambda-trigger--pulse { color: #ff9b31; }
+}

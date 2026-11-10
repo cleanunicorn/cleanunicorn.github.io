@@ -2,6 +2,7 @@
 title = "Advice Has a Half-Life λ"
 date = "2026-11-10T18:16:58+02:00"
 draft = true
+lambdaEgg = true
 authorTwitter = "cleanunicorn" #do not include @
 cover = ""
 keywords = ["ai", "coding agents", "agentic engineering", "systems thinking", "workflow", "skills", "code review"]
@@ -136,6 +137,8 @@ Earlier title options:
 
 Think of one thing you did three times this week. Keep it in mind. I will come back to it.
 
+**By the end, you will have a set of skills you can use to build your own workflow.** They are public in [agents-library](https://github.com/cleanunicorn/agents-library), and I explain them at the end. Use them as they are, change them, skip a stage, repeat one, or add your own. The workflow is yours. The building blocks come from principles that have always been part of programming; agents give us new ways to apply them.
+
 ## Why believe me
 
 In the 90 days to 10 November I merged about 1,000 pull requests across 19 repositories, and opened about 900 issues. Half of those pull requests were merged within three hours of being opened. In the same 90 days a year earlier, I merged one.
@@ -154,7 +157,7 @@ So I split everything I do into two kinds.
 
 λ is the decay constant: the larger it is, the sooner a thing stops being true. And yes, it is also the logo of a specific old game, Dr. Gordon.
 
-{{< principle "Principles · years" >}}Every change walks the same lifecycle. What you repeat three times becomes part of the system.{{< /principle >}}
+{{< principle "Principles · years" >}}The development lifecycle gives us building blocks. What you repeat three times becomes part of the system.{{< /principle >}}
 
 {{< practice "Practices · months, hopefully" >}}
 
@@ -192,7 +195,7 @@ The second is to accept the summary as the result. It feels fast, until the agen
 
 ## The software development lifecycle
 
-{{< principle "Principle 1" >}}Every change walks the same lifecycle: define, plan, build, verify, review, ship.{{< /principle >}}
+{{< principle "Principle 1" >}}Define, plan, build, verify, review and ship are building blocks you can arrange into your own workflow.{{< /principle >}}
 
 {{< diagram src="loop.svg" alt="The software development lifecycle drawn as a loop of six stages: 1 Define, done by you; 2 Plan, the agent; 3 Build, the agent; 4 Verify, the agent with scripts; 5 Review, other agents; 6 Ship, scripts; then back to Define" >}}
 
@@ -211,7 +214,7 @@ We still need to decide what is worth building, understand the code, check that 
 
 Two things make it a lifecycle and not a checklist. Each stage hands the next one something written: an outcome, a plan, a pull request, evidence, findings, a release. What users do with the release feeds the next Define. A failed check sends the work back to Build; a flawed approach sends it back to Plan.
 
-A stage you skip does not go away. It gets done later, by you, at a worse time.
+A stage does not need its own ceremony. For a small fix, planning might take one sentence; a risky change might need several rounds of verification and review. Choose the steps deliberately and understand what each one gives you.
 
 ### Define: decide what to work on next
 
@@ -445,4 +448,4 @@ Take them, change them, or write your own. Other people's skills combine well, b
 
 ![Chief of Staff's Pipeline tab in BB: six tasks, each on a card with its repository and issue, its current step such as Build, Review and Docs, or CI running, a row of workflow progress marks, token use and cost; one card is highlighted because its plan needs my approval](chief-of-staff-pipeline.png)
 
-Chief of Staff in BB, with demo data: six tasks at different stages, one waiting for plan approval. [Open the full-size screenshot](chief-of-staff-pipeline.png) to read the cards.
+Chief of Staff in BB, with demo data: six tasks at different stages, one waiting for plan approval. <a href="chief-of-staff-pipeline.png" target="_blank" rel="noopener">Open the full-size screenshot</a> to read the cards.

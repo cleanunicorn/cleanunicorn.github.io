@@ -10,3 +10,9 @@
     {{- end }}
   </ul>
 </div>
+{{- if .Params.lambdaEgg }}
+  {{- $eggCSS := resources.Get "css/lambda-egg.css" | minify | fingerprint }}
+  {{- $eggJS := resources.Get "js/lambda-egg.js" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $eggCSS.RelPermalink }}" integrity="{{ $eggCSS.Data.Integrity }}">
+  <script defer src="{{ $eggJS.RelPermalink }}" integrity="{{ $eggJS.Data.Integrity }}"></script>
+{{- end }}
