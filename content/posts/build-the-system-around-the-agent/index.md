@@ -1,7 +1,7 @@
 +++
 title = "Advice Has a Half-Life λ"
 date = "2026-11-10T18:16:58+02:00"
-draft = true
+draft = false
 lambdaEgg = true
 authorTwitter = "cleanunicorn" #do not include @
 cover = ""
@@ -10,130 +10,6 @@ description = "Tools for coding agents change every month. The development lifec
 showFullContent = false
 readingTime = true
 +++
-
-<!--
-DRAFT NOTES (delete before publishing)
-
-Progress
-  - [x] Read the deck (github.com/cleanunicorn/workshop-2026: slides/01..07, structure/readme.md, README)
-  - [x] Read docs/writing-articles.md and the previous article, to extend it and not repeat it
-  - [x] Map the deck onto the nine-section structure (map below)
-  - [x] First full draft, with manager.cast in the bundle
-  - [x] Skill list at the end, from agents-library as of 2026-11-09, and Chief of Staff mentioned once
-  - [ ] Daniel: answer the open questions below
-  - [ ] Daniel: confirm publication of the aggregate counts, including private repositories
-  - [x] Check the draft against the structure, section by section; give each section a distinct job
-  - [x] Look at it on `make dev` at desktop (1440px) and phone (390px) width
-  - [x] Tightening pass: remove duplicate trail narration, rule lists and recap; make starter exercise concrete
-  - [ ] Pick the title (options below), rename the slug before publishing
-  - [ ] Pre-publish checklist in docs/writing-articles.md, then PR
-  - [ ] Deferred: narration (`make audio`), social posts
-
-Source: the workshop deck "Agentic Engineering" (38 minutes, 31 slides + annex).
-The talk's two titles: "How to build the system around the agent" and
-"Applied systems thinking in software development".
-
-Section map (structure from docs/writing-articles.md -> this draft -> deck source):
-  1. Proof              "Why believe me" (in the opening) git-stats cache: PRs merged, issues, median time to merge
-  2. Results            "Follow one change"              NOT from the deck: Earheart issue #342 / PR #355 (Daniel
-                                                         asked to replace the manager recording and to pick one change)
-  3. Contradiction      "Do not watch it. Do not trust it either."   tips: build trust (both slides)
-  4. What I did         "The loop" (six stages)          loop chapter
-                        "What repeats becomes the system" review-your-flow chapter (the good/better/best
-                                                         here is: a sentence, a check, a skill, code)
-  5. Re-hook            "My Monday"                      define notes + transcripts tip + Earheart tip
-  6. Get started        "Start with one stage"           closing call to action + shell history slide
-  7. Won't work unless  "It will not work unless"        build trust (three failures) + scary agent guardrails
-  8. Recap              "The short version"
-  9. P.S.               future loops                     annex, as a plan
-  +  Appendix           "What I run today"               requested: skill list, agents-library, Chief of Staff
-
-Cut from the deck, on purpose:
-  - Personal agents (pi, Hermes, OpenClaw): the slide notes say "[Daniel: which of the three you run today]";
-    unknown, and the most perishable slide in the talk.
-  - dispatch: one line in the appendix only.
-  - The always-on machine ("black"): one sentence under Build. The previous article covers it.
-  - Herdr install, good/better/best, "it is not the model": all in the previous article; linked, not repeated.
-  - The docker.cast demo: in the previous article; linked from Verify.
-  - GitHub Actions detail (PR title check, changelog script): two sentences under Ship.
-  - Monitoring errors and performance: one paragraph under Define + the P.S., written as partly a plan.
-  - The advice scale (complexity / usefulness / expected change per slide): only the idea survives.
-  - The "cuck coding" joke and the hotel-room image: left out; the image is a Google Images thumbnail with
-    no known licence. The point ("do not watch the agent code") is in the Contradiction section.
-
-Numbers and facts, with sources:
-  - "Why believe me": from Daniel's git-stats project (~/Development/github.com/cleanunicorn/git-stats),
-    its cache .data/cleanunicorn.json, syncedAt 2026-11-10T18:46Z. I read the cache only and printed
-    aggregates; I did not run a sync. Window = the 90 days before syncedAt (2026-08-12 to 2026-11-10, UTC).
-      * 1,002 PRs merged in the window, in 19 repositories (592 of them in private repositories).
-      * median creation-to-merge time of those PRs: 2.99 hours ("half within three hours").
-      * 902 issues opened in the window.
-      * the same 90 days one year earlier: 1 PR merged.
-      * "ten pull requests a day" = 1,002 / 90 = 11.1, rounded down.
-      * chart, PRs merged per month by mergedAt (UTC): Mar 4, Apr 72, May 102, Jun 142, Jul 206, Aug 208,
-        Sep 234, Oct 464. November (153 so far) is left out because the month is not over.
-    The earlier opening number (about 2,000 of 2,200 commits with an agent co-author) is gone: git-stats
-    does not count co-authors, so the article no longer says what share of the work agents wrote.
-  - "Follow one change", all read from GitHub on 2026-11-10 (cleanunicorn/earheart):
-      * issue #342 filed 2026-10-30; four acceptance criteria in its body.
-      * plan = issue comment 6624077247 (2026-11-04): milestones M1..M7; "make test 1313 pass / 0 fail" baseline.
-      * plan review = comment 6624124456: two medium findings (correctness-1 match by identity not text;
-        testing-1 stale search response). The plan's M4 line records the deviation.
-      * PR #355: six commits, "17 files, +980 / -67", make test 1343 pass, settings-smoke 148/148, and the
-        "145/146 with the guard removed" check, all from the PR body. Checks on the PR: app on ubuntu, macos,
-        windows, lint-title, node-floor, repo-hygiene, stt-server = 7 green (the plan says "CI 7/7").
-      * code review = comment 6624311900: two medium findings; fixes acca871 and 52a2462; re-check stopped at
-        the SHA mismatch = comment 6624385892; re-check 2 verified both = comment 6624416256.
-      * "a different vendor": commits carry a Claude co-author trailer; the plan's Progress says
-        "Review (independent, codex)".
-      * merged 2026-11-05 07:42 UTC; release v0.46.0 published 07:49 UTC and lists PR #355.
-      * No durations are claimed. The four build commits share one timestamp (rebased), so the comment
-        times do not show how long anything took.
-  - "about 2 minutes of talking instead of 10 to 30 minutes of thinking alone": Earheart slide notes, marked
-    there as "my own estimate, not a measurement". The draft says so.
-  - The failures in "It will not work unless": build-trust slide notes ("what I skipped, once each").
-    The notes do not say how each one played out, so the draft does not either. Add the real stories.
-  - Editorial pass replaced the shell-history starter with a three-step verification exercise.
-  - Skill and agent descriptions in the appendix: cleanunicorn/agents-library at its 2026-11-09 commit.
-    The deck names older skills (plan-feature, review-pr, triage-issues, simplify-sweep, describe-codebase,
-    install-agents); the repository no longer has those, so the appendix uses today's ten.
-  - Chief of Staff: its README (default workflow Plan -> you approve -> Build -> Review -> Ship; steps can
-    name skills).
-
-Recording: none. manager.cast was removed with the "Watch this first" section.
-
-Images in the bundle:
-  - scariest-things.png: imgflip meme supplied by Daniel for the deck, watermark strip cropped there.
-  - half-life, loop, plan, verify, review, three-times, monday (.svg): drawn for this article in the site's
-    colours. The half-life chart is illustrative, not data, and says so.
-  - chief-of-staff-pipeline.png: docs/images/pipeline-dark.png from cleanunicorn/bb-plugin-chief-of-staff.
-    It shows demo data (the plugin's README says so), and the caption repeats that.
-  - Not used: agents-library's manager-workflow.png and skill-*.png. They are light-themed and look
-    pasted in on the dark page.
-
-Open questions for Daniel:
-  1. Opening numbers: the PR and issue counts include private client repositories (592 of the 1,002 merged
-     PRs). Only totals are shown, no names. OK to publish? And do you want the agent co-author share back?
-     It needs the workshop's `npm run numbers`, re-run for a window you choose.
-  2. Editorial pass removed the unconfirmed claim about Daniel catching none of the three findings.
-  3. Daniel confirmed: agents perform Verify (heavily script-powered) and Review, without his own pass.
-     Monitoring: what runs today and what is a plan? The draft says only "I already monitor
-     errors" (your notes) and calls the automatic issue filing a plan.
-  4. Chief of Staff now has a labelled demo screenshot and a full-size image link.
-  5. Do you want the personal agents or dispatch back in the body?
-  6. "Timeless": the body names Herdr, Earheart and GitHub Actions only as "today's practice". If you want
-     the body fully tool-free, the Earheart example is the one named project left in it.
-
-Title: now "Advice Has a Half-Life λ" (Daniel asked for shorter, with the lambda). λ is both the
-  Half-Life logo and the decay constant in the half-life formula, which the chart and one line under it use.
-
-Earlier title options:
-  - Build the System Around the Agent            (working title; the talk's subtitle)
-  - I Do Not Trust My Agents. I Trust the System Around Them.
-  - Advice About Coding Agents Has a Half-Life. This Part Does Not.
-  - Don't Watch the Agent Code
-  - What You Repeat Three Times Becomes the System
--->
 
 Think of one thing you did three times this week. Keep it in mind. I will come back to it.
 
