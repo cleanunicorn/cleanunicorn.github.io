@@ -1,5 +1,7 @@
 +++
-title = "Advice Has a Half-Life λ"
+title = "What repeats becomes the system"
+slug = "what-repeats-becomes-the-system"
+aliases = ["/posts/build-the-system-around-the-agent/"]
 date = "2026-11-10T18:16:58+02:00"
 draft = false
 lambdaEgg = true
@@ -15,15 +17,9 @@ Think of one thing you did three times this week. Keep it in mind. I will come b
 
 **By the end, you will have a set of skills you can use to build your own workflow.** They are public in [agents-library](https://github.com/cleanunicorn/agents-library), and I explain them at the end. Use them as they are, change them, skip a stage, repeat one, or add your own. The workflow is yours. The building blocks come from principles that have always been part of programming; agents give us new ways to apply them.
 
-## Why believe me
-
-In the 90 days to 10 November I merged about 1,000 pull requests across 19 repositories, and opened about 900 issues. Half of those pull requests were merged within three hours of being opened. In the same 90 days a year earlier, I merged one.
-
-{{< diagram src="merged.svg" alt="A bar chart of pull requests I merged per month in 2026: 4 in March, 72 in April, 102 in May, 142 in June, 206 in July, 208 in August, 234 in September and 464 in October" >}}
-
-I do not like these numbers much. They say how much moved, not whether it was right. The useful question is **how to merge ten pull requests a day and still know what ships.** I will show one change from request to release, then the lifecycle and habits behind it.
-
 ## Principles and practices
+
+### Advice has a half-life
 
 Most advice about coding agents is about a tool, and the tool changes every month. It is hard to say something that is useful today and still true in a year.
 
@@ -31,13 +27,46 @@ So I split everything I do into two kinds.
 
 {{< diagram src="half-life.svg" alt="A chart with two lines from today to a year from now: the line for principles, labelled lambda close to zero, stays almost flat; the line for practices, labelled a large lambda, drops quickly; marked as illustrative, not a measurement" >}}
 
-λ is the decay constant: the larger it is, the sooner a thing stops being true. And yes, it is also the logo of a specific old game, Dr. Gordon.
+λ is the decay constant: the larger it is, the sooner a thing stops being true. And yes, it is also the logo of a specific old game, <span id="lambda-egg">λ</span>.
 
 {{< principle "Principles · years" >}}The development lifecycle gives us building blocks. What you repeat three times becomes part of the system.{{< /principle >}}
 
 {{< practice "Practices · months, hopefully" >}}
 
 The tools and habits below are how I apply those principles today. Green boxes mark the principles; amber labels mark my practices. If you are reading this long after I posted it, keep the principles and adapt the practices.
+
+## What you repeat three times becomes the system
+
+{{< principle "Principle 1" >}}The first time, I do it. The second time, I notice it. The third time, I build it into the system.{{< /principle >}}
+
+It is the same rule I use when I refactor code. Two copies are a coincidence. Three are a pattern, and a pattern gets a name and a single place to live. The rule works on habits the way it works on code.
+
+{{< diagram src="three-times.svg" alt="The rule of three: the first time, do it; the second time, notice it; the third time, build it in, as a named command from shell history, a skill from agent sessions, a rule, lint or test from repository history, or code from a skill's fixed steps" >}}
+
+Look for the next piece of your system in the logs you already keep:
+
+{{< practice >}}
+
+- **Shell history → a tool.** `gup` is `git switch main && git pull`. A sequence I kept typing became a name both the agent and I can call.
+- **Agent sessions → a skill.** Repeated corrections reveal a workflow worth writing down once. Keep the decisions and checks; drop instructions the model no longer needs.
+- **Repository history → an enforced check.** The same fix or review comment keeps returning? Turn it into a lint or test when you can describe the failure precisely.
+- **Agent memory → a reviewed rule.** Read its notes about you. Keep what is still true, correct what it misunderstood, and remove what no longer applies.
+
+**Put each repetition where it can be handled reliably.** A preference can stay in prose. A workflow that needs judgement belongs in a skill. A mechanical check belongs in a test or CI job that blocks a merge when it fails.
+
+The skill itself gets the same treatment. If an agent runs the same five commands every time, make them a script. Let code handle the fixed sequence and leave the decisions to the model.
+
+Every few weeks, prune the result. Rules become obsolete, contradict each other, or describe mistakes fixed upstream. Ask whether each one still earns its place.
+
+The goal is to make the easy thing the right thing. Agents take shortcuts, so shape the environment until the shortcut is correct. It works the same way for a new hire.
+
+## Why believe me
+
+In the 90 days to 10 November I merged about 1,000 pull requests across 19 repositories, and opened about 900 issues. Half of those pull requests were merged within three hours of being opened. In the same 90 days a year earlier, I merged one.
+
+{{< diagram src="merged.svg" alt="A bar chart of pull requests I merged per month in 2026: 4 in March, 72 in April, 102 in May, 142 in June, 206 in July, 208 in August, 234 in September and 464 in October" >}}
+
+I do not like these numbers much. They say how much moved, not whether it was right. The useful question is **how to merge ten pull requests a day and still know what ships.** I will show one change from request to release, then the lifecycle and habits behind it.
 
 ## Follow one change
 
@@ -71,7 +100,7 @@ The second is to accept the summary as the result. It feels fast, until the agen
 
 ## The software development lifecycle
 
-{{< principle "Principle 1" >}}Define, plan, build, verify, review and ship are building blocks you can arrange into your own workflow.{{< /principle >}}
+{{< principle "Principle 2" >}}Define, plan, build, verify, review and ship are building blocks you can arrange into your own workflow.{{< /principle >}}
 
 {{< diagram src="loop.svg" alt="The software development lifecycle drawn as a loop of six stages: 1 Define, done by you; 2 Plan, the agent; 3 Build, the agent; 4 Verify, the agent with scripts; 5 Review, other agents; 6 Ship, scripts; then back to Define" >}}
 
@@ -175,31 +204,6 @@ Once the checks live in CI, an agent's pull request and mine are held to the sam
 
 Mine run in CI: the tests, a check on the pull request title because the release script reads it to pick the version, and a release that writes its own changelog entry. Scripts carry a merged pull request to staging and production. **The only place I appear is an approval, and on some projects not even that.**
 
-## What you repeat three times becomes the system
-
-{{< principle "Principle 2" >}}The first time, I do it. The second time, I notice it. The third time, I build it into the system.{{< /principle >}}
-
-It is the same rule I use when I refactor code. Two copies are a coincidence. Three are a pattern, and a pattern gets a name and a single place to live. The rule works on habits the way it works on code.
-
-{{< diagram src="three-times.svg" alt="The rule of three: the first time, do it; the second time, notice it; the third time, build it in, as a named command from shell history, a skill from agent sessions, a rule, lint or test from repository history, or code from a skill's fixed steps" >}}
-
-Look for the next piece of your system in the logs you already keep:
-
-{{< practice >}}
-
-- **Shell history → a tool.** `gup` is `git switch main && git pull`. A sequence I kept typing became a name both the agent and I can call.
-- **Agent sessions → a skill.** Repeated corrections reveal a workflow worth writing down once. Keep the decisions and checks; drop instructions the model no longer needs.
-- **Repository history → an enforced check.** The same fix or review comment keeps returning? Turn it into a lint or test when you can describe the failure precisely.
-- **Agent memory → a reviewed rule.** Read its notes about you. Keep what is still true, correct what it misunderstood, and remove what no longer applies.
-
-**Put each repetition where it can be handled reliably.** A preference can stay in prose. A workflow that needs judgement belongs in a skill. A mechanical check belongs in a test or CI job that blocks a merge when it fails.
-
-The skill itself gets the same treatment. If an agent runs the same five commands every time, make them a script. Let code handle the fixed sequence and leave the decisions to the model.
-
-Every few weeks, prune the result. Rules become obsolete, contradict each other, or describe mistakes fixed upstream. Ask whether each one still earns its place.
-
-The goal is to make the easy thing the right thing. Agents take shortcuts, so shape the environment until the shortcut is correct. It works the same way for a new hire.
-
 ## My Monday
 
 {{< practice "Practice · my week" >}}
@@ -222,7 +226,7 @@ By lunch there is a set of issues with decisions attached. Those are the inputs 
 
 ## Start with one stage
 
-Take the thing you thought of at the top and choose one change it could improve. Start by handing over Verify: it has a clear input, a running change, and a result you can inspect.
+Take the thing you thought of at the top and choose where it belongs: a tool, a skill or an enforced check. Verification is one example of how to build it into your workflow. It has a clear input, a running change, and a result you can inspect.
 
 ### 1. Name what must work
 
@@ -270,7 +274,7 @@ The lifecycle gives each change a path from a decision to a release, with eviden
 
 About a thousand pull requests in 90 days went through this. The count shows how much moved. The Earheart trail shows the more useful part: mistakes caught before they reached users.
 
-**Pick one repeated task, hand over its verification, and keep the check that proves it worked.**
+**The thing you did three times this week—turn it into a system.**
 
 *P.S. The lifecycle still has a gap at the end: after Ship, I am the one who notices that something broke. What I want to build next is that last arc. An error becomes an issue, the issue becomes a fix that is verified after it deploys, and one channel tells me what the loops did and what they need from me. It is a plan, not something that runs today.*
 

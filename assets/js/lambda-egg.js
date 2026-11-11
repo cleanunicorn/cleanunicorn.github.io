@@ -1,16 +1,17 @@
 (() => {
-  const title = document.querySelector('.page-title');
-  if (!title || !title.textContent.trimEnd().endsWith('λ')) return;
+  const title = document.querySelector('#lambda-egg');
+  if (!title) return;
 
-  const text = title.lastChild;
-  if (!text || text.nodeType !== Node.TEXT_NODE) return;
+  const text = Array.from(title.childNodes).find(node =>
+    node.nodeType === Node.TEXT_NODE && node.textContent.trimEnd().endsWith('λ'));
+  if (!text) return;
   text.textContent = text.textContent.replace(/λ\s*$/, '');
   const trigger = document.createElement('button');
   trigger.type = 'button';
   trigger.className = 'lambda-trigger';
   trigger.textContent = 'λ';
   trigger.setAttribute('aria-label', 'Lambda');
-  title.append(trigger);
+  text.after(trigger);
 
   const hud = document.createElement('aside');
   hud.className = 'lambda-hud';
