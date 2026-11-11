@@ -190,7 +190,13 @@ test("X embeds read without widgets.js and fit narrow screens", { timeout: 60000
 
 test("post end blocks fit at 390px and 1300px on every post", { timeout: 60000 }, async () => {
   const entries = await readdir(path.join(publicDir, "posts"), { withFileTypes: true });
-  const posts = entries.filter(entry => entry.isDirectory() && entry.name !== "page").map(entry => entry.name);
+  const posts = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory() || entry.name === "page") continue;
+    const html = await readFile(path.join(publicDir, "posts", entry.name, "index.html"), "utf8");
+    // Redirect aliases live beside articles but have no article end blocks.
+    if (/<article\b/.test(html)) posts.push(entry.name);
+  }
   assert.ok(posts.length >= 2, "expected built posts under public/posts/");
   const server = siteServer();
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));

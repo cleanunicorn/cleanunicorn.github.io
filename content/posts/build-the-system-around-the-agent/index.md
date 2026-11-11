@@ -1,5 +1,7 @@
 +++
-title = "Advice Has a Half-Life λ"
+title = "What Repeats Becomes the System"
+slug = "what-repeats-becomes-the-system"
+aliases = ["/posts/build-the-system-around-the-agent/"]
 date = "2026-11-10T18:16:58+02:00"
 draft = false
 lambdaEgg = true
@@ -31,7 +33,7 @@ So I split everything I do into two kinds.
 
 {{< diagram src="half-life.svg" alt="A chart with two lines from today to a year from now: the line for principles, labelled lambda close to zero, stays almost flat; the line for practices, labelled a large lambda, drops quickly; marked as illustrative, not a measurement" >}}
 
-λ is the decay constant: the larger it is, the sooner a thing stops being true. And yes, it is also the logo of a specific old game, Dr. Gordon.
+<span data-lambda-egg>λ</span> is the decay constant: the larger it is, the sooner a thing stops being true. And yes, it is also the logo of a specific old game, Dr. Gordon.
 
 {{< principle "Principles · years" >}}The development lifecycle gives us building blocks. What you repeat three times becomes part of the system.{{< /principle >}}
 
