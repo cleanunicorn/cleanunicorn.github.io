@@ -46,8 +46,8 @@ jobs:
       - name: Check image alt text
         run: make check-alt-text
       # The runner image's google-chrome aborts in headless mode (no usable
-      # sandbox), so install the same Chromium the deploy workflow prints with.
-      - name: Install Chromium (for CV PDF and navigation checks)
+      # sandbox), so install Chromium for the navigation checks.
+      - name: Install Chromium (for navigation checks)
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser ffmpeg
@@ -55,10 +55,9 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: '22'
-      # /cv.html and /cv.pdf are generated, not committed, and the pages link
-      # to them.
-      - name: Generate CV (HTML + PDF)
-        run: make cv-pdf
+      # /cv.html is generated in CI; /cv.pdf is regenerated locally.
+      - name: Generate CV (HTML)
+        run: make cv
       - name: Build the site
         run: hugo --minify
       - name: Check article audio build and players (fixture audio, no models)
