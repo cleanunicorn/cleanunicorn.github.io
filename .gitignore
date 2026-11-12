@@ -18,9 +18,9 @@ hugo.linux
 *.swo
 *~
 
-# Generated CV (built by `make cv-pdf` before Hugo build)
+# Generated CV HTML (built by `make cv` before Hugo build).
+# Commit static/cv.pdf after regenerating it locally with `make cv-pdf`.
 /static/cv.html
-/static/cv.pdf
 # Python bytecode and macOS Finder metadata
 __pycache__/
 .DS_Store
