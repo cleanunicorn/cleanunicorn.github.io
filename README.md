@@ -148,14 +148,17 @@ do not call a paid API or download speech models.
     `make check-positioning` and `make test`.
   - *Build and link-check* (`.github/workflows/site-check.yml`) builds the site
     with `hugo --minify`, runs `make check-alt-text`, `make check-build`,
-    `make check-built-meta`, and `make check-browser-nav`, then runs [lychee](https://lychee.cli.rs/) offline
+    and `make check-built-meta`, then runs [lychee](https://lychee.cli.rs/) offline
     over `public/`. A dead internal link or `#anchor` fails the PR.
 - **A push to `main`** runs *Build and deploy* (`.github/workflows/hugo.yml`).
   It runs the positioning guard and `make check-alt-text`, generates the CV
   HTML, builds with Hugo, runs `make check-build`,
-  `make check-built-meta`, and `make check-browser-nav`, then publishes `public/` to GitHub Pages.
+  and `make check-built-meta`, then publishes `public/` to GitHub Pages.
 - **Dependabot** (`.github/dependabot.yml`) opens weekly PRs that bump the
   GitHub Actions and the theme submodule.
 
 To move to a new Hugo version, change `.hugo-version`. Both workflows read it.
+
+Browser navigation checks run locally with `make check-browser-nav` (also part
+of `make build`). CI does not install Chromium or run browser navigation checks.
 
